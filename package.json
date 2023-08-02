@@ -9,7 +9,16 @@
     "clear": "rd /s /q dist",
     "prettier:format": "prettier --write \"src/**/*.tsx\"",
     "lint:fix": "npx eslint \"src/**/*.tsx\" --fix",
-    "lint": " eslint \"src/**/*.tsx\""
+    "lint": " eslint \"src/**/*.tsx\"",
+    "prepare": "husky install"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json,css,scss}": ["eslint", "prettier --write"]
   },
   "author": "",
   "license": "ISC",
@@ -33,6 +42,8 @@
     "eslint-webpack-plugin": "^4.0.1",
     "html-loader": "^4.2.0",
     "html-webpack-plugin": "^5.5.3",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.3",
     "mini-css-extract-plugin": "^2.7.6",
     "prettier": "^3.0.0",
     "style-loader": "^3.3.3",
