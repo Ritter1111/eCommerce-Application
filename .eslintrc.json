@@ -20,7 +20,8 @@
     },
     "plugins": [
         "@typescript-eslint",
-        "react"
+        "react",
+        "prettier"
     ],
     "rules": {
         "no-debugger": "off",

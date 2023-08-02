@@ -1,9 +1,11 @@
-// const App = () => {
-//   return (
-//     <div>
-//       <h1>Hello</h1>
-//     </div>
-//   )
-// }
+import React from 'react';
 
-// export default App
+const App = () => {
+  return (
+    <div>
+      <h1>Hello</h1>
+    </div>
+  )
+}
+
+export default App

@@ -1,12 +1,14 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 
-ReactDOM.render(
-  <h1>
-    hjdss{' '}
-    <div>
-      dksjdkdivjjdks <div>jdshf</div>
-    </div>
-  </h1>,
-  document.getElementById('root')
+import  App  from "./App";
+
+const rootElement = document.getElementById("root") as HTMLElement;
+const root = createRoot(rootElement);
+
+root.render(
+  <StrictMode>
+    <App />
+  </StrictMode>
 );

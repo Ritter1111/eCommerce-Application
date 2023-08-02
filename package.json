@@ -7,7 +7,9 @@
     "start": "webpack serve --open --config ./webpack.config.js --env mode=dev",
     "build": "webpack --config ./webpack.config.js --env mode=prod",
     "clear": "rd /s /q dist",
-    "format": "prettier --write \"src/**/*.tsx\""
+    "prettier:format": "prettier --write \"src/**/*.tsx\"",
+    "lint:fix": "npx eslint \"src/**/*.tsx\" --fix",
+    "lint": " eslint \"src/**/*.tsx\""
   },
   "author": "",
   "license": "ISC",
@@ -25,6 +27,7 @@
     "clean-webpack-plugin": "^4.0.0",
     "css-loader": "^6.8.1",
     "eslint": "^8.46.0",
+    "eslint-config-prettier": "^8.9.0",
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-react": "^7.33.1",
     "eslint-webpack-plugin": "^4.0.1",
