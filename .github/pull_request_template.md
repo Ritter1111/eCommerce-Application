@@ -1,11 +1,11 @@
 Implement # 
 
-Task: task 1 (1000 poins / 1000 point)
+Task: task 1 (1000 points / 1000 points)
 
-- [x] feature 1 (200 poins / 200 point)
-- [x] feature 2 (100 poins / 100 point)
+- [x] feature 1 (200 points / 200 points)
+- [x] feature 2 (100 points / 100 points)
 - [x] feature ... 
-- [x] feature n (300 poins / 300 point)
+- [x] feature n (300 points / 300 points)
 
  
 This is a:
