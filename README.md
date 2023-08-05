@@ -12,14 +12,14 @@ Key pages in the application include
 - Detailed Product page 🔎
 - User Profile page 👤
 - Basket page 🛒
-- About Us page 🙋‍♂️🙋‍♀️
+- About Us page 🙋‍♂️
 
 ## Technology stack used
 ### Build with:
 <img src="https://img.shields.io/badge/TypeScript-3178c6?logo=typescript&logoColor=white&style=ShieldStyle" /> <img src="https://img.shields.io/badge/React-4FACDF?logo=react&logoColor=white&style=ShieldStyle" /> <img src="https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=white&style=ShieldStyle" /> <img src="https://img.shields.io/badge/HTML-E34F26?logo=html5&logoColor=white&style=ShieldStyle" /> <img src="https://img.shields.io/badge/CSS-2971A3?logo=css3&logoColor=ColorName&style=ShieldStyle" /> <img src="https://img.shields.io/badge/Node.js-38883D?logo=node.js&logoColor=white&style=ShieldStyle" />
 <img src="https://img.shields.io/badge/WebPack-3178c6?logo=webpack&logoColor=ColorName&style=ShieldStyle" />
 ### Version Control and Development Tools used:
-<img src="https://img.shields.io/badge/Git-DC4936?logo=git&logoColor=white&style=ShieldStyle" /> <img src="https://img.shields.io/badge/GitHub-1A1C1E?logo=github&logoColor=white&style=ShieldStyle" /> <img src="https://img.shields.io/badge/Visual Studio Code-0C72C5?logo=visual studio code&logoColor=white&style=ShieldStyle" /> 
+<img src="https://img.shields.io/badge/Git-DC4936?logo=git&logoColor=white&style=ShieldStyle" /> <img src="https://img.shields.io/badge/GitHub-1A1C1E?logo=github&logoColor=white&style=ShieldStyle" /> <img src="https://img.shields.io/badge/Visual Studio Code-0C72C5?logo=visual studio code&logoColor=white&style=ShieldStyle" />
 
 ## Setup and Running
 To clone and run this application, you'll need [Git](https://git-scm.com/) and [Node.js](https://nodejs.org/en) (which comes with [npm](https://www.npmjs.com/)) installed on your computer. From your command line:
