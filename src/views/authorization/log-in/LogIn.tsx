@@ -4,16 +4,48 @@ import { blueGrey } from '@mui/material/colors';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import styles from './LogIn.module.css';
+import { getCustomer, getToken } from './Api-Login';
+import { statusCodes } from '../../../enums/auth.enum';
 
 const grey = blueGrey['A700'];
+const formFieldsDefault = {
+  email: '',
+  password: '',
+};
 
 export default function SignUp() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [data, setData] = useState(formFieldsDefault);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(formFieldsDefault);
 
-  const handleSignUp = () => {
-    console.log('Signing up:', email, password);
-  };
+  function handleError(statusCode: statusCodes) {
+    if (
+      statusCode === statusCodes.BAD_REQUEST ||
+      statusCode === statusCodes.UNAUTHORIZED
+    ) {
+      setError(true);
+      setErrorMessage({
+        email: 'Incorrect password or email',
+        password: 'Incorect password or email',
+      });
+    }
+  }
+
+  async function getCustometWithToken() {
+    try {
+      const token = await getToken({
+        email: data.email,
+        password: data.password,
+      });
+      const customer = await getCustomer({ accessToken: token.access_token });
+
+      handleError(customer.statusCode);
+
+      return customer;
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   return (
     <Container maxWidth="xs">
@@ -24,23 +56,35 @@ export default function SignUp() {
           variant="outlined"
           margin="normal"
           fullWidth
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          error={error}
+          helperText={errorMessage.email}
+          value={data.email}
+          onChange={(e) => {
+            setData((prev) => ({ ...prev, email: e.target.value }));
+            setError(false);
+            setErrorMessage(formFieldsDefault);
+          }}
         />
         <TextField
           label="Password"
           type="password"
           variant="outlined"
           fullWidth
+          error={error}
+          helperText={errorMessage.password}
           margin="normal"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={data.password}
+          onChange={(e) => {
+            setData((prev) => ({ ...prev, password: e.target.value }));
+            setError(false);
+            setErrorMessage(formFieldsDefault);
+          }}
         />
         <Button
           variant="contained"
           style={{ backgroundColor: grey }}
           fullWidth
-          onClick={handleSignUp}
+          onClick={getCustometWithToken}
           sx={{ mt: 2 }}
         >
           Log in
