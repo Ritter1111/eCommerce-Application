@@ -1,5 +1,11 @@
-import React from 'react';
+import AppRouter from './AppRouter';
+import { BrowserRouter } from 'react-router-dom';
 
 export default function App() {
-  return <div>App</div>;
+  return (
+    <BrowserRouter>
+       <AppRouter />
+       <RedirectToHome />
+    </BrowserRouter>
+  );
 }

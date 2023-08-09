@@ -34,6 +34,9 @@ const baseConfig = {
   resolve: {
     extensions: ['.js', '.ts', '.tsx', '.jsx'],
   },
+  devServer: {
+    historyApiFallback: true,
+  },
   output: {
     filename: 'index.js',
     path: path.resolve(__dirname, './dist'),
