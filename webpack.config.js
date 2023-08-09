@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const Dotenv = require('dotenv-webpack');
 
 const baseConfig = {
   entry: path.resolve(__dirname, './src/index.tsx'),
@@ -15,14 +16,14 @@ const baseConfig = {
         loader: 'html-loader',
       },
       {
-        test: /\.(js|ts)x$/,
+        test:  /\.ts$|tsx/,
         use: { loader: 'babel-loader' },
         exclude: /node_modules/,
       },
       {
         test: /\.(c|sa|sc)ss$/i,
         exclude: /felipec\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+        use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
@@ -48,6 +49,7 @@ const baseConfig = {
       filename: 'style.[contenthash].css',
     }),
     new CleanWebpackPlugin(),
+    new Dotenv(),
   ],
 };
 
