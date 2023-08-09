@@ -1,15 +1,17 @@
 import React from 'react';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 
-// import App from './components/App';
-import LogIn from './views/authorization/log-in/LogIn';
+import App from './components/App';
 
 const rootElement = document.getElementById('root') as HTMLElement;
 const root = createRoot(rootElement);
 
 root.render(
   <StrictMode>
-    <LogIn />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </StrictMode>
 );
