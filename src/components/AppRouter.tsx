@@ -1,6 +1,7 @@
 import React from 'react';
-import { Routes, Route, Redirect } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import routes from '../utils/routes';
+import NotFound from '../views/not-found/notFound';
 
 const AppRouter = () => {
   return (
@@ -12,7 +13,10 @@ const AppRouter = () => {
           element={<route.element />}
         />
       ))}
-      {/* <Redirect to={SHOP_ROUTE}/> */}
+      <Route
+        path="*"
+        element={<NotFound/>}
+      />
     </Routes>
   );
 };
