@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { TextField, Button, Container, Typography } from '@mui/material';
 import { blueGrey } from '@mui/material/colors';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import styles from './LogIn.module.css';
 import { getCustomer, getToken } from './Api-Login';
 import { statusCodes } from '../../../enums/auth.enum';
+import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const grey = blueGrey['A700'];
 const formFieldsDefault = {
@@ -17,6 +18,7 @@ export default function LogIn() {
   const [data, setData] = useState(formFieldsDefault);
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState(formFieldsDefault);
+  const navigate = useNavigate();
 
   function handleError(statusCode: statusCodes) {
     if (
@@ -40,11 +42,33 @@ export default function LogIn() {
       const customer = await getCustomer({ accessToken: token.access_token });
 
       handleError(customer.statusCode);
+      checkSuccessfulLogin(customer.id);
+      getCurrentToken();
 
       return customer;
     } catch (error) {
       console.error(error);
     }
+  }
+
+  function checkSuccessfulLogin(id: string) {
+    if (id) {
+      navigate('/');
+      saveToken();
+    }
+  }
+
+  async function getCurrentToken() {
+    const token = await getToken({
+      email: data.email,
+      password: data.password,
+    });
+
+    return token.access_token;
+  }
+
+  async function saveToken() {
+    localStorage.setItem('authToken', await getCurrentToken());
   }
 
   return (
@@ -91,9 +115,7 @@ export default function LogIn() {
         </Button>
         <Grid container>
           <Grid item sx={{ mt: 2 }}>
-            <Link href="#" variant="body2">
-              {"Don't have an account? Sign Up"}
-            </Link>
+            <Link to="/signup">{"Don't have an account? Sign Up"}</Link>
           </Grid>
         </Grid>
       </div>
