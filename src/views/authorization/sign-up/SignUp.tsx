@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, TextField, Button, Typography } from '@mui/material';
+import { Container, TextField, Button, Typography, Autocomplete, Link, Grid } from '@mui/material';
 import styles from './SignUp.module.css'
 import { blueGrey } from '@mui/material/colors';
 import { ISignUpData } from '../../../interfaces/signup.interface';
@@ -11,9 +11,15 @@ export default function SignUp() {
     firstName: '',
     lastName: '',
     bd: '',
+    street: '',
+    city: '',
+    postalCode: '',
+    country: '',
   });
 
   const [errors, setErrors] = useState<Partial<ISignUpData>>({});
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+
   const grey = blueGrey['A700'];
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -23,6 +29,41 @@ export default function SignUp() {
       [name]: value,
     }));
   };
+
+  function handleCountryChange(event: React.ChangeEvent<object>, value: string | null) {
+    setSelectedCountry(value);
+    if (value) {
+      signUpData.country = value;
+    }
+  }
+
+  function validatePostalCode(postalCode: string, country: string): boolean {
+    const postalCodeRegexMap: { [country: string]: RegExp } = {
+      Germany: /^\d{5}$/,
+      France: /^\d{5}$/,
+      UnitedKingdom: /^[A-Za-z]{1,2}\d{1,2}[A-Za-z]?\s?\d[A-Za-z]{2}$/,
+      Italy: /^\d{5}$/,
+      Spain: /^\d{5}$/,
+      Ukraine: /^\d{5}$/,
+      Poland: /^\d{2}-\d{3}$/,
+      Sweden: /^\d{5}$/,
+      Norway: /^\d{4}$/,
+      Finland: /^\d{5}$/,
+      Denmark: /^\d{4}$/,
+      Switzerland: /^\d{4}$/,
+      Austria: /^\d{4}$/,
+      Greece: /^\d{5}$/,
+      Portugal: /^\d{4}-\d{3}$/,
+    };
+
+    const regex = postalCodeRegexMap[country];
+  
+    if (!regex) {
+      return false;
+    }
+  
+    return regex.test(postalCode);
+  }
 
   function validateForm() {
     const newErrors: Partial<ISignUpData> = {};
@@ -57,6 +98,20 @@ export default function SignUp() {
       if (bdDate > minAgeDate) {
         newErrors.bd = 'You must be at least 13 years old';
       }
+    }
+    if (!signUpData.street) {
+      newErrors.street = 'Street is required';
+    }
+    if (!signUpData.city) {
+      newErrors.city = 'City is required';
+    } else if (!/^[A-Za-z\s]+$/.test(signUpData.city)) {
+      newErrors.city = 'City should only contain letters and spaces';
+    }
+    if (!validatePostalCode(signUpData.postalCode, selectedCountry || '')) {
+      newErrors.postalCode = 'Invalid postal code format for the selected country';
+    }
+    if (!selectedCountry) {
+      newErrors.country = 'Country is required';
     }
   
     setErrors(newErrors);
@@ -132,10 +187,69 @@ export default function SignUp() {
             margin='normal'
             InputLabelProps={{ shrink: true }}
           />
+          <Typography variant="subtitle1">Adress:</Typography>
+          <TextField
+            label="Street"
+            name="street"
+            variant="outlined"
+            value={signUpData.street}
+            onChange={handleInputChange}
+            error={!!errors.street}
+            helperText={errors.street}
+            fullWidth
+            margin='normal'
+          />
+          <TextField
+            label="City"
+            name="city"
+            variant="outlined"
+            value={signUpData.city}
+            onChange={handleInputChange}
+            error={!!errors.city}
+            helperText={errors.city}
+            fullWidth
+            margin='normal'
+          />
+          <TextField
+            label="Postal Code"
+            name="postalCode"
+            variant="outlined"
+            value={signUpData.postalCode}
+            onChange={handleInputChange}
+            error={!!errors.postalCode}
+            helperText={errors.postalCode}
+            fullWidth
+            margin='normal'
+          />
+          <Autocomplete
+            id="country"
+            options={['Germany', 'France', 'UnitedKingdom', 'Italy', 'Spain', 'Ukraine', 'Poland', 'Sweden', 'Norway', 'Finland', 'Denmark', 'Switzerland', 'Austria', 'Greece', 'Portugal']}
+            value={selectedCountry}
+            onChange={handleCountryChange}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Country"
+                name="country"
+                variant="outlined"
+                error={!!errors.country}
+                helperText={errors.country}
+                fullWidth
+                margin='normal'
+              />
+            )}
+          />
           <Button variant="contained" style={{ backgroundColor: grey }} type="submit" fullWidth sx={{ mt: 2 }}>
             Sign Up
           </Button>
         </form>
+        <Grid container>
+          <Grid item sx={{ mt: 2 }}>
+            <Link href="#" variant="body2">
+              {"Have an account? Log In"}
+            </Link>
+          </Grid>
+        </Grid>
       </div>
     </Container>
   );
