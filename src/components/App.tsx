@@ -1,10 +1,11 @@
-import React from 'react';
-import RedirectToHome from './RedirectToHome';
+import AppRouter from './AppRouter';
+import { BrowserRouter } from 'react-router-dom';
 
 export default function App() {
   return (
-    <div>
-      <RedirectToHome />
-    </div>
-  )
+    <BrowserRouter>
+       <AppRouter />
+       <RedirectToHome />
+    </BrowserRouter>
+  );
 }
