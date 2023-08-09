@@ -13,7 +13,7 @@ const formFieldsDefault = {
   password: '',
 };
 
-export default function SignUp() {
+export default function LogIn() {
   const [data, setData] = useState(formFieldsDefault);
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState(formFieldsDefault);
