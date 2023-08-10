@@ -1,5 +1,8 @@
 export interface IDataCustomer {
-  accessToken: string
+  accessToken: string,
+  refreshToken: string,
+  email: string,
+  password: string
 }
 
 export interface IDataForm {

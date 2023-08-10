@@ -22,10 +22,7 @@ export default function LogIn() {
   const navigate = useNavigate();
 
   function handleError(statusCode: statusCodes) {
-    if (
-      statusCode === statusCodes.BAD_REQUEST ||
-      statusCode === statusCodes.UNAUTHORIZED
-    ) {
+    if (statusCode === statusCodes.BAD_REQUEST) {
       setError(true);
       setErrorMessage({
         email: 'Incorrect password or email',
@@ -40,15 +37,16 @@ export default function LogIn() {
         email: data.email,
         password: data.password,
       });
-      const customer = await getCustomer({ accessToken: token.access_token });
+      const myCustomer = await getCustomer({
+        accessToken: token.access_token,
+        email: data.email,
+        password: data.password,
+      });
 
-      handleError(customer.statusCode);
-      checkSuccessfulLogin(customer.id, token);
-      console.log(token);
-      console.log(customer);
+      handleError(token.statusCode);
+      checkSuccessfulLogin(myCustomer.customer.id, token);
       
-
-      return customer;
+      return myCustomer;
     } catch (error) {
       console.error(error);
     }
@@ -63,7 +61,8 @@ export default function LogIn() {
 
   async function saveToken(token: ITokenData) {
     localStorage.setItem('authToken', token.access_token);
-    localStorage.setItem('refreshToken', token.refresh_token)
+    localStorage.setItem('refreshToken', token.refresh_token);
+    localStorage.setItem('expiredIn', `${Date.now() + 172800}`);
   }
 
   return (

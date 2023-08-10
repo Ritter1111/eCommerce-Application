@@ -10,7 +10,10 @@ export default function RedirectToHome() {
     <div>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={token ?  <Navigate to='/'/> : <LogIn/> } />
+        <Route
+          path="/login"
+          element={token ? <Navigate to="/" /> : <LogIn />}
+        />
       </Routes>
     </div>
   );

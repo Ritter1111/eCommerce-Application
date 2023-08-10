@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
-import { Container, TextField, Button, Typography, Autocomplete, Link, Grid } from '@mui/material';
-import styles from './SignUp.module.css'
+import {
+  Container,
+  TextField,
+  Button,
+  Typography,
+  Autocomplete,
+  Link,
+  Grid,
+} from '@mui/material';
+import styles from './SignUp.module.css';
 import { blueGrey } from '@mui/material/colors';
 import { ISignUpData } from '../../../interfaces/signup.interface';
 
@@ -28,9 +36,12 @@ export default function SignUp() {
       ...prevData,
       [name]: value,
     }));
-  };
+  }
 
-  function handleCountryChange(event: React.ChangeEvent<object>, value: string | null) {
+  function handleCountryChange(
+    event: React.ChangeEvent<object>,
+    value: string | null
+  ) {
     setSelectedCountry(value);
     if (value) {
       signUpData.country = value;
@@ -57,17 +68,17 @@ export default function SignUp() {
     };
 
     const regex = postalCodeRegexMap[country];
-  
+
     if (!regex) {
       return false;
     }
-  
+
     return regex.test(postalCode);
   }
 
   function validateForm() {
     const newErrors: Partial<ISignUpData> = {};
-  
+
     if (!signUpData.email) {
       newErrors.email = 'Email is required';
     } else if (!/^\S+@\S+\.\S+$/.test(signUpData.email)) {
@@ -76,7 +87,8 @@ export default function SignUp() {
     if (!signUpData.password || signUpData.password.length < 8) {
       newErrors.password = 'Password should have at least 8 characters';
     } else if (!/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/.test(signUpData.password)) {
-      newErrors.password = 'Password should have at least one uppercase letter, one lowercase letter, and one number';
+      newErrors.password =
+        'Password should have at least one uppercase letter, one lowercase letter, and one number';
     }
     if (!signUpData.firstName) {
       newErrors.firstName = 'First name is required';
@@ -93,8 +105,12 @@ export default function SignUp() {
     } else {
       const bdDate = new Date(signUpData.bd);
       const currentDate = new Date();
-      const minAgeDate = new Date(currentDate.getFullYear() - 13, currentDate.getMonth(), currentDate.getDate());
-  
+      const minAgeDate = new Date(
+        currentDate.getFullYear() - 13,
+        currentDate.getMonth(),
+        currentDate.getDate()
+      );
+
       if (bdDate > minAgeDate) {
         newErrors.bd = 'You must be at least 13 years old';
       }
@@ -108,16 +124,16 @@ export default function SignUp() {
       newErrors.city = 'City should only contain letters and spaces';
     }
     if (!validatePostalCode(signUpData.postalCode, selectedCountry || '')) {
-      newErrors.postalCode = 'Invalid postal code format for the selected country';
+      newErrors.postalCode =
+        'Invalid postal code format for the selected country';
     }
     if (!selectedCountry) {
       newErrors.country = 'Country is required';
     }
-  
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }
-  
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -138,7 +154,7 @@ export default function SignUp() {
             error={!!errors.email}
             helperText={errors.email}
             fullWidth
-            margin='normal'
+            margin="normal"
           />
           <TextField
             label="Password"
@@ -150,7 +166,7 @@ export default function SignUp() {
             error={!!errors.password}
             helperText={errors.password}
             fullWidth
-            margin='normal'
+            margin="normal"
           />
           <TextField
             label="First Name"
@@ -161,7 +177,7 @@ export default function SignUp() {
             error={!!errors.firstName}
             helperText={errors.firstName}
             fullWidth
-            margin='normal'
+            margin="normal"
           />
           <TextField
             label="Last Name"
@@ -172,7 +188,7 @@ export default function SignUp() {
             error={!!errors.lastName}
             helperText={errors.lastName}
             fullWidth
-            margin='normal'
+            margin="normal"
           />
           <TextField
             label="Date of Birth"
@@ -184,7 +200,7 @@ export default function SignUp() {
             error={!!errors.bd}
             helperText={errors.bd}
             fullWidth
-            margin='normal'
+            margin="normal"
             InputLabelProps={{ shrink: true }}
           />
           <Typography variant="subtitle1">Adress:</Typography>
@@ -197,7 +213,7 @@ export default function SignUp() {
             error={!!errors.street}
             helperText={errors.street}
             fullWidth
-            margin='normal'
+            margin="normal"
           />
           <TextField
             label="City"
@@ -208,7 +224,7 @@ export default function SignUp() {
             error={!!errors.city}
             helperText={errors.city}
             fullWidth
-            margin='normal'
+            margin="normal"
           />
           <TextField
             label="Postal Code"
@@ -219,11 +235,27 @@ export default function SignUp() {
             error={!!errors.postalCode}
             helperText={errors.postalCode}
             fullWidth
-            margin='normal'
+            margin="normal"
           />
           <Autocomplete
             id="country"
-            options={['Germany', 'France', 'UnitedKingdom', 'Italy', 'Spain', 'Ukraine', 'Poland', 'Sweden', 'Norway', 'Finland', 'Denmark', 'Switzerland', 'Austria', 'Greece', 'Portugal']}
+            options={[
+              'Germany',
+              'France',
+              'UnitedKingdom',
+              'Italy',
+              'Spain',
+              'Ukraine',
+              'Poland',
+              'Sweden',
+              'Norway',
+              'Finland',
+              'Denmark',
+              'Switzerland',
+              'Austria',
+              'Greece',
+              'Portugal',
+            ]}
             value={selectedCountry}
             onChange={handleCountryChange}
             renderInput={(params) => (
@@ -235,22 +267,28 @@ export default function SignUp() {
                 error={!!errors.country}
                 helperText={errors.country}
                 fullWidth
-                margin='normal'
+                margin="normal"
               />
             )}
           />
-          <Button variant="contained" style={{ backgroundColor: grey }} type="submit" fullWidth sx={{ mt: 2 }}>
+          <Button
+            variant="contained"
+            style={{ backgroundColor: grey }}
+            type="submit"
+            fullWidth
+            sx={{ mt: 2 }}
+          >
             Sign Up
           </Button>
         </form>
         <Grid container>
           <Grid item sx={{ mt: 2 }}>
             <Link href="#" variant="body2">
-              {"Have an account? Log In"}
+              {'Have an account? Log In'}
             </Link>
           </Grid>
         </Grid>
       </div>
     </Container>
   );
-};
+}
