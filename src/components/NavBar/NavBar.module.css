@@ -1,0 +1,12 @@
+.nav {
+  background-color: #fff;
+}
+
+.link {
+  text-decoration: none;
+  color: white;
+}
+
+.link:hover {
+  color: lightgray;
+}
