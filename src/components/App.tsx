@@ -6,7 +6,6 @@ export default function App() {
   return (
     <BrowserRouter>
        <AppRouter />
-       {/* <RedirectToHome /> */}
     </BrowserRouter>
   );
 }

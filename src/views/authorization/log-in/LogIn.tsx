@@ -7,6 +7,7 @@ import { getCustomer, getToken } from './Api-Login';
 import { statusCodes } from '../../../enums/auth.enum';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { ITokenData } from '../../../interfaces/auth.interface';
 
 const grey = blueGrey['A700'];
 const formFieldsDefault = {
@@ -42,8 +43,10 @@ export default function LogIn() {
       const customer = await getCustomer({ accessToken: token.access_token });
 
       handleError(customer.statusCode);
-      checkSuccessfulLogin(customer.id);
-      getCurrentToken();
+      checkSuccessfulLogin(customer.id, token);
+      console.log(token);
+      console.log(customer);
+      
 
       return customer;
     } catch (error) {
@@ -51,24 +54,16 @@ export default function LogIn() {
     }
   }
 
-  function checkSuccessfulLogin(id: string) {
+  function checkSuccessfulLogin(id: string, token: ITokenData) {
     if (id) {
       navigate('/');
-      saveToken();
+      saveToken(token);
     }
   }
 
-  async function getCurrentToken() {
-    const token = await getToken({
-      email: data.email,
-      password: data.password,
-    });
-
-    return token.access_token;
-  }
-
-  async function saveToken() {
-    localStorage.setItem('authToken', await getCurrentToken());
+  async function saveToken(token: ITokenData) {
+    localStorage.setItem('authToken', token.access_token);
+    localStorage.setItem('refreshToken', token.refresh_token)
   }
 
   return (
@@ -115,7 +110,7 @@ export default function LogIn() {
         </Button>
         <Grid container>
           <Grid item sx={{ mt: 2 }}>
-            <Link to="/signup">{"Don't have an account? Sign Up"}</Link>
+            <Link to="/registration">{"Don't have an account? Sign Up"}</Link>
           </Grid>
         </Grid>
       </div>
