@@ -15,5 +15,7 @@ export interface ITokenData {
   expires_in: number,
   scope: string,
   refresh_token: string,
-  token_type: string
+  token_type: string,
+  statusCode: number,
+  message: string
 }

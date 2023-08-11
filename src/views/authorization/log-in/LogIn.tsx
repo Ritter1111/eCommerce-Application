@@ -1,31 +1,35 @@
 import React, { useState } from 'react';
-import { TextField, Button, Container, Typography } from '@mui/material';
-import { blueGrey } from '@mui/material/colors';
+import {
+  TextField,
+  Button,
+  Container,
+  Typography,
+  Avatar,
+} from '@mui/material';
 import Grid from '@mui/material/Grid';
 import styles from './LogIn.module.css';
 import { getCustomer, getToken } from './Api-Login';
 import { statusCodes } from '../../../enums/auth.enum';
-import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { ITokenData } from '../../../interfaces/auth.interface';
-
-const grey = blueGrey['A700'];
-const formFieldsDefault = {
-  email: '',
-  password: '',
-};
+import { notify } from './ErrorPupUp';
+import { ToastContainer } from 'react-toastify';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+import 'react-toastify/dist/ReactToastify.css';
+import { formFieldsDefault, grey } from '../../../utils/consts';
 
 export default function LogIn() {
   const [data, setData] = useState(formFieldsDefault);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState(formFieldsDefault);
   const navigate = useNavigate();
 
-  function handleError(statusCode: statusCodes) {
+  function handleError(statusCode: statusCodes, message: string) {
     if (statusCode === statusCodes.BAD_REQUEST) {
       setError(true);
+      notify(message);
       setErrorMessage({
-        email: 'Incorrect password or email',
+        email: '',
         password: 'Incorect password or email',
       });
     }
@@ -43,9 +47,9 @@ export default function LogIn() {
         password: data.password,
       });
 
-      handleError(token.statusCode);
+      handleError(token.statusCode, token.message);
       checkSuccessfulLogin(myCustomer.customer.id, token);
-      
+
       return myCustomer;
     } catch (error) {
       console.error(error);
@@ -68,6 +72,9 @@ export default function LogIn() {
   return (
     <Container maxWidth="xs">
       <div className={styles.container}>
+        <Avatar sx={{ m: 1, width: 46, height: 46, bgcolor: 'text.disabled' }}>
+          <LockOpenIcon fontSize="large" />
+        </Avatar>
         <Typography variant="h5">Log in</Typography>
         <TextField
           label="Email"
@@ -107,6 +114,7 @@ export default function LogIn() {
         >
           Log in
         </Button>
+        <ToastContainer />
         <Grid container>
           <Grid item sx={{ mt: 2 }}>
             <Link to="/registration">{"Don't have an account? Sign Up"}</Link>

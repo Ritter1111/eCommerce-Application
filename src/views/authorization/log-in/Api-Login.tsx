@@ -1,4 +1,8 @@
-import { IDataCustomer, IDataForm } from '../../../interfaces/auth.interface';
+import {
+  IDataCustomer,
+  IDataForm,
+  ITokenData,
+} from '../../../interfaces/auth.interface';
 
 const clientId = process.env.CTP_CLIENT_ID;
 const clientSecret = process.env.CTP_CLIENT_SECRET;
@@ -29,11 +33,14 @@ export const getCustomer = async ({
 
     return response.json();
   } catch (error) {
-    console.error('Error getting token:', error);
+    console.error('Error getting customer:', error);
   }
 };
 
-export const getToken = async ({ email, password }: IDataForm) => {
+export const getToken = async ({
+  email,
+  password,
+}: IDataForm): Promise<ITokenData> => {
   try {
     scheduleTokenRefresh();
     const response = await fetch(
@@ -54,6 +61,7 @@ export const getToken = async ({ email, password }: IDataForm) => {
     return response.json();
   } catch (error) {
     console.error('Error getting token:', error);
+    throw error;
   }
 };
 
@@ -74,13 +82,13 @@ export const refreshToken = async ({
     });
     return response.json();
   } catch (error) {
-    console.error('Error getting token:', error);
+    console.error('Error getting refresh token:', error);
+    throw error;
   }
 };
 
 async function scheduleTokenRefresh() {
   const time = localStorage.getItem('expiredIn');
-  // const time = '1691691393062';
 
   if (time !== null) {
     const timeNumeric = parseInt(time);
