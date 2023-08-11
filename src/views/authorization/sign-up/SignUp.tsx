@@ -1,16 +1,9 @@
 import React, { useState } from 'react';
-import {
-  Container,
-  TextField,
-  Button,
-  Typography,
-  Autocomplete,
-  Link,
-  Grid,
-} from '@mui/material';
-import styles from './SignUp.module.css';
-import { blueGrey } from '@mui/material/colors';
+import { Link } from 'react-router-dom';
+import { Container, TextField, Button, Typography, Autocomplete, Grid, ThemeProvider, useTheme } from '@mui/material';
 import { ISignUpData } from '../../../interfaces/signup.interface';
+import { customInputTheme } from '../../../components/custom-input-theme';
+import styles from './SignUp.module.css'
 
 export default function SignUp() {
   const [signUpData, setSignUpData] = useState<ISignUpData>({
@@ -28,7 +21,7 @@ export default function SignUp() {
   const [errors, setErrors] = useState<Partial<ISignUpData>>({});
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
 
-  const grey = blueGrey['A700'];
+  const outerTheme = useTheme();
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
@@ -145,146 +138,125 @@ export default function SignUp() {
       <div className={styles.container}>
         <Typography variant="h5">Sign Up</Typography>
         <form onSubmit={handleSubmit}>
-          <TextField
-            label="Email"
-            name="email"
-            variant="outlined"
-            value={signUpData.email}
-            onChange={handleInputChange}
-            error={!!errors.email}
-            helperText={errors.email}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Password"
-            name="password"
-            type="password"
-            variant="outlined"
-            value={signUpData.password}
-            onChange={handleInputChange}
-            error={!!errors.password}
-            helperText={errors.password}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="First Name"
-            name="firstName"
-            variant="outlined"
-            value={signUpData.firstName}
-            onChange={handleInputChange}
-            error={!!errors.firstName}
-            helperText={errors.firstName}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Last Name"
-            name="lastName"
-            variant="outlined"
-            value={signUpData.lastName}
-            onChange={handleInputChange}
-            error={!!errors.lastName}
-            helperText={errors.lastName}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Date of Birth"
-            name="bd"
-            type="date"
-            variant="outlined"
-            value={signUpData.bd}
-            onChange={handleInputChange}
-            error={!!errors.bd}
-            helperText={errors.bd}
-            fullWidth
-            margin="normal"
-            InputLabelProps={{ shrink: true }}
-          />
-          <Typography variant="subtitle1">Adress:</Typography>
-          <TextField
-            label="Street"
-            name="street"
-            variant="outlined"
-            value={signUpData.street}
-            onChange={handleInputChange}
-            error={!!errors.street}
-            helperText={errors.street}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="City"
-            name="city"
-            variant="outlined"
-            value={signUpData.city}
-            onChange={handleInputChange}
-            error={!!errors.city}
-            helperText={errors.city}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Postal Code"
-            name="postalCode"
-            variant="outlined"
-            value={signUpData.postalCode}
-            onChange={handleInputChange}
-            error={!!errors.postalCode}
-            helperText={errors.postalCode}
-            fullWidth
-            margin="normal"
-          />
-          <Autocomplete
-            id="country"
-            options={[
-              'Germany',
-              'France',
-              'UnitedKingdom',
-              'Italy',
-              'Spain',
-              'Ukraine',
-              'Poland',
-              'Sweden',
-              'Norway',
-              'Finland',
-              'Denmark',
-              'Switzerland',
-              'Austria',
-              'Greece',
-              'Portugal',
-            ]}
-            value={selectedCountry}
-            onChange={handleCountryChange}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Country"
-                name="country"
-                variant="outlined"
-                error={!!errors.country}
-                helperText={errors.country}
-                fullWidth
-                margin="normal"
-              />
-            )}
-          />
-          <Button
-            variant="contained"
-            style={{ backgroundColor: grey }}
-            type="submit"
-            fullWidth
-            sx={{ mt: 2 }}
-          >
+          <ThemeProvider theme={customInputTheme(outerTheme)}>
+            <TextField
+              label="Email"
+              name="email"
+              variant="outlined"
+              value={signUpData.email}
+              onChange={handleInputChange}
+              error={!!errors.email}
+              helperText={errors.email}
+              fullWidth
+              margin='normal'
+            />
+            <TextField
+              label="Password"
+              name="password"
+              type="password"
+              variant="outlined"
+              value={signUpData.password}
+              onChange={handleInputChange}
+              error={!!errors.password}
+              helperText={errors.password}
+              fullWidth
+              margin='normal'
+            />
+            <TextField
+              label="First Name"
+              name="firstName"
+              variant="outlined"
+              value={signUpData.firstName}
+              onChange={handleInputChange}
+              error={!!errors.firstName}
+              helperText={errors.firstName}
+              fullWidth
+              margin='normal'
+            />
+            <TextField
+              label="Last Name"
+              name="lastName"
+              variant="outlined"
+              value={signUpData.lastName}
+              onChange={handleInputChange}
+              error={!!errors.lastName}
+              helperText={errors.lastName}
+              fullWidth
+              margin='normal'
+            />
+            <TextField
+              label="Date of Birth"
+              name="bd"
+              type="date"
+              variant="outlined"
+              value={signUpData.bd}
+              onChange={handleInputChange}
+              error={!!errors.bd}
+              helperText={errors.bd}
+              fullWidth
+              margin='normal'
+              InputLabelProps={{ shrink: true }}
+            />
+            <TextField
+              label="Street"
+              name="street"
+              variant="outlined"
+              value={signUpData.street}
+              onChange={handleInputChange}
+              error={!!errors.street}
+              helperText={errors.street}
+              fullWidth
+              margin='normal'
+            />
+            <TextField
+              label="City"
+              name="city"
+              variant="outlined"
+              value={signUpData.city}
+              onChange={handleInputChange}
+              error={!!errors.city}
+              helperText={errors.city}
+              fullWidth
+              margin='normal'
+            />
+            <TextField
+              label="Postal Code"
+              name="postalCode"
+              variant="outlined"
+              value={signUpData.postalCode}
+              onChange={handleInputChange}
+              error={!!errors.postalCode}
+              helperText={errors.postalCode}
+              fullWidth
+              margin='normal'
+            />
+            <Autocomplete
+              id="country"
+              options={['Germany', 'France', 'UnitedKingdom', 'Italy', 'Spain', 'Ukraine', 'Poland', 'Sweden', 'Norway', 'Finland', 'Denmark', 'Switzerland', 'Austria', 'Greece', 'Portugal']}
+              value={selectedCountry}
+              onChange={handleCountryChange}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Country"
+                  name="country"
+                  variant="outlined"
+                  error={!!errors.country}
+                  helperText={errors.country}
+                  fullWidth
+                  margin='normal'
+                />
+              )}
+            />
+          </ThemeProvider>
+          <Button variant="contained" style={{ backgroundColor: 'black' }} type="submit" fullWidth sx={{ mt: 2 }} size='large'>
             Sign Up
           </Button>
         </form>
         <Grid container>
           <Grid item sx={{ mt: 2 }}>
-            <Link href="#" variant="body2">
-              {'Have an account? Log In'}
+            <Link to="/login" className={styles.link}>
+              {"Have an account? Log In"}
             </Link>
           </Grid>
         </Grid>
