@@ -10,17 +10,13 @@ const AppRouter = () => {
   return (
     <Routes>
       {routes.map((route, index) => (
-        <Route
-          key={index}
-          path={route.path}
-          element={<route.element />}
-        />
+        <Route key={index} path={route.path} element={<route.element />} />
       ))}
-      <Route path={LOGIN_ROUTE} element={token ? <Navigate to='/'/> : <LogIn/>} />
       <Route
-        path="*"
-        element={<NotFound/>}
+        path={LOGIN_ROUTE}
+        element={token ? <Navigate to="/" /> : <LogIn />}
       />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

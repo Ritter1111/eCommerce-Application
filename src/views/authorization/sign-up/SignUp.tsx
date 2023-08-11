@@ -29,9 +29,12 @@ export default function SignUp() {
       ...prevData,
       [name]: value,
     }));
-  };
+  }
 
-  function handleCountryChange(event: React.ChangeEvent<object>, value: string | null) {
+  function handleCountryChange(
+    event: React.ChangeEvent<object>,
+    value: string | null
+  ) {
     setSelectedCountry(value);
     if (value) {
       signUpData.country = value;
@@ -58,17 +61,17 @@ export default function SignUp() {
     };
 
     const regex = postalCodeRegexMap[country];
-  
+
     if (!regex) {
       return false;
     }
-  
+
     return regex.test(postalCode);
   }
 
   function validateForm() {
     const newErrors: Partial<ISignUpData> = {};
-  
+
     if (!signUpData.email) {
       newErrors.email = 'Email is required';
     } else if (!/^\S+@\S+\.\S+$/.test(signUpData.email)) {
@@ -77,7 +80,8 @@ export default function SignUp() {
     if (!signUpData.password || signUpData.password.length < 8) {
       newErrors.password = 'Password should have at least 8 characters';
     } else if (!/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/.test(signUpData.password)) {
-      newErrors.password = 'Password should have at least one uppercase letter, one lowercase letter, and one number';
+      newErrors.password =
+        'Password should have at least one uppercase letter, one lowercase letter, and one number';
     }
     if (!signUpData.firstName) {
       newErrors.firstName = 'First name is required';
@@ -94,8 +98,12 @@ export default function SignUp() {
     } else {
       const bdDate = new Date(signUpData.bd);
       const currentDate = new Date();
-      const minAgeDate = new Date(currentDate.getFullYear() - 13, currentDate.getMonth(), currentDate.getDate());
-  
+      const minAgeDate = new Date(
+        currentDate.getFullYear() - 13,
+        currentDate.getMonth(),
+        currentDate.getDate()
+      );
+
       if (bdDate > minAgeDate) {
         newErrors.bd = 'You must be at least 13 years old';
       }
@@ -109,16 +117,16 @@ export default function SignUp() {
       newErrors.city = 'City should only contain letters and spaces';
     }
     if (!validatePostalCode(signUpData.postalCode, selectedCountry || '')) {
-      newErrors.postalCode = 'Invalid postal code format for the selected country';
+      newErrors.postalCode =
+        'Invalid postal code format for the selected country';
     }
     if (!selectedCountry) {
       newErrors.country = 'Country is required';
     }
-  
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }
-  
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -255,4 +263,4 @@ export default function SignUp() {
       </div>
     </Container>
   );
-};
+}
