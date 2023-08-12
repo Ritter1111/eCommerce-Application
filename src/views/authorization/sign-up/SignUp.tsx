@@ -148,9 +148,66 @@ export default function SignUp() {
     return Object.keys(newErrors).length === 0;
   }
 
+  async function getBearerToken(email: string, password: string) {
+    const credentials = `${process.env.CTP_CLIENT_ID}:${process.env.CTP_CLIENT_SECRET}`;
+    const encodedCredentials = btoa(credentials);
+
+    try {
+      const response = await fetch(`${process.env.CTP_AUTH_URL}/oauth/token`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: `Basic ${encodedCredentials}`,
+        },
+        body: new URLSearchParams({
+          grant_type: 'client_credentials',
+          username: `${email}`,
+          password: `${password}`,
+        }),
+      });
+
+      const data = await response.json();
+      const accessToken = data.access_token;
+      return accessToken;
+    } catch (error) {
+      console.error('Error fetching token:', error);
+      throw error;
+    }
+  };
+
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    validateForm();
+  
+    if (validateForm()) {
+      try {
+        const customerSinUpInfo = {
+          email: signUpData.email,
+          password: signUpData.password,
+          firstName: signUpData.firstName,
+          lastName: signUpData.lastName,
+          dateOfBirth: signUpData.bd,
+        };
+            
+        const token = await getBearerToken(customerSinUpInfo.email, customerSinUpInfo.password);
+
+        const response = await fetch(`${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}/me/signup`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(customerSinUpInfo),
+        });
+        
+        if (response.ok) {
+          console.log('Customer created successfully');
+        } else {
+          console.error('Failed to create customer');
+        }
+      } catch (error) {
+        console.error('Error creating customer:', error);
+      }
+    }
   }
   
   return (
