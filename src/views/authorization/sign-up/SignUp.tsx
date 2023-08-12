@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Container, TextField, Button, Typography, Autocomplete, Grid, ThemeProvider, useTheme } from '@mui/material';
+import { Container, TextField, Button, Typography, Autocomplete, Grid, ThemeProvider, useTheme, FormControlLabel, Checkbox } from '@mui/material';
 import { ISignUpData } from '../../../interfaces/signup.interface';
 import { customInputTheme } from '../../../components/custom-input-theme';
 import styles from './SignUp.module.css'
@@ -12,14 +12,22 @@ export default function SignUp() {
     firstName: '',
     lastName: '',
     bd: '',
-    street: '',
-    city: '',
-    postalCode: '',
-    country: '',
+    billingStreet: '',
+    billingCity: '',
+    billingPostalCode: '',
+    billingCountry: '',
+    shippingStreet: '',
+    shippingCity: '',
+    shippingPostalCode: '',
+    shippingCountry: '',
+    sameAddress: false,
   });
 
   const [errors, setErrors] = useState<Partial<ISignUpData>>({});
-  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const [selectedBillingCountry, setSelectedBillingCountry] = useState<string | null>(null);
+  const [selectedShippingCountry, setSelectedShippingCountry] = useState<string | null>(null);
+  const [defaultBillingAddress, setdefaultBillingAddress] = useState(false);
+  const [defaultShippingAddress, setdefaultShippingAddress] = useState(false);
 
   const outerTheme = useTheme();
 
@@ -31,10 +39,17 @@ export default function SignUp() {
     }));
   };
 
-  function handleCountryChange(event: React.ChangeEvent<object>, value: string | null) {
-    setSelectedCountry(value);
+  function handleBillingCountryChange(event: React.ChangeEvent<object>, value: string | null) {
+    setSelectedBillingCountry(value);
     if (value) {
-      signUpData.country = value;
+      signUpData.billingCountry = value;
+    }
+  }
+
+  function handleShippingCountryChange(event: React.ChangeEvent<object>, value: string | null) {
+    setSelectedShippingCountry(value);
+    if (value) {
+      signUpData.shippingCountry = value;
     }
   }
 
@@ -100,31 +115,44 @@ export default function SignUp() {
         newErrors.bd = 'You must be at least 13 years old';
       }
     }
-    if (!signUpData.street) {
-      newErrors.street = 'Street is required';
+    if (!signUpData.billingStreet) {
+      newErrors.billingStreet = 'Street is required';
     }
-    if (!signUpData.city) {
-      newErrors.city = 'City is required';
-    } else if (!/^[A-Za-z\s]+$/.test(signUpData.city)) {
-      newErrors.city = 'City should only contain letters and spaces';
+    if (!signUpData.shippingStreet && !signUpData.sameAddress) {
+      newErrors.shippingStreet = 'Street is required'
     }
-    if (!validatePostalCode(signUpData.postalCode, selectedCountry || '')) {
-      newErrors.postalCode = 'Invalid postal code format for the selected country';
+    if (!signUpData.billingCity && !signUpData.sameAddress) {
+      newErrors.billingCity = 'City is required';
+    } else if (!/^[A-Za-z\s]+$/.test(signUpData.billingCity)) {
+      newErrors.billingCity = 'City should only contain letters and spaces';
     }
-    if (!selectedCountry) {
-      newErrors.country = 'Country is required';
+    if (!signUpData.shippingCity && !signUpData.sameAddress) {
+      newErrors.shippingCity = 'City is required'
+    } else if (!/^[A-Za-z\s]+$/.test(signUpData.shippingCity) && !signUpData.sameAddress) {
+      newErrors.shippingCity = 'City should only contain letters and spaces';
+    }
+    if (!validatePostalCode(signUpData.billingPostalCode, selectedBillingCountry || '') && !signUpData.sameAddress) {
+      newErrors.billingPostalCode = 'Invalid postal code format for the selected country';
+    }
+    if (!validatePostalCode(signUpData.shippingPostalCode, selectedShippingCountry || '') && !signUpData.sameAddress) {
+      newErrors.shippingPostalCode = 'Invalid postal code format for the selected country';
+    }
+    if (!selectedBillingCountry && !signUpData.sameAddress) {
+      newErrors.billingCountry = 'Country is required';
+    }
+    if (!selectedShippingCountry && !signUpData.sameAddress) {
+      newErrors.shippingCountry = 'Country is required';
     }
   
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }
-  
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     validateForm();
-  };
-
+  }
+  
   return (
     <Container maxWidth="xs">
       <div className={styles.container}>
@@ -189,56 +217,159 @@ export default function SignUp() {
               margin='normal'
               InputLabelProps={{ shrink: true }}
             />
-            <TextField
-              label="Street"
-              name="street"
-              variant="outlined"
-              value={signUpData.street}
-              onChange={handleInputChange}
-              error={!!errors.street}
-              helperText={errors.street}
-              fullWidth
-              margin='normal'
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="sameAddress"
+                  checked={signUpData.sameAddress}
+                  onChange={() => setSignUpData({...signUpData, sameAddress: !signUpData.sameAddress})}
+                  sx={{
+                    color: 'gray',
+                    '&.Mui-checked': {
+                      color: 'black',
+                    },
+                  }}
+                />
+              }
+              label="Use same address for billing and shipping"
             />
             <TextField
-              label="City"
-              name="city"
-              variant="outlined"
-              value={signUpData.city}
+              label="Billing Street"
+              name="billingStreet"
+              value={signUpData.billingStreet}
               onChange={handleInputChange}
-              error={!!errors.city}
-              helperText={errors.city}
+              error={!!errors.billingStreet}
+              helperText={errors.billingStreet}
               fullWidth
-              margin='normal'
+              margin="normal"
+              variant="outlined"
             />
             <TextField
-              label="Postal Code"
-              name="postalCode"
-              variant="outlined"
-              value={signUpData.postalCode}
+              label="Billing City"
+              name="billingCity"
+              value={signUpData.billingCity}
               onChange={handleInputChange}
-              error={!!errors.postalCode}
-              helperText={errors.postalCode}
+              error={!!errors.billingCity}
+              helperText={errors.billingCity}
               fullWidth
-              margin='normal'
+              margin="normal"
+              variant="outlined"
+            />
+            <TextField
+              label="Billing Postal Code"
+              name="billingPostalCode"
+              value={signUpData.billingPostalCode}
+              onChange={handleInputChange}
+              error={!!errors.billingPostalCode}
+              helperText={errors.billingPostalCode}
+              fullWidth
+              margin="normal"
+              variant="outlined"
             />
             <Autocomplete
-              id="country"
+              id="billing-country"
               options={['Germany', 'France', 'UnitedKingdom', 'Italy', 'Spain', 'Ukraine', 'Poland', 'Sweden', 'Norway', 'Finland', 'Denmark', 'Switzerland', 'Austria', 'Greece', 'Portugal']}
-              value={selectedCountry}
-              onChange={handleCountryChange}
+              value={selectedBillingCountry}
+              onChange={handleBillingCountryChange}
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="Country"
-                  name="country"
+                  label="Billing Country"
+                  name="billing-country"
                   variant="outlined"
-                  error={!!errors.country}
-                  helperText={errors.country}
+                  error={!!errors.billingCountry}
+                  helperText={errors.billingCountry}
                   fullWidth
                   margin='normal'
                 />
               )}
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="default billing address"
+                  checked={defaultBillingAddress}
+                  onChange={() => setdefaultBillingAddress(!defaultBillingAddress)}
+                  sx={{
+                    color: 'gray',
+                    '&.Mui-checked': {
+                      color: 'black',
+                    },
+                  }}
+                />
+              }
+              label="It is default billing address?"
+            />
+            <TextField
+              label="Shipping Street"
+              name="shippingStreet"
+              value={signUpData.shippingStreet}
+              onChange={handleInputChange}
+              fullWidth
+              error={signUpData.sameAddress ? false : !!errors.shippingStreet}
+              helperText={signUpData.sameAddress ? '' : errors.shippingStreet}
+              margin="normal"
+              variant="outlined"
+              disabled={signUpData.sameAddress}
+            />
+            <TextField
+              label="Shipping City"
+              name="shippingCity"
+              value={signUpData.shippingCity}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+              variant="outlined"
+              disabled={signUpData.sameAddress}
+              error={signUpData.sameAddress ? false : !!errors.shippingCity}
+              helperText={signUpData.sameAddress ? '' : errors.shippingCity}
+            />
+            <TextField
+              label="Shipping Postal Code"
+              name="shippingPostalCode"
+              value={signUpData.shippingPostalCode}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+              variant="outlined"
+              disabled={signUpData.sameAddress}
+              error={signUpData.sameAddress ? false : !!errors.shippingPostalCode}
+              helperText={signUpData.sameAddress ? '' : errors.shippingPostalCode}
+            />
+            <Autocomplete
+              id="shipping-country"
+              options={['Germany', 'France', 'UnitedKingdom', 'Italy', 'Spain', 'Ukraine', 'Poland', 'Sweden', 'Norway', 'Finland', 'Denmark', 'Switzerland', 'Austria', 'Greece', 'Portugal']}
+              value={selectedShippingCountry}
+              disabled={signUpData.sameAddress}
+              onChange={handleShippingCountryChange}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Shipping Country"
+                  name="shipping-country"
+                  variant="outlined"
+                  error={signUpData.sameAddress ? false : !!errors.shippingCity}
+                  helperText={signUpData.sameAddress ? '' : errors.shippingCity}
+                  fullWidth
+                  margin='normal'
+                />
+              )}
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="default shipping address"
+                  checked={defaultShippingAddress}
+                  onChange={() => setdefaultShippingAddress(!defaultShippingAddress)}
+                  sx={{
+                    color: 'gray',
+                    '&.Mui-checked': {
+                      color: 'black',
+                    },
+                  }}
+                />
+              }
+              label="It is default Shipping address?"
             />
           </ThemeProvider>
           <Button variant="contained" style={{ backgroundColor: 'black' }} type="submit" fullWidth sx={{ mt: 2 }} size='large'>
