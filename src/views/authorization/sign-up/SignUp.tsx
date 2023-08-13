@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Container, TextField, Button, Typography, Autocomplete, Grid, ThemeProvider, useTheme, FormControlLabel, Checkbox } from '@mui/material';
-import { ISignUpData } from '../../../interfaces/signup.interface';
+import { IAddAddress, ISignUpData } from '../../../interfaces/signup.interface';
 import { customInputTheme } from '../../../components/custom-input-theme';
 import styles from './SignUp.module.css'
 
@@ -22,6 +22,22 @@ export default function SignUp() {
     shippingCountry: '',
     sameAddress: false,
   });
+
+  const customerBillingAddress = {
+    streetName: signUpData.billingStreet,
+    city: signUpData.billingCity,
+    postalCode: signUpData.billingPostalCode,
+    country: signUpData.billingCountry.slice(signUpData.billingCountry.indexOf('(') + 1, -1),
+    type: 'Billing',
+  };
+
+  // const customerShippingAddress = {
+  //   streetName: signUpData.shippingStreet,
+  //   city: signUpData.shippingCity,
+  //   postalCode: signUpData.shippingPostalCode,
+  //   country: signUpData.shippingCountry.slice(signUpData.shippingCountry.indexOf('(') + 1, -1),
+  //   type: 'Shipping',
+  // }
 
   const [errors, setErrors] = useState<Partial<ISignUpData>>({});
   const [selectedBillingCountry, setSelectedBillingCountry] = useState<string | null>(null);
@@ -148,7 +164,35 @@ export default function SignUp() {
     return Object.keys(newErrors).length === 0;
   }
 
-  async function getBearerToken(email: string, password: string) {
+  async function getCustomerToken(email: string, password: string) {
+    const credentials = `${process.env.CTP_CLIENT_ID}:${process.env.CTP_CLIENT_SECRET}`;
+    const encodedCredentials = btoa(credentials);
+    try {
+      const response = await fetch(
+        `${process.env.CTP_AUTH_URL}/oauth/chat_gpt_team/customers/token`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Basic ${encodedCredentials}`,
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({
+            grant_type: 'password',
+            username: `${email}`,
+            password: `${password}`,
+          }),
+        }
+      );
+      const data = await response.json();
+      const accessToken = data.access_token;
+      return accessToken;
+    } catch (error) {
+      console.error('Error getting token:', error);
+      throw error;
+    }
+  };
+
+  async function getOauthToken(email: string, password: string) {
     const credentials = `${process.env.CTP_CLIENT_ID}:${process.env.CTP_CLIENT_SECRET}`;
     const encodedCredentials = btoa(credentials);
 
@@ -175,6 +219,40 @@ export default function SignUp() {
     }
   };
 
+  async function addAddresses({ streetName, postalCode, city, country, type, }: IAddAddress, version: number) {
+    const token = await getCustomerToken(signUpData.email, signUpData.password);
+
+    try {
+      const response = await fetch(`${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}/me`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          version : version,
+          actions : [ {
+            action : "addAddress",
+            address : {
+              streetName : `${streetName}`,
+              postalCode : `${postalCode}`,
+              city : `${city}`,
+              country : `${country}`,
+            }
+          } ]
+        })
+      });
+
+      if (response.ok) {
+        console.log('Addresses added successfully');
+      } else {
+        console.error(`Failed to add addresses ${type}`);
+      }
+    } catch (error) {
+      console.error(`Error adding addresses ${type}:`, error);
+    }
+  }
+
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
   
@@ -188,7 +266,7 @@ export default function SignUp() {
           dateOfBirth: signUpData.bd,
         };
             
-        const token = await getBearerToken(customerSinUpInfo.email, customerSinUpInfo.password);
+        const token = await getOauthToken(customerSinUpInfo.email, customerSinUpInfo.password);
 
         const response = await fetch(`${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}/me/signup`, {
           method: 'POST',
@@ -200,6 +278,8 @@ export default function SignUp() {
         });
         
         if (response.ok) {
+          const data = await response.json();
+          addAddresses(customerBillingAddress, data.customer.version);
           console.log('Customer created successfully');
         } else {
           console.error('Failed to create customer');
@@ -325,7 +405,7 @@ export default function SignUp() {
             />
             <Autocomplete
               id="billing-country"
-              options={['Germany', 'France', 'UnitedKingdom', 'Italy', 'Spain', 'Ukraine', 'Poland', 'Sweden', 'Norway', 'Finland', 'Denmark', 'Switzerland', 'Austria', 'Greece', 'Portugal']}
+              options={['Germany (DE)', 'France (FR)', 'United Kingdom (GB)', 'Italy (IT)', 'Spain (ES)', 'Ukraine (UA)', 'Poland (PL)', 'Sweden (SE)', 'Norway (NO)', 'Finland (FI)', 'Denmark (DK)', 'Switzerland (CH)', 'Austria (AT)', 'Greece (GR)', 'Portugal (PT)']}
               value={selectedBillingCountry}
               onChange={handleBillingCountryChange}
               renderInput={(params) => (
@@ -395,7 +475,7 @@ export default function SignUp() {
             />
             <Autocomplete
               id="shipping-country"
-              options={['Germany', 'France', 'UnitedKingdom', 'Italy', 'Spain', 'Ukraine', 'Poland', 'Sweden', 'Norway', 'Finland', 'Denmark', 'Switzerland', 'Austria', 'Greece', 'Portugal']}
+              options={['Germany (DE)', 'France (FR)', 'United Kingdom (GB)', 'Italy (IT)', 'Spain (ES)', 'Ukraine (UA)', 'Poland (PL)', 'Sweden (SE)', 'Norway (NO)', 'Finland (FI)', 'Denmark (DK)', 'Switzerland (CH)', 'Austria (AT)', 'Greece (GR)', 'Portugal (PT)']}
               value={selectedShippingCountry}
               disabled={signUpData.sameAddress}
               onChange={handleShippingCountryChange}

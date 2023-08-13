@@ -14,3 +14,11 @@ export interface ISignUpData {
   shippingCountry: string;
   sameAddress: boolean;
 }
+
+export interface IAddAddress {
+  streetName: string;
+  postalCode: string;
+  city: string;
+  country: string;
+  type: string;
+}
