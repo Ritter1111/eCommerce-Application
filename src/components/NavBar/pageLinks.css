@@ -1,0 +1,10 @@
+.pages__link {
+  margin-right: 10px;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+.pages__link.active,
+.pages__link:hover {
+  background-color: #ffffff52;
+}
