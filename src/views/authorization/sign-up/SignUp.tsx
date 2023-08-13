@@ -31,13 +31,13 @@ export default function SignUp() {
     type: 'Billing',
   };
 
-  // const customerShippingAddress = {
-  //   streetName: signUpData.shippingStreet,
-  //   city: signUpData.shippingCity,
-  //   postalCode: signUpData.shippingPostalCode,
-  //   country: signUpData.shippingCountry.slice(signUpData.shippingCountry.indexOf('(') + 1, -1),
-  //   type: 'Shipping',
-  // }
+  const customerShippingAddress = {
+    streetName: signUpData.shippingStreet,
+    city: signUpData.shippingCity,
+    postalCode: signUpData.shippingPostalCode,
+    country: signUpData.shippingCountry.slice(signUpData.shippingCountry.indexOf('(') + 1, -1),
+    type: 'Shipping',
+  }
 
   const [errors, setErrors] = useState<Partial<ISignUpData>>({});
   const [selectedBillingCountry, setSelectedBillingCountry] = useState<string | null>(null);
@@ -219,6 +219,140 @@ export default function SignUp() {
     }
   };
 
+  async function setDefaultShippingAddress(addressId: string, version: string) {
+    const token = await getCustomerToken(signUpData.email, signUpData.password);
+
+    try {
+      const response = await fetch(`${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}/me`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          version : version,
+          actions : [ {
+            action : `setDefaultShippingAddress`,
+            addressId : `${addressId}`
+          } ]
+        })
+      });
+
+      if (response.ok) {
+        console.log(`Shipping default address seted successfully`);
+      } else {
+        console.error(`Failed to set shipping default address`);
+      }
+    } catch (error) {
+      console.error(`Error setting shipping default address:`, error);
+    }
+  }
+
+  async function setDefaultBillingAddress(addressId: string, version: string) {
+    const token = await getCustomerToken(signUpData.email, signUpData.password);
+
+    try {
+      const response = await fetch(`${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}/me`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          version : version,
+          actions : [ {
+            action : `setDefaultBillingAddress`,
+            addressId : `${addressId}`
+          } ]
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (signUpData.sameAddress) {
+          setShippingAddress(data.addresses[0].id, data.version, 'Shipping')
+        } else {
+          addAddresses(customerShippingAddress, data.version)
+        }
+        console.log(`Billing default address seted successfully`);
+      } else {
+        console.error(`Failed to set billing default address`);
+      }
+    } catch (error) {
+      console.error(`Error setting billing default address:`, error);
+    }
+  }
+
+  async function setShippingAddress(addressId: string, version: string, type: string) {
+    const token = await getCustomerToken(signUpData.email, signUpData.password);
+    try {
+      const response = await fetch(`${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}/me`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          version : version,
+          actions : [ {
+            action : `addShippingAddressId`,
+            addressId : `${addressId}`
+          } ]
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (defaultShippingAddress) {
+          setDefaultShippingAddress(addressId, data.version)
+        }
+        console.log(`${type} seted successfully`);
+      } else {
+        console.error(`Failed to set ${type}`);
+      }
+    } catch (error) {
+      console.error(`Error setting ${type}:`, error);
+    }
+  }
+
+  async function setBillingAddress(addressId: string, version: string, type: string) {
+    const token = await getCustomerToken(signUpData.email, signUpData.password);
+    try {
+      const response = await fetch(`${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}/me`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          version : version,
+          actions : [ {
+            action : `addBillingAddressId`,
+            addressId : `${addressId}`
+          } ]
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (defaultBillingAddress) {
+          setDefaultBillingAddress(addressId, data.version)
+        } else {
+          if (signUpData.sameAddress) {
+            setShippingAddress(data.addresses[0].id, data.version, 'Shipping')
+          } else {
+            addAddresses(customerShippingAddress, data.version)
+          }
+        }
+        console.log(`${type} seted successfully`);
+      } else {
+        console.error(`Failed to set ${type}`);
+      }
+    } catch (error) {
+      console.error(`Error setting ${type}:`, error);
+    }
+  }
+
   async function addAddresses({ streetName, postalCode, city, country, type, }: IAddAddress, version: number) {
     const token = await getCustomerToken(signUpData.email, signUpData.password);
 
@@ -244,7 +378,14 @@ export default function SignUp() {
       });
 
       if (response.ok) {
+        const data = await response.json();
         console.log('Addresses added successfully');
+        if (type === 'Billing') {
+          setBillingAddress(data.addresses[0].id, data.version, type)
+        }
+        if (type === 'Shipping' && !signUpData.sameAddress) {
+          setShippingAddress(data.addresses[1].id, data.version, type)
+        }
       } else {
         console.error(`Failed to add addresses ${type}`);
       }
