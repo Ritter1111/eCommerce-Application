@@ -22,3 +22,25 @@ export interface IAddAddress {
   country: string;
   type: string;
 }
+
+export interface ISignUpState {
+  signUpData: ISignUpData;
+  customerBillingAddress: {
+    streetName: string;
+    city: string;
+    postalCode: string;
+    country: string;
+    type: string;
+  };
+  customerShippingAddress: {
+    streetName: string;
+    city: string;
+    postalCode: string;
+    country: string;
+    type: string;
+  };
+  selectedBillingCountry: string | null;
+  selectedShippingCountry: string | null;
+  defaultBillingAddress: boolean;
+  defaultShippingAddress: boolean;
+}
