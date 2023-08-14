@@ -1,46 +1,37 @@
-a {
-  font-family: Arial, Helvetica, sans-serif;
-  text-decoration: none;
-  font-size: 16px;
-  color: white;
-}
-
 .btn {
-  padding: 5px 10px;
-  background-color: white;
-  color: #000000;
-  border-radius: 4px;
-  margin-left: 10px;
   display: flex;
   align-items: center;
-  min-width: 105px;
   justify-content: center;
+  padding: 5px 10px;
+  margin-left: 10px;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  border-radius: 4px;
+  min-width: 105px;
 }
 
 .btn:last-child {
-  background-color: rgb(118, 203, 231);
+  background-color: var(--accent-color);
 }
 
 .btn:last-child:hover {
-  background-color: rgb(77, 182, 218);
+  background-color: var(--accent-color-hover);
 }
 
 .btn:hover {
-  background-color: lightgray;
+  background-color: var(--primary-color-hover);
 }
 
 .menu {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-
 }
 
 @media screen and (max-width: 900px) {
   .menu {
     flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
+    row-gap: 10px;
     width: 100%;
     position: absolute;
     top: 62px;
@@ -49,7 +40,8 @@ a {
     transition: all 0.5s ease;
     padding: 20px 0;
     z-index: 1;
-    background-color: #000000;
+    background-color: var(--secondary-color);
+    text-align: center;
   }
 
   .menu.active {
@@ -57,13 +49,10 @@ a {
     opacity: 1;
   }
 
-  .menu.active body {
-    overflow-y: hidden;
+  .menu a {
+    margin: 0;
+    text-align: left;
+    width: 80%;
+    text-align: center;
   }
-
-  .menu.active a {
-    margin-bottom: 10px;
-    /* width: 100%; */
-  }
-  
 }
