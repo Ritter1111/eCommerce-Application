@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   TextField,
   Button,
@@ -17,11 +17,13 @@ import { ToastContainer } from 'react-toastify';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import 'react-toastify/dist/ReactToastify.css';
 import { formFieldsDefault, grey } from '../../../utils/consts';
+import { AuthContext } from '../../../context';
 
 export default function LogIn() {
   const [data, setData] = useState(formFieldsDefault);
   const [error, setError] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState(formFieldsDefault);
+  const { setIsAuth } = useContext(AuthContext);
   const navigate = useNavigate();
 
   function handleError(statusCode: statusCodes, message: string) {
@@ -60,6 +62,7 @@ export default function LogIn() {
     if (id) {
       navigate('/');
       saveToken(token);
+      setIsAuth(true);
     }
   }
 

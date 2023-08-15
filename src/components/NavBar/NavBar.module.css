@@ -1,12 +1,60 @@
-.nav {
-  background-color: #fff;
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 10px;
+  margin-left: 10px;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  border-radius: 4px;
+  min-width: 105px;
+  max-height: 34px;
 }
 
-.link {
-  text-decoration: none;
-  color: white;
+.btn:last-child {
+  background-color: var(--accent-color);
 }
 
-.link:hover {
-  color: lightgray;
+.btn:last-child:hover {
+  background-color: var(--accent-color-hover);
+}
+
+.btn:hover {
+  background-color: var(--primary-color-hover);
+}
+
+.menu {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+@media screen and (max-width: 900px) {
+  .menu {
+    flex-direction: column;
+    row-gap: 10px;
+    width: 100%;
+    position: absolute;
+    top: 62px;
+    right: 100%;
+    opacity: 0;
+    transition: all 0.5s ease;
+    padding: 20px 0;
+    z-index: 1;
+    background-color: var(--secondary-color);
+    text-align: center;
+  }
+
+  .menu.active {
+    right: 0;
+    opacity: 1;
+  }
+
+  .menu a,
+  .btn {
+    margin: 0;
+    width: 80%;
+    text-align: center;
+    max-width: 80%;
+  }
 }
