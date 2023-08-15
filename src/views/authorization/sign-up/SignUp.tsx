@@ -5,6 +5,7 @@ import { ISignUpData } from '../../../interfaces/signup.interface';
 import { customInputTheme } from '../../../components/custom-input-theme';
 import styles from './SignUp.module.css'
 import { handleSubmit } from './Api-Signup';
+import { ToastContainer } from 'react-toastify';
 
 export default function SignUp() {
   const [signUpData, setSignUpData] = useState<ISignUpData>({
@@ -56,7 +57,7 @@ export default function SignUp() {
       ...prevData,
       [name]: value,
     }));
-  };
+  }
 
   function handleBillingCountryChange(event: React.ChangeEvent<object>, value: string | null) {
     setSelectedBillingCountry(value);
@@ -71,7 +72,7 @@ export default function SignUp() {
       signUpData.shippingCountry = value;
     }
   }
-  
+
   return (
     <Container maxWidth="xs">
       <div className={styles.container}>
@@ -295,6 +296,7 @@ export default function SignUp() {
             Sign Up
           </Button>
         </form>
+        <ToastContainer />
         <Grid container>
           <Grid item sx={{ mt: 2 }}>
             <Link to="/login" className={styles.link}>
@@ -305,4 +307,4 @@ export default function SignUp() {
       </div>
     </Container>
   );
-};
+}

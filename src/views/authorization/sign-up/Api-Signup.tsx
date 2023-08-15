@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import { IAddAddress, ISignUpData, ISignUpState } from "../../../interfaces/signup.interface";
+import { notify } from "../log-in/ErrorPupUp";
 import { validateForm } from "./Validate-Signup";
 
 async function getCustomerToken(email: string, password: string) {
@@ -232,7 +233,7 @@ async function addAddresses({ streetName, postalCode, city, country, type, }: IA
   }
 }
 
-export async function handleSubmit(event: React.FormEvent, signUpState: ISignUpState, setErrors: Dispatch<SetStateAction<Partial<ISignUpData>>>) {
+export async function handleSubmit(event: React.FormEvent, signUpState: ISignUpState, setErrors: Dispatch<SetStateAction<Partial<ISignUpData>>>): Promise<number | void> {
   event.preventDefault();
 
   if (validateForm(setErrors, signUpState)) {
@@ -256,11 +257,14 @@ export async function handleSubmit(event: React.FormEvent, signUpState: ISignUpS
         body: JSON.stringify(customerSinUpInfo),
       });
       
+      const data = await response.json();
       if (response.ok) {
-        const data = await response.json();
         addAddresses(signUpState.customerBillingAddress, data.customer.version, signUpState);
         console.log('Customer created successfully');
       } else {
+        if (data.statusCode === 400) {
+          notify(`${data.message}, you can log in or use another email address`);
+        }
         console.error('Failed to create customer');
       }
     } catch (error) {
