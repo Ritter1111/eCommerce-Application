@@ -6,7 +6,6 @@ import { customInputTheme } from '../../../components/custom-input-theme';
 import styles from './SignUp.module.css'
 import { handleSubmit } from './Api-Signup';
 import { ToastContainer } from 'react-toastify';
-import { getCustometWithToken } from '../log-in/Api-Login';
 import { AuthContext } from '../../../context';
 
 export default function SignUp() {
@@ -81,10 +80,7 @@ export default function SignUp() {
     <Container maxWidth="xs">
       <div className={styles.container}>
         <Typography variant="h5">Sign Up</Typography>
-        <form onSubmit={async (event) => {
-          await handleSubmit(event, signUpState, setErrors)
-          getCustometWithToken({email: signUpData.email, password: signUpData.password}, navigate, setIsAuth)
-          }}>
+        <form onSubmit={(event) => handleSubmit(event, signUpState, setErrors, navigate, setIsAuth)}>
           <ThemeProvider theme={customInputTheme(outerTheme)}>
             <TextField
               label="Email"
@@ -305,7 +301,7 @@ export default function SignUp() {
         </form>
         <ToastContainer />
         <Grid container>
-          <Grid item sx={{ mt: 2 }}>
+          <Grid item sx={{ mt: 2, mb: 2 }}>
             <Link to="/login" className={styles.link}>
               {"Have an account? Log In"}
             </Link>

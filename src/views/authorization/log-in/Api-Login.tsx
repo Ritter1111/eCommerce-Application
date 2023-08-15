@@ -7,7 +7,7 @@ import {
   IDataForm,
   ITokenData,
 } from '../../../interfaces/auth.interface';
-import { notify } from './ErrorPupUp';
+import { errorNotify } from '../../../utils/ErrorPupUp';
 
 const clientId = process.env.CTP_CLIENT_ID;
 const clientSecret = process.env.CTP_CLIENT_SECRET;
@@ -137,9 +137,9 @@ export async function getCustometWithToken(data: IData, navigate: NavigateFuncti
       password: data.password,
     });
 
-    if (token.statusCode === statusCodes.BAD_REQUEST) {
-      notify(token.message);
-      if (setError && setErrorMessage) {
+    if (setError && setErrorMessage) {
+      if (token.statusCode === statusCodes.BAD_REQUEST) {
+        errorNotify(token.message);
         setError(true);
         setErrorMessage({
           email: '',
