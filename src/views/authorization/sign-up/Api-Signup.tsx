@@ -1,6 +1,9 @@
 import { Dispatch, SetStateAction } from "react";
+import { NavigateFunction } from "react-router-dom";
 import { IAddAddress, ISignUpData, ISignUpState } from "../../../interfaces/signup.interface";
-import { notify } from "../log-in/ErrorPupUp";
+import { errorNotify } from "../../../utils/ErrorPupUp";
+import { successNotify } from "../../../utils/SuccessPopUp";
+import { getCustometWithToken } from "../log-in/Api-Login";
 import { validateForm } from "./Validate-Signup";
 
 async function getCustomerToken(email: string, password: string) {
@@ -233,7 +236,7 @@ async function addAddresses({ streetName, postalCode, city, country, type, }: IA
   }
 }
 
-export async function handleSubmit(event: React.FormEvent, signUpState: ISignUpState, setErrors: Dispatch<SetStateAction<Partial<ISignUpData>>>): Promise<number | void> {
+export async function handleSubmit(event: React.FormEvent, signUpState: ISignUpState, setErrors: Dispatch<SetStateAction<Partial<ISignUpData>>>, navigate: NavigateFunction, setIsAuth: (newState: boolean) => void): Promise<number | void> {
   event.preventDefault();
 
   if (validateForm(setErrors, signUpState)) {
@@ -260,10 +263,17 @@ export async function handleSubmit(event: React.FormEvent, signUpState: ISignUpS
       const data = await response.json();
       if (response.ok) {
         addAddresses(signUpState.customerBillingAddress, data.customer.version, signUpState);
+        successNotify('Congratulatoins, yor account has been successfully created')
+        setTimeout(
+          () => {
+            getCustometWithToken({email: signUpState.signUpData.email, password: signUpState.signUpData.password}, navigate, setIsAuth)
+          },
+          3000
+        )
         console.log('Customer created successfully');
       } else {
         if (data.statusCode === 400) {
-          notify(`${data.message}, you can log in or use another email address`);
+          errorNotify(`${data.message}, you can log in or use another email address`);
         }
         console.error('Failed to create customer');
       }
