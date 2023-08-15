@@ -4,3 +4,12 @@
   align-items: center;
   margin-top: 8rem;
 }
+
+.link {
+  color: black;
+  font-size: 14px;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
