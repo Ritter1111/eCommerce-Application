@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Container, TextField, Button, Typography, Autocomplete, Grid, ThemeProvider, useTheme, FormControlLabel, Checkbox } from '@mui/material';
 import { ISignUpData } from '../../../interfaces/signup.interface';
 import { customInputTheme } from '../../../components/custom-input-theme';
 import styles from './SignUp.module.css'
 import { handleSubmit } from './Api-Signup';
 import { ToastContainer } from 'react-toastify';
+import { getCustometWithToken } from '../log-in/Api-Login';
+import { AuthContext } from '../../../context';
 
 export default function SignUp() {
   const [signUpData, setSignUpData] = useState<ISignUpData>({
@@ -46,6 +48,8 @@ export default function SignUp() {
   const [selectedShippingCountry, setSelectedShippingCountry] = useState<string | null>(null);
   const [defaultBillingAddress, setdefaultBillingAddress] = useState(false);
   const [defaultShippingAddress, setdefaultShippingAddress] = useState(false);
+  const { setIsAuth } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const outerTheme = useTheme();
 
@@ -77,7 +81,10 @@ export default function SignUp() {
     <Container maxWidth="xs">
       <div className={styles.container}>
         <Typography variant="h5">Sign Up</Typography>
-        <form onSubmit={(event) => handleSubmit(event, signUpState, setErrors)}>
+        <form onSubmit={async (event) => {
+          await handleSubmit(event, signUpState, setErrors)
+          getCustometWithToken({email: signUpData.email, password: signUpData.password}, navigate, setIsAuth)
+          }}>
           <ThemeProvider theme={customInputTheme(outerTheme)}>
             <TextField
               label="Email"
