@@ -7,7 +7,7 @@ import { getCustometWithToken } from "../log-in/Api-Login";
 import { validateForm } from "./Validate-Signup";
 
 async function getCustomerToken(email: string, password: string) {
-  const credentials = `${process.env.CTP_CLIENT_ID}:${process.env.CTP_CLIENT_SECRET}`;
+  const credentials = `${process.env.REACT_APP_CTP_CLIENT_ID}:${process.env.REACT_APP_CTP_CLIENT_SECRET}`;
   const encodedCredentials = btoa(credentials);
   try {
     const response = await fetch(
@@ -35,11 +35,11 @@ async function getCustomerToken(email: string, password: string) {
 };
 
 async function getOauthToken(email: string, password: string) {
-  const credentials = `${process.env.CTP_CLIENT_ID}:${process.env.CTP_CLIENT_SECRET}`;
+  const credentials = `${process.env.REACT_APP_CTP_CLIENT_ID}:${process.env.REACT_APP_CTP_CLIENT_SECRET}`;
   const encodedCredentials = btoa(credentials);
 
   try {
-    const response = await fetch(`${process.env.CTP_AUTH_URL}/oauth/token`, {
+    const response = await fetch(`${process.env.REACT_APP_CTP_AUTH_URL}/oauth/token`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -65,7 +65,7 @@ async function setDefaultShippingAddress(addressId: string, version: string, sig
   const token = await getCustomerToken(signUpState.signUpData.email, signUpState.signUpData.password);
 
   try {
-    const response = await fetch(`${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}/me`, {
+    const response = await fetch(`${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -94,7 +94,7 @@ async function setDefaultBillingAddress(addressId: string, version: string, sign
   const token = await getCustomerToken(signUpState.signUpData.email, signUpState.signUpData.password);
 
   try {
-    const response = await fetch(`${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}/me`, {
+    const response = await fetch(`${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -128,7 +128,7 @@ async function setDefaultBillingAddress(addressId: string, version: string, sign
 async function setShippingAddress(addressId: string, version: string, type: string, signUpState: ISignUpState) {
   const token = await getCustomerToken(signUpState.signUpData.email, signUpState.signUpData.password);
   try {
-    const response = await fetch(`${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}/me`, {
+    const response = await fetch(`${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -160,7 +160,7 @@ async function setShippingAddress(addressId: string, version: string, type: stri
 async function setBillingAddress(addressId: string, version: string, type: string, signUpState: ISignUpState) {
   const token = await getCustomerToken(signUpState.signUpData.email, signUpState.signUpData.password);
   try {
-    const response = await fetch(`${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}/me`, {
+    const response = await fetch(`${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -199,7 +199,7 @@ async function addAddresses({ streetName, postalCode, city, country, type, }: IA
   const token = await getCustomerToken(signUpState.signUpData.email, signUpState.signUpData.password);
 
   try {
-    const response = await fetch(`${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}/me`, {
+    const response = await fetch(`${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -251,7 +251,7 @@ export async function handleSubmit(event: React.FormEvent, signUpState: ISignUpS
           
       const token = await getOauthToken(customerSinUpInfo.email, customerSinUpInfo.password);
 
-      const response = await fetch(`${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}/me/signup`, {
+      const response = await fetch(`${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
