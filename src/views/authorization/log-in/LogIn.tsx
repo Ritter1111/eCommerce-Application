@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   TextField,
   Button,
@@ -18,59 +18,93 @@ import { formFieldsDefault } from '../../../utils/consts';
 import { getCustometWithToken } from '../../../utils/getCustomer';
 import { AuthContext } from '../../../context';
 import { customInputTheme } from '../../../components/custom-input-theme';
+import { validateCapitalChar, validateContainsAtSymbol, validateDigit, validateEmailFormat, validateHasDomain, validateLengthPassword, validateLowerChar, validateNoSpaces, validatePasswordSpaces, validateSpecialChar } from './Validate-Login';
 
 export default function LogIn() {
   const [data, setData] = useState(formFieldsDefault);
   const [error, setError] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState(formFieldsDefault);
-  const [emailError, setEmailError] = useState('');
+  const [emailError, setMessage] = useState('');
+  const [passwordError, setPassword] = useState('');
   const [errorEmail, setErrorEmail] = useState<boolean>(false);
+  const [errorPassword, setErrorPassword] = useState<boolean>(false);
+  const [formValid, setFormValid] = useState(false);
   const { setIsAuth } = useContext(AuthContext);
   const navigate = useNavigate();
   const outerTheme = useTheme();
 
+  useEffect(() => {
+    setFormValid(
+      validatePasswordSpaces(data.password) &&
+      validateCapitalChar(data.password) &&
+      validateLowerChar(data.password) &&
+      validateLengthPassword(data.password) &&
+      validateSpecialChar(data.password) &&
+      validateDigit(data.password) &&
+      validateEmailFormat(data.email) &&
+      validateNoSpaces(data.email) &&
+      validateHasDomain(data.email) &&
+      validatePasswordSpaces(data.email) &&
+      validateContainsAtSymbol(data.email) &&
+      validateEmailFormat(data.email)
+    );
+  }, [data.password, data.email]);
+
   function handleLogIn() {
     getCustometWithToken(data, navigate, setIsAuth, setError, setErrorMessage);
-  }
-
-  function validateEmailFormat(email: string): boolean {
-    const emailFormatRegex = /^\S+@\S+\.\S+$/;
-    return emailFormatRegex.test(email);
-  }
-
-  function validateNoSpaces(email: string): boolean {
-    return !/\s/.test(email);
-  }
-
-  function validateHasDomain(email: string): boolean {
-    const domainRegex = /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    return domainRegex.test(email.split('@')[1]);
-  }
-
-  function validateContainsAtSymbol(email: string): boolean {
-    return email.includes('@');
   }
 
   function handleEmail(event: React.ChangeEvent<HTMLInputElement>) {
     const newEmail = event.target.value;
     if (newEmail === '') {
       setErrorEmail(false);
-      setEmailError('');
+      setMessage('');
     } else if (!validateNoSpaces(newEmail)) {
       setErrorEmail(true);
-      setEmailError('Email should not contain spaces');
+      setMessage('Email should not contain spaces');
     } else if (!validateContainsAtSymbol(newEmail)) {
       setErrorEmail(true);
-      setEmailError('Email should contain @ symbol');
+      setMessage('Email should contain @ symbol');
     } else if (!validateHasDomain(newEmail)) {
       setErrorEmail(true);
-      setEmailError('Email should have a valid domain');
+      setMessage('Email should have a valid domain');
     } else if (!validateEmailFormat(newEmail)) {
       setErrorEmail(true);
-      setEmailError('Incorrect email format');
+      setMessage('Incorrect email format');
     } else {
       setErrorEmail(false);
-      setEmailError('');
+      setMessage('');
+    }
+  }
+
+  function handlePassword(event: React.ChangeEvent<HTMLInputElement>) {
+    const newPassword = event.target.value;
+    setErrorPassword(false);
+    setPassword('');
+
+    if (newPassword === '') {
+      setErrorPassword(false);
+      setPassword('');
+    } else if (!validateCapitalChar(newPassword)) {
+      setErrorPassword(true);
+      setPassword('Password should contain at least one uppercase letter');
+    } else if (!validateLowerChar(newPassword)) {
+      setErrorPassword(true);
+      setPassword('Password should contain at least one lowercase letter');
+    } else if (!validateSpecialChar(newPassword)) {
+      setErrorPassword(true);
+      setPassword(
+        'Password must contain at least one special character (e.g., !@#$%^&*)'
+      );
+    } else if (!validateDigit(newPassword)) {
+      setErrorPassword(true);
+      setPassword('Password must contain at least one digit (0-9).');
+    } else if (!validatePasswordSpaces(newPassword)) {
+      setErrorPassword(true);
+      setPassword('Password must not contain leading or trailing whitespace.');
+    } else if (!validateLengthPassword(newPassword)) {
+      setErrorPassword(true);
+      setPassword('Password must be at least 8 characters long.');
     }
   }
 
@@ -103,24 +137,29 @@ export default function LogIn() {
             type="password"
             variant="outlined"
             fullWidth
-            error={error}
-            helperText={errorMessage.password}
+            error={error || errorPassword}
+            helperText={errorMessage.password || passwordError}
             margin="normal"
             value={data.password}
-            onChange={(e) => {
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setData((prev) => ({ ...prev, password: e.target.value }));
               setError(false);
               setErrorMessage(formFieldsDefault);
+              handlePassword(e);
             }}
           />
         </ThemeProvider>
         <Button
           variant="contained"
-          style={{ backgroundColor: 'black' }}
           fullWidth
           onClick={handleLogIn}
           sx={{ mt: 2 }}
           size="large"
+          disabled={!formValid}
+          style={{
+            backgroundColor: formValid ? 'black' : '#c0c0c0',
+            color: 'white',
+          }}
         >
           Log in
         </Button>
