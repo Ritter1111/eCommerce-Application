@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack serve --open --config ./webpack.config.js --env mode=dev",
-    "build": "webpack --config ./webpack.config.js",
+    "build": "webpack --config ./webpack.config.js --env mode=prod",
     "clear": "rd /s /q dist",
     "prettier": "prettier --write \"src/**/*.tsx\"",
     "lint:fix": "npx eslint \"src/**/*.tsx\" --fix",
