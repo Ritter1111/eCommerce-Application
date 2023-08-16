@@ -23,12 +23,55 @@ export default function LogIn() {
   const [data, setData] = useState(formFieldsDefault);
   const [error, setError] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState(formFieldsDefault);
+  const [emailError, setEmailError] = useState('');
+  const [errorEmail, setErrorEmail] = useState<boolean>(false);
   const { setIsAuth } = useContext(AuthContext);
   const navigate = useNavigate();
   const outerTheme = useTheme();
 
   function handleLogIn() {
     getCustometWithToken(data, navigate, setIsAuth, setError, setErrorMessage);
+  }
+
+  function validateEmailFormat(email: string): boolean {
+    const emailFormatRegex = /^\S+@\S+\.\S+$/;
+    return emailFormatRegex.test(email);
+  }
+
+  function validateNoSpaces(email: string): boolean {
+    return !/\s/.test(email);
+  }
+
+  function validateHasDomain(email: string): boolean {
+    const domainRegex = /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    return domainRegex.test(email.split('@')[1]);
+  }
+
+  function validateContainsAtSymbol(email: string): boolean {
+    return email.includes('@');
+  }
+
+  function handleEmail(event: React.ChangeEvent<HTMLInputElement>) {
+    const newEmail = event.target.value;
+    if (newEmail === '') {
+      setErrorEmail(false);
+      setEmailError('');
+    } else if (!validateNoSpaces(newEmail)) {
+      setErrorEmail(true);
+      setEmailError('Email should not contain spaces');
+    } else if (!validateContainsAtSymbol(newEmail)) {
+      setErrorEmail(true);
+      setEmailError('Email should contain @ symbol');
+    } else if (!validateHasDomain(newEmail)) {
+      setErrorEmail(true);
+      setEmailError('Email should have a valid domain');
+    } else if (!validateEmailFormat(newEmail)) {
+      setErrorEmail(true);
+      setEmailError('Incorrect email format');
+    } else {
+      setErrorEmail(false);
+      setEmailError('');
+    }
   }
 
   return (
@@ -41,16 +84,18 @@ export default function LogIn() {
         <ThemeProvider theme={customInputTheme(outerTheme)}>
           <TextField
             label="Email"
+            name="email"
             variant="outlined"
             margin="normal"
             fullWidth
-            error={error}
-            helperText={errorMessage.email}
+            error={error || errorEmail}
+            helperText={errorMessage.email || emailError}
             value={data.email}
-            onChange={(e) => {
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setData((prev) => ({ ...prev, email: e.target.value }));
               setError(false);
               setErrorMessage(formFieldsDefault);
+              handleEmail(e);
             }}
           />
           <TextField
