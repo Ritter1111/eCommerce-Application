@@ -11,11 +11,11 @@ import { validateForm } from './Validate-Signup';
 import { getCustometWithToken } from '../../../utils/getCustomer';
 
 async function getCustomerToken(email: string, password: string) {
-  const credentials = `${process.env.CTP_CLIENT_ID}:${process.env.CTP_CLIENT_SECRET}`;
+  const credentials = `${process.env.REACT_APP_CTP_CLIENT_ID}:${process.env.REACT_APP_CTP_CLIENT_SECRET}`;
   const encodedCredentials = btoa(credentials);
   try {
     const response = await fetch(
-      `${process.env.CTP_AUTH_URL}/oauth/chat_gpt_team/customers/token`,
+      `${process.env.REACT_APP_CTP_AUTH_URL}/oauth/chat_gpt_team/customers/token`,
       {
         method: 'POST',
         headers: {
@@ -39,11 +39,11 @@ async function getCustomerToken(email: string, password: string) {
 }
 
 async function getOauthToken(email: string, password: string) {
-  const credentials = `${process.env.CTP_CLIENT_ID}:${process.env.CTP_CLIENT_SECRET}`;
+  const credentials = `${process.env.REACT_APP_CTP_CLIENT_ID}:${process.env.REACT_APP_CTP_CLIENT_SECRET}`;
   const encodedCredentials = btoa(credentials);
 
   try {
-    const response = await fetch(`${process.env.CTP_AUTH_URL}/oauth/token`, {
+    const response = await fetch(`${process.env.REACT_APP_CTP_AUTH_URL}/oauth/token`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -77,7 +77,7 @@ async function setDefaultShippingAddress(
 
   try {
     const response = await fetch(
-      `${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}/me`,
+      `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me`,
       {
         method: 'POST',
         headers: {
@@ -118,7 +118,7 @@ async function setDefaultBillingAddress(
 
   try {
     const response = await fetch(
-      `${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}/me`,
+      `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me`,
       {
         method: 'POST',
         headers: {
@@ -174,7 +174,7 @@ async function setShippingAddress(
   );
   try {
     const response = await fetch(
-      `${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}/me`,
+      `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me`,
       {
         method: 'POST',
         headers: {
@@ -219,7 +219,7 @@ async function setBillingAddress(
   );
   try {
     const response = await fetch(
-      `${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}/me`,
+      `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me`,
       {
         method: 'POST',
         headers: {
@@ -279,7 +279,7 @@ async function addAddresses(
 
   try {
     const response = await fetch(
-      `${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}/me`,
+      `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me`,
       {
         method: 'POST',
         headers: {
@@ -355,7 +355,7 @@ export async function handleSubmit(
       );
 
       const response = await fetch(
-        `${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}/me/signup`,
+        `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me/signup`,
         {
           method: 'POST',
           headers: {
