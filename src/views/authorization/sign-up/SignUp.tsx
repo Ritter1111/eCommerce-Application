@@ -1,12 +1,25 @@
 import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Container, TextField, Button, Typography, Autocomplete, Grid, ThemeProvider, useTheme, FormControlLabel, Checkbox } from '@mui/material';
+import {
+  Container,
+  TextField,
+  Button,
+  Typography,
+  Autocomplete,
+  Grid,
+  ThemeProvider,
+  useTheme,
+  FormControlLabel,
+  Checkbox,
+  Avatar,
+} from '@mui/material';
 import { ISignUpData } from '../../../interfaces/signup.interface';
 import { customInputTheme } from '../../../components/custom-input-theme';
-import styles from './SignUp.module.css'
+import styles from './SignUp.module.css';
 import { handleSubmit } from './Api-Signup';
 import { ToastContainer } from 'react-toastify';
 import { AuthContext } from '../../../context';
+import { Person } from '@mui/icons-material';
 
 export default function SignUp() {
   const [signUpData, setSignUpData] = useState<ISignUpData>({
@@ -30,7 +43,10 @@ export default function SignUp() {
     streetName: signUpData.billingStreet,
     city: signUpData.billingCity,
     postalCode: signUpData.billingPostalCode,
-    country: signUpData.billingCountry.slice(signUpData.billingCountry.indexOf('(') + 1, -1),
+    country: signUpData.billingCountry.slice(
+      signUpData.billingCountry.indexOf('(') + 1,
+      -1
+    ),
     type: 'Billing',
   };
 
@@ -38,13 +54,20 @@ export default function SignUp() {
     streetName: signUpData.shippingStreet,
     city: signUpData.shippingCity,
     postalCode: signUpData.shippingPostalCode,
-    country: signUpData.shippingCountry.slice(signUpData.shippingCountry.indexOf('(') + 1, -1),
+    country: signUpData.shippingCountry.slice(
+      signUpData.shippingCountry.indexOf('(') + 1,
+      -1
+    ),
     type: 'Shipping',
-  }
+  };
 
   const [errors, setErrors] = useState<Partial<ISignUpData>>({});
-  const [selectedBillingCountry, setSelectedBillingCountry] = useState<string | null>(null);
-  const [selectedShippingCountry, setSelectedShippingCountry] = useState<string | null>(null);
+  const [selectedBillingCountry, setSelectedBillingCountry] = useState<
+    string | null
+  >(null);
+  const [selectedShippingCountry, setSelectedShippingCountry] = useState<
+    string | null
+  >(null);
   const [defaultBillingAddress, setdefaultBillingAddress] = useState(false);
   const [defaultShippingAddress, setdefaultShippingAddress] = useState(false);
   const { setIsAuth } = useContext(AuthContext);
@@ -52,7 +75,15 @@ export default function SignUp() {
 
   const outerTheme = useTheme();
 
-  const signUpState = {signUpData, customerBillingAddress, customerShippingAddress, selectedBillingCountry, selectedShippingCountry, defaultBillingAddress, defaultShippingAddress};
+  const signUpState = {
+    signUpData,
+    customerBillingAddress,
+    customerShippingAddress,
+    selectedBillingCountry,
+    selectedShippingCountry,
+    defaultBillingAddress,
+    defaultShippingAddress,
+  };
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
@@ -62,14 +93,20 @@ export default function SignUp() {
     }));
   }
 
-  function handleBillingCountryChange(event: React.ChangeEvent<object>, value: string | null) {
+  function handleBillingCountryChange(
+    event: React.ChangeEvent<object>,
+    value: string | null
+  ) {
     setSelectedBillingCountry(value);
     if (value) {
       signUpData.billingCountry = value;
     }
   }
 
-  function handleShippingCountryChange(event: React.ChangeEvent<object>, value: string | null) {
+  function handleShippingCountryChange(
+    event: React.ChangeEvent<object>,
+    value: string | null
+  ) {
     setSelectedShippingCountry(value);
     if (value) {
       signUpData.shippingCountry = value;
@@ -79,8 +116,15 @@ export default function SignUp() {
   return (
     <Container maxWidth="xs">
       <div className={styles.container}>
+        <Avatar sx={{ m: 1, width: 46, height: 46, bgcolor: 'text.disabled' }}>
+          <Person />
+        </Avatar>
         <Typography variant="h5">Sign Up</Typography>
-        <form onSubmit={(event) => handleSubmit(event, signUpState, setErrors, navigate, setIsAuth)}>
+        <form
+          onSubmit={(event) =>
+            handleSubmit(event, signUpState, setErrors, navigate, setIsAuth)
+          }
+        >
           <ThemeProvider theme={customInputTheme(outerTheme)}>
             <TextField
               label="Email"
@@ -91,7 +135,7 @@ export default function SignUp() {
               error={!!errors.email}
               helperText={errors.email}
               fullWidth
-              margin='normal'
+              margin="normal"
             />
             <TextField
               label="Password"
@@ -103,7 +147,7 @@ export default function SignUp() {
               error={!!errors.password}
               helperText={errors.password}
               fullWidth
-              margin='normal'
+              margin="normal"
             />
             <TextField
               label="First Name"
@@ -114,7 +158,7 @@ export default function SignUp() {
               error={!!errors.firstName}
               helperText={errors.firstName}
               fullWidth
-              margin='normal'
+              margin="normal"
             />
             <TextField
               label="Last Name"
@@ -125,7 +169,7 @@ export default function SignUp() {
               error={!!errors.lastName}
               helperText={errors.lastName}
               fullWidth
-              margin='normal'
+              margin="normal"
             />
             <TextField
               label="Date of Birth"
@@ -137,7 +181,7 @@ export default function SignUp() {
               error={!!errors.bd}
               helperText={errors.bd}
               fullWidth
-              margin='normal'
+              margin="normal"
               InputLabelProps={{ shrink: true }}
             />
             <FormControlLabel
@@ -145,7 +189,12 @@ export default function SignUp() {
                 <Checkbox
                   name="sameAddress"
                   checked={signUpData.sameAddress}
-                  onChange={() => setSignUpData({...signUpData, sameAddress: !signUpData.sameAddress})}
+                  onChange={() =>
+                    setSignUpData({
+                      ...signUpData,
+                      sameAddress: !signUpData.sameAddress,
+                    })
+                  }
                   sx={{
                     color: 'gray',
                     '&.Mui-checked': {
@@ -191,7 +240,23 @@ export default function SignUp() {
             />
             <Autocomplete
               id="billing-country"
-              options={['Germany (DE)', 'France (FR)', 'United Kingdom (GB)', 'Italy (IT)', 'Spain (ES)', 'Ukraine (UA)', 'Poland (PL)', 'Sweden (SE)', 'Norway (NO)', 'Finland (FI)', 'Denmark (DK)', 'Switzerland (CH)', 'Austria (AT)', 'Greece (GR)', 'Portugal (PT)']}
+              options={[
+                'Germany (DE)',
+                'France (FR)',
+                'United Kingdom (GB)',
+                'Italy (IT)',
+                'Spain (ES)',
+                'Ukraine (UA)',
+                'Poland (PL)',
+                'Sweden (SE)',
+                'Norway (NO)',
+                'Finland (FI)',
+                'Denmark (DK)',
+                'Switzerland (CH)',
+                'Austria (AT)',
+                'Greece (GR)',
+                'Portugal (PT)',
+              ]}
               value={selectedBillingCountry}
               onChange={handleBillingCountryChange}
               renderInput={(params) => (
@@ -203,7 +268,7 @@ export default function SignUp() {
                   error={!!errors.billingCountry}
                   helperText={errors.billingCountry}
                   fullWidth
-                  margin='normal'
+                  margin="normal"
                 />
               )}
             />
@@ -212,7 +277,9 @@ export default function SignUp() {
                 <Checkbox
                   name="default billing address"
                   checked={defaultBillingAddress}
-                  onChange={() => setdefaultBillingAddress(!defaultBillingAddress)}
+                  onChange={() =>
+                    setdefaultBillingAddress(!defaultBillingAddress)
+                  }
                   sx={{
                     color: 'gray',
                     '&.Mui-checked': {
@@ -261,7 +328,23 @@ export default function SignUp() {
             />
             <Autocomplete
               id="shipping-country"
-              options={['Germany (DE)', 'France (FR)', 'United Kingdom (GB)', 'Italy (IT)', 'Spain (ES)', 'Ukraine (UA)', 'Poland (PL)', 'Sweden (SE)', 'Norway (NO)', 'Finland (FI)', 'Denmark (DK)', 'Switzerland (CH)', 'Austria (AT)', 'Greece (GR)', 'Portugal (PT)']}
+              options={[
+                'Germany (DE)',
+                'France (FR)',
+                'United Kingdom (GB)',
+                'Italy (IT)',
+                'Spain (ES)',
+                'Ukraine (UA)',
+                'Poland (PL)',
+                'Sweden (SE)',
+                'Norway (NO)',
+                'Finland (FI)',
+                'Denmark (DK)',
+                'Switzerland (CH)',
+                'Austria (AT)',
+                'Greece (GR)',
+                'Portugal (PT)',
+              ]}
               value={selectedShippingCountry}
               disabled={signUpData.sameAddress}
               onChange={handleShippingCountryChange}
@@ -274,7 +357,7 @@ export default function SignUp() {
                   error={!!errors.shippingCountry}
                   helperText={errors.shippingCountry}
                   fullWidth
-                  margin='normal'
+                  margin="normal"
                 />
               )}
             />
@@ -283,7 +366,9 @@ export default function SignUp() {
                 <Checkbox
                   name="default shipping address"
                   checked={defaultShippingAddress}
-                  onChange={() => setdefaultShippingAddress(!defaultShippingAddress)}
+                  onChange={() =>
+                    setdefaultShippingAddress(!defaultShippingAddress)
+                  }
                   sx={{
                     color: 'gray',
                     '&.Mui-checked': {
@@ -295,7 +380,14 @@ export default function SignUp() {
               label="It is default Shipping address?"
             />
           </ThemeProvider>
-          <Button variant="contained" style={{ backgroundColor: 'black' }} type="submit" fullWidth sx={{ mt: 2 }} size='large'>
+          <Button
+            variant="contained"
+            style={{ backgroundColor: 'black' }}
+            type="submit"
+            fullWidth
+            sx={{ mt: 2 }}
+            size="large"
+          >
             Sign Up
           </Button>
         </form>
@@ -303,7 +395,7 @@ export default function SignUp() {
         <Grid container>
           <Grid item sx={{ mt: 2, mb: 2 }}>
             <Link to="/login" className={styles.link}>
-              {"Have an account? Log In"}
+              {'Have an account? Log In'}
             </Link>
           </Grid>
         </Grid>

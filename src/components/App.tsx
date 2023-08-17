@@ -9,12 +9,12 @@ export default function App() {
 
   useEffect(() => {
     if (localStorage.getItem('authToken')) setIsAuth(true);
-  }, [])
+  }, []);
 
   return (
     <AuthContext.Provider value={{ isAuth, setIsAuth }}>
       <BrowserRouter>
-        <NavBar/>
+        <NavBar />
         <AppRouter />
       </BrowserRouter>
     </AuthContext.Provider>

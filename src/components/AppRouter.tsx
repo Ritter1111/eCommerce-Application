@@ -16,7 +16,7 @@ const AppRouter = () => {
       ))}
       <Route
         path={REGISTRATION_ROUTE}
-        element={isAuth ? <Navigate to="/"/> : <SignUp/>}
+        element={isAuth ? <Navigate to="/" /> : <SignUp />}
       />
       <Route
         path={LOGIN_ROUTE}

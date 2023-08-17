@@ -1,4 +1,4 @@
-import { createTheme, outlinedInputClasses, Theme } from "@mui/material";
+import { createTheme, outlinedInputClasses, Theme } from '@mui/material';
 
 export const customInputTheme = (outerTheme: Theme) =>
   createTheme({
