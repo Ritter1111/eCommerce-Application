@@ -17,18 +17,34 @@ import 'react-toastify/dist/ReactToastify.css';
 import { formFieldsDefault } from '../../../utils/consts';
 import { getCustometWithToken } from '../../../utils/getCustomer';
 import { AuthContext } from '../../../context';
+import IconButton from '@mui/material/IconButton';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { customInputTheme } from '../../../components/custom-input-theme';
-import { validateCapitalChar, validateContainsAtSymbol, validateDigit, validateEmailFormat, validateHasDomain, validateLengthPassword, validateLowerChar, validateNoSpaces, validatePasswordSpaces, validateSpecialChar } from './Validate-Login';
+import InputAdornment from '@mui/material/InputAdornment';
+import {
+  validateCapitalChar,
+  validateContainsAtSymbol,
+  validateDigit,
+  validateEmailFormat,
+  validateHasDomain,
+  validateLengthPassword,
+  validateLowerChar,
+  validateNoSpaces,
+  validatePasswordSpaces,
+  validateSpecialChar,
+} from './Validate-Login';
 
 export default function LogIn() {
   const [data, setData] = useState(formFieldsDefault);
   const [error, setError] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState(formFieldsDefault);
-  const [emailError, setMessage] = useState('');
-  const [passwordError, setPassword] = useState('');
+  const [emailError, setMessageEmail] = useState('');
+  const [passwordError, setMessagePassword] = useState('');
   const [errorEmail, setErrorEmail] = useState<boolean>(false);
   const [errorPassword, setErrorPassword] = useState<boolean>(false);
-  const [formValid, setFormValid] = useState(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [formValid, setFormValid] = useState<boolean>(false);
   const { setIsAuth } = useContext(AuthContext);
   const navigate = useNavigate();
   const outerTheme = useTheme();
@@ -36,75 +52,95 @@ export default function LogIn() {
   useEffect(() => {
     setFormValid(
       validatePasswordSpaces(data.password) &&
-      validateCapitalChar(data.password) &&
-      validateLowerChar(data.password) &&
-      validateLengthPassword(data.password) &&
-      validateSpecialChar(data.password) &&
-      validateDigit(data.password) &&
-      validateEmailFormat(data.email) &&
-      validateNoSpaces(data.email) &&
-      validateHasDomain(data.email) &&
-      validatePasswordSpaces(data.email) &&
-      validateContainsAtSymbol(data.email) &&
-      validateEmailFormat(data.email)
+        validateCapitalChar(data.password) &&
+        validateLowerChar(data.password) &&
+        validateLengthPassword(data.password) &&
+        validateSpecialChar(data.password) &&
+        validateDigit(data.password) &&
+        validateEmailFormat(data.email) &&
+        validateNoSpaces(data.email) &&
+        validateHasDomain(data.email) &&
+        validatePasswordSpaces(data.email) &&
+        validateContainsAtSymbol(data.email) &&
+        validateEmailFormat(data.email)
     );
   }, [data.password, data.email]);
 
   function handleLogIn() {
-    getCustometWithToken(data, navigate, setIsAuth, setError, setErrorMessage);
+    if (!data.email || !data.password) {
+      setErrorMessage({
+        email: !data.email ? 'Email is required' : '',
+        password: !data.password ? 'Password is required' : '',
+      });
+      setError(true);
+      return;
+    }
+    if (formValid) {
+      getCustometWithToken(
+        data,
+        navigate,
+        setIsAuth,
+        setError,
+        setErrorMessage
+      );
+    }
+  }
+
+  function handleClickShowPassword() {
+    setShowPassword((prev) => !prev);
   }
 
   function handleEmail(event: React.ChangeEvent<HTMLInputElement>) {
     const newEmail = event.target.value;
     if (newEmail === '') {
       setErrorEmail(false);
-      setMessage('');
+      setMessageEmail('');
     } else if (!validateNoSpaces(newEmail)) {
       setErrorEmail(true);
-      setMessage('Email should not contain spaces');
+      setMessageEmail('Email should not contain spaces');
     } else if (!validateContainsAtSymbol(newEmail)) {
       setErrorEmail(true);
-      setMessage('Email should contain @ symbol');
+      setMessageEmail('Email should contain @ symbol');
     } else if (!validateHasDomain(newEmail)) {
       setErrorEmail(true);
-      setMessage('Email should have a valid domain');
+      setMessageEmail('Email should have a valid domain');
     } else if (!validateEmailFormat(newEmail)) {
       setErrorEmail(true);
-      setMessage('Incorrect email format');
+      setMessageEmail('Incorrect email format');
     } else {
       setErrorEmail(false);
-      setMessage('');
+      setMessageEmail('');
     }
   }
 
   function handlePassword(event: React.ChangeEvent<HTMLInputElement>) {
     const newPassword = event.target.value;
     setErrorPassword(false);
-    setPassword('');
+    setMessagePassword('');
 
     if (newPassword === '') {
       setErrorPassword(false);
-      setPassword('');
+      setMessagePassword('');
     } else if (!validateCapitalChar(newPassword)) {
       setErrorPassword(true);
-      setPassword('Password should contain at least one uppercase letter');
+      setMessagePassword('Password should contain at least one uppercase letter');
     } else if (!validateLowerChar(newPassword)) {
       setErrorPassword(true);
-      setPassword('Password should contain at least one lowercase letter');
+      setMessagePassword('Password should contain at least one lowercase letter');
     } else if (!validateSpecialChar(newPassword)) {
       setErrorPassword(true);
-      setPassword(
+      setMessagePassword(
         'Password must contain at least one special character (e.g., !@#$%^&*)'
       );
     } else if (!validateDigit(newPassword)) {
       setErrorPassword(true);
-      setPassword('Password must contain at least one digit (0-9).');
+      setMessagePassword('Password must contain at least one digit (0-9).');
     } else if (!validatePasswordSpaces(newPassword)) {
       setErrorPassword(true);
-      setPassword('Password must not contain leading or trailing whitespace.');
+      setMessagePassword('Password must not contain leading or trailing whitespace.');
     } else if (!validateLengthPassword(newPassword)) {
       setErrorPassword(true);
-      setPassword('Password must be at least 8 characters long.');
+      setMessagePassword('Password must be at least 8 characters long.');
     }
   }
 
@@ -134,7 +170,7 @@ export default function LogIn() {
           />
           <TextField
             label="Password"
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             variant="outlined"
             fullWidth
             error={error || errorPassword}
@@ -147,6 +183,19 @@ export default function LogIn() {
               setErrorMessage(formFieldsDefault);
               handlePassword(e);
             }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
         </ThemeProvider>
         <Button
@@ -155,9 +204,8 @@ export default function LogIn() {
           onClick={handleLogIn}
           sx={{ mt: 2 }}
           size="large"
-          disabled={!formValid}
           style={{
-            backgroundColor: formValid ? 'black' : '#c0c0c0',
+            backgroundColor: 'black',
             color: 'white',
           }}
         >
