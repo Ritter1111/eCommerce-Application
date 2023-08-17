@@ -52,7 +52,10 @@ const baseConfig = {
       filename: 'style.[contenthash].css',
     }),
     new CleanWebpackPlugin(),
-    new Dotenv(),
+    new Dotenv({
+      path: './.env',
+      systemvars: true
+    }),
   ],
 };
 
