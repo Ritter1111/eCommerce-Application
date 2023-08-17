@@ -20,14 +20,14 @@ import { ISignUpData, ISignUpState } from "../../../interfaces/signup.interface"
       'Portugal (PT)': /^\d{4}-\d{3}$/,
     };
 
-  const regex = postalCodeRegexMap[country];
-
-  if (!regex) {
-    return false;
+    const regex = postalCodeRegexMap[country];
+  
+    if (!regex) {
+      return false;
+    }
+  
+    return regex.test(postalCode);
   }
-
-  return regex.test(postalCode);
-}
 
   export function validateForm(setErrors: Dispatch<SetStateAction<Partial<ISignUpData>>>, signUpState: ISignUpState) {
     const newErrors: Partial<ISignUpData> = {};
@@ -91,68 +91,7 @@ import { ISignUpData, ISignUpState } from "../../../interfaces/signup.interface"
     if (!signUpState.selectedShippingCountry && !signUpState.signUpData.sameAddress) {
       newErrors.shippingCountry = 'Country is required';
     }
+  
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   }
-  if (!signUpState.signUpData.billingStreet) {
-    newErrors.billingStreet = 'Street is required';
-  }
-  if (
-    !signUpState.signUpData.shippingStreet &&
-    !signUpState.signUpData.sameAddress
-  ) {
-    newErrors.shippingStreet = 'Street is required';
-  }
-  if (
-    !signUpState.signUpData.billingCity &&
-    !signUpState.signUpData.sameAddress
-  ) {
-    newErrors.billingCity = 'City is required';
-  } else if (!/^[A-Za-z\s]+$/.test(signUpState.signUpData.billingCity)) {
-    newErrors.billingCity = 'City should only contain letters and spaces';
-  }
-  if (
-    !signUpState.signUpData.shippingCity &&
-    !signUpState.signUpData.sameAddress
-  ) {
-    newErrors.shippingCity = 'City is required';
-  } else if (
-    !/^[A-Za-z\s]+$/.test(signUpState.signUpData.shippingCity) &&
-    !signUpState.signUpData.sameAddress
-  ) {
-    newErrors.shippingCity = 'City should only contain letters and spaces';
-  }
-  if (
-    !validatePostalCode(
-      signUpState.signUpData.billingPostalCode,
-      signUpState.selectedBillingCountry || ''
-    ) &&
-    !signUpState.signUpData.sameAddress
-  ) {
-    newErrors.billingPostalCode =
-      'Invalid postal code format for the selected country';
-  }
-  if (
-    !validatePostalCode(
-      signUpState.signUpData.shippingPostalCode,
-      signUpState.selectedShippingCountry || ''
-    ) &&
-    !signUpState.signUpData.sameAddress
-  ) {
-    newErrors.shippingPostalCode =
-      'Invalid postal code format for the selected country';
-  }
-  if (
-    !signUpState.selectedBillingCountry &&
-    !signUpState.signUpData.sameAddress
-  ) {
-    newErrors.billingCountry = 'Country is required';
-  }
-  if (
-    !signUpState.selectedShippingCountry &&
-    !signUpState.signUpData.sameAddress
-  ) {
-    newErrors.shippingCountry = 'Country is required';
-  }
-
-  setErrors(newErrors);
-  return Object.keys(newErrors).length === 0;
-}

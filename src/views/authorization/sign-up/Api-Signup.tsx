@@ -3,7 +3,7 @@ import { NavigateFunction } from "react-router-dom";
 import { IAddAddress, ISignUpData, ISignUpState } from "../../../interfaces/signup.interface";
 import { errorNotify } from "../../../utils/ErrorPupUp";
 import { successNotify } from "../../../utils/SuccessPopUp";
-import { getCustometWithToken } from '../../../utils/getCustomer';
+import { getCustometWithToken } from "../../../utils/getCustomer";
 import { validateForm } from "./Validate-Signup";
 
 async function getCustomerToken(email: string, password: string) {
