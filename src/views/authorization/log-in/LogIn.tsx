@@ -34,6 +34,7 @@ import {
   validatePasswordSpaces,
   validateSpecialChar,
 } from './Validate-Login';
+import { errorNotify } from '../../../utils/ErrorPupUp';
 
 export default function LogIn() {
   const [data, setData] = useState(formFieldsDefault);
@@ -83,6 +84,8 @@ export default function LogIn() {
         setError,
         setErrorMessage
       );
+    } else {
+      errorNotify('Please enter correct password and email');
     }
   }
 
