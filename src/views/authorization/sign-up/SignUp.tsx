@@ -296,8 +296,8 @@ export default function SignUp() {
               value={signUpData.shippingStreet}
               onChange={handleInputChange}
               fullWidth
-              error={signUpData.sameAddress ? false : !!errors.shippingStreet}
-              helperText={signUpData.sameAddress ? '' : errors.shippingStreet}
+              error={!!errors.shippingStreet}
+              helperText={errors.shippingStreet}
               margin="normal"
               variant="outlined"
               disabled={signUpData.sameAddress}
@@ -311,8 +311,8 @@ export default function SignUp() {
               margin="normal"
               variant="outlined"
               disabled={signUpData.sameAddress}
-              error={signUpData.sameAddress ? false : !!errors.shippingCity}
-              helperText={signUpData.sameAddress ? '' : errors.shippingCity}
+              error={!!errors.shippingCity}
+              helperText={errors.shippingCity}
             />
             <TextField
               label="Shipping Postal Code"
@@ -323,12 +323,8 @@ export default function SignUp() {
               margin="normal"
               variant="outlined"
               disabled={signUpData.sameAddress}
-              error={
-                signUpData.sameAddress ? false : !!errors.shippingPostalCode
-              }
-              helperText={
-                signUpData.sameAddress ? '' : errors.shippingPostalCode
-              }
+              error={!!errors.shippingPostalCode}
+              helperText={errors.shippingPostalCode}
             />
             <Autocomplete
               id="shipping-country"
@@ -358,8 +354,8 @@ export default function SignUp() {
                   label="Shipping Country"
                   name="shipping-country"
                   variant="outlined"
-                  error={signUpData.sameAddress ? false : !!errors.shippingCity}
-                  helperText={signUpData.sameAddress ? '' : errors.shippingCity}
+                  error={!!errors.shippingCountry}
+                  helperText={errors.shippingCountry}
                   fullWidth
                   margin="normal"
                 />

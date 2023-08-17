@@ -11,11 +11,11 @@ import { validateForm } from './Validate-Signup';
 import { getCustometWithToken } from '../../../utils/getCustomer';
 
 async function getCustomerToken(email: string, password: string) {
-  const credentials = `${process.env.CTP_CLIENT_ID}:${process.env.CTP_CLIENT_SECRET}`;
+  const credentials = `${process.env.REACT_APP_CTP_CLIENT_ID}:${process.env.REACT_APP_CTP_CLIENT_SECRET}`;
   const encodedCredentials = btoa(credentials);
   try {
     const response = await fetch(
-      `${process.env.CTP_AUTH_URL}/oauth/chat_gpt_team/customers/token`,
+      `${process.env.REACT_APP_CTP_AUTH_URL}/oauth/chat_gpt_team/customers/token`,
       {
         method: 'POST',
         headers: {
@@ -39,11 +39,11 @@ async function getCustomerToken(email: string, password: string) {
 }
 
 async function getOauthToken(email: string, password: string) {
-  const credentials = `${process.env.CTP_CLIENT_ID}:${process.env.CTP_CLIENT_SECRET}`;
+  const credentials = `${process.env.REACT_APP_CTP_CLIENT_ID}:${process.env.REACT_APP_CTP_CLIENT_SECRET}`;
   const encodedCredentials = btoa(credentials);
 
   try {
-    const response = await fetch(`${process.env.CTP_AUTH_URL}/oauth/token`, {
+    const response = await fetch(`${process.env.REACT_APP_CTP_AUTH_URL}/oauth/token`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -76,25 +76,20 @@ async function setDefaultShippingAddress(
   );
 
   try {
-    const response = await fetch(
-      `${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}/me`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          version: version,
-          actions: [
-            {
-              action: `setDefaultShippingAddress`,
-              addressId: `${addressId}`,
-            },
-          ],
-        }),
-      }
-    );
+    const response = await fetch(`${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        version : version,
+        actions : [ {
+          action : `setDefaultShippingAddress`,
+          addressId : `${addressId}`
+        } ]
+      })
+    });
 
     if (response.ok) {
       console.log(`Shipping default address seted successfully`);
@@ -117,25 +112,20 @@ async function setDefaultBillingAddress(
   );
 
   try {
-    const response = await fetch(
-      `${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}/me`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          version: version,
-          actions: [
-            {
-              action: `setDefaultBillingAddress`,
-              addressId: `${addressId}`,
-            },
-          ],
-        }),
-      }
-    );
+    const response = await fetch(`${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        version : version,
+        actions : [ {
+          action : `setDefaultBillingAddress`,
+          addressId : `${addressId}`
+        } ]
+      })
+    });
 
     if (response.ok) {
       const data = await response.json();
@@ -173,25 +163,20 @@ async function setShippingAddress(
     signUpState.signUpData.password
   );
   try {
-    const response = await fetch(
-      `${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}/me`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          version: version,
-          actions: [
-            {
-              action: `addShippingAddressId`,
-              addressId: `${addressId}`,
-            },
-          ],
-        }),
-      }
-    );
+    const response = await fetch(`${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        version : version,
+        actions : [ {
+          action : `addShippingAddressId`,
+          addressId : `${addressId}`
+        } ]
+      })
+    });
 
     if (response.ok) {
       const data = await response.json();
@@ -218,25 +203,20 @@ async function setBillingAddress(
     signUpState.signUpData.password
   );
   try {
-    const response = await fetch(
-      `${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}/me`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          version: version,
-          actions: [
-            {
-              action: `addBillingAddressId`,
-              addressId: `${addressId}`,
-            },
-          ],
-        }),
-      }
-    );
+    const response = await fetch(`${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        version : version,
+        actions : [ {
+          action : `addBillingAddressId`,
+          addressId : `${addressId}`
+        } ]
+      })
+    });
 
     if (response.ok) {
       const data = await response.json();
@@ -278,30 +258,26 @@ async function addAddresses(
   );
 
   try {
-    const response = await fetch(
-      `${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}/me`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          version: version,
-          actions: [
-            {
-              action: 'addAddress',
-              address: {
-                streetName: `${streetName}`,
-                postalCode: `${postalCode}`,
-                city: `${city}`,
-                country: `${country}`,
-              },
-            },
-          ],
-        }),
-      }
-    );
+
+    const response = await fetch(`${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        version : version,
+        actions : [ {
+          action : "addAddress",
+          address : {
+            streetName : `${streetName}`,
+            postalCode : `${postalCode}`,
+            city : `${city}`,
+            country : `${country}`,
+          }
+        } ]
+      })
+    });
 
     if (response.ok) {
       const data = await response.json();
@@ -349,23 +325,15 @@ export async function handleSubmit(
         dateOfBirth: signUpState.signUpData.bd,
       };
 
-      const token = await getOauthToken(
-        customerSinUpInfo.email,
-        customerSinUpInfo.password
-      );
-
-      const response = await fetch(
-        `${process.env.CTP_API_URL}/${process.env.CTP_PROJECT_KEY}/me/signup`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(customerSinUpInfo),
-        }
-      );
-
+      const response = await fetch(`${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me/signup`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(customerSinUpInfo),
+      });
+      
       const data = await response.json();
       if (response.ok) {
         addAddresses(

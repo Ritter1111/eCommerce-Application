@@ -4,8 +4,8 @@ import {
   ITokenData,
 } from '../../../interfaces/auth.interface';
 
-const clientId = process.env.CTP_CLIENT_ID;
-const clientSecret = process.env.CTP_CLIENT_SECRET;
+const clientId = process.env.REACT_APP_CTP_CLIENT_ID;
+const clientSecret = process.env.REACT_APP_CTP_CLIENT_SECRET;
 const credentials = `${clientId}:${clientSecret}`;
 const encodedCredentials = btoa(credentials);
 
@@ -21,7 +21,7 @@ export const getCustomer = async ({
       password: `${password}`,
     };
     const response = await fetch(
-      `${process.env.CTP_API_URL}/chat_gpt_team/me/login`,
+      `${process.env.REACT_APP_CTP_API_URL}/chat_gpt_team/me/login`,
       {
         method: 'POST',
         headers: {
@@ -44,7 +44,7 @@ export const getToken = async ({
   try {
     scheduleTokenRefresh();
     const response = await fetch(
-      `${process.env.CTP_AUTH_URL}/oauth/chat_gpt_team/customers/token`,
+      `${process.env.REACT_APP_CTP_AUTH_URL}/oauth/chat_gpt_team/customers/token`,
       {
         method: 'POST',
         headers: {
@@ -69,7 +69,7 @@ export const refreshToken = async ({
   refreshToken,
 }: Partial<IDataCustomer>) => {
   try {
-    const response = await fetch(`${process.env.CTP_AUTH_URL}/oauth/token`, {
+    const response = await fetch(`${process.env.REACT_APP_CTP_AUTH_URL}/oauth/token`, {
       method: 'POST',
       headers: {
         Authorization: `Basic ${encodedCredentials}`,
