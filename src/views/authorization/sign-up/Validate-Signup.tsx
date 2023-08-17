@@ -1,23 +1,23 @@
 import { Dispatch, SetStateAction } from "react";
 import { ISignUpData, ISignUpState } from "../../../interfaces/signup.interface";
-  
+
   function validatePostalCode(postalCode: string, country: string): boolean {
     const postalCodeRegexMap: { [country: string]: RegExp } = {
-      Germany: /^\d{5}$/,
-      France: /^\d{5}$/,
-      UnitedKingdom: /^[A-Za-z]{1,2}\d{1,2}[A-Za-z]?\s?\d[A-Za-z]{2}$/,
-      Italy: /^\d{5}$/,
-      Spain: /^\d{5}$/,
-      Ukraine: /^\d{5}$/,
-      Poland: /^\d{2}-\d{3}$/,
-      Sweden: /^\d{5}$/,
-      Norway: /^\d{4}$/,
-      Finland: /^\d{5}$/,
-      Denmark: /^\d{4}$/,
-      Switzerland: /^\d{4}$/,
-      Austria: /^\d{4}$/,
-      Greece: /^\d{5}$/,
-      Portugal: /^\d{4}-\d{3}$/,
+      'Germany (DE)': /^\d{5}$/,
+      'France (FR)': /^\d{5}$/,
+      'United Kingdom (GB)': /^[A-Za-z]{1,2}\d{1,2}[A-Za-z]?\s?\d[A-Za-z]{2}$/,
+      'Italy (IT)': /^\d{5}$/,
+      'Spain (ES)': /^\d{5}$/,
+      'Ukraine (UA)': /^\d{5}$/,
+      'Poland (PL)': /^\d{2}-\d{3}$/,
+      'Sweden (SE)': /^\d{5}$/,
+      'Norway (NO)': /^\d{4}$/,
+      'Finland (FI)': /^\d{5}$/,
+      'Denmark (DK)': /^\d{4}$/,
+      'Switzerland (CH)': /^\d{4}$/,
+      'Austria (AT)': /^\d{4}$/,
+      'Greece (GR)': /^\d{5}$/,
+      'Portugal (PT)': /^\d{4}-\d{3}$/,
     };
 
     const regex = postalCodeRegexMap[country];
@@ -69,7 +69,7 @@ import { ISignUpData, ISignUpState } from "../../../interfaces/signup.interface"
     if (!signUpState.signUpData.shippingStreet && !signUpState.signUpData.sameAddress) {
       newErrors.shippingStreet = 'Street is required'
     }
-    if (!signUpState.signUpData.billingCity && !signUpState.signUpData.sameAddress) {
+    if (!signUpState.signUpData.billingCity) {
       newErrors.billingCity = 'City is required';
     } else if (!/^[A-Za-z\s]+$/.test(signUpState.signUpData.billingCity)) {
       newErrors.billingCity = 'City should only contain letters and spaces';
@@ -79,13 +79,13 @@ import { ISignUpData, ISignUpState } from "../../../interfaces/signup.interface"
     } else if (!/^[A-Za-z\s]+$/.test(signUpState.signUpData.shippingCity) && !signUpState.signUpData.sameAddress) {
       newErrors.shippingCity = 'City should only contain letters and spaces';
     }
-    if (!validatePostalCode(signUpState.signUpData.billingPostalCode, signUpState.selectedBillingCountry || '') && !signUpState.signUpData.sameAddress) {
+    if (!validatePostalCode(signUpState.signUpData.billingPostalCode, signUpState.selectedBillingCountry || '')) {
       newErrors.billingPostalCode = 'Invalid postal code format for the selected country';
     }
     if (!validatePostalCode(signUpState.signUpData.shippingPostalCode, signUpState.selectedShippingCountry || '') && !signUpState.signUpData.sameAddress) {
       newErrors.shippingPostalCode = 'Invalid postal code format for the selected country';
     }
-    if (!signUpState.selectedBillingCountry && !signUpState.signUpData.sameAddress) {
+    if (!signUpState.selectedBillingCountry) {
       newErrors.billingCountry = 'Country is required';
     }
     if (!signUpState.selectedShippingCountry && !signUpState.signUpData.sameAddress) {
