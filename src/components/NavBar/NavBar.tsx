@@ -95,15 +95,10 @@ export default function NavBar() {
               </Typography>
             </Box>
           </Link>
-          <Box
-            onClick={() => toggleMenu()}
-            sx={{ display: { xs: 'block', md: 'none' } }}
-          >
-            {isMenuOpen ? <Close /> : <Menu />}
+          <Box data-testid="menu-btn" onClick={() => toggleMenu()} sx={{ display: { xs: 'block', md: 'none' } }}>
+            {isMenuOpen ? <Close/> : <Menu/>}
           </Box>
-          <Box
-            className={`${isMenuOpen ? classes.active : ''} ${classes.menu}`}
-          >
+          <Box data-testid="nav-menu" className={`${isMenuOpen ? classes.active : ''} ${classes.menu}`}>
             {routes.map((route, index) => (
               <NavLink
                 key={index}
