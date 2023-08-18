@@ -3,4 +3,8 @@ module.exports = {
   transform: {
     '\\.[jt]sx?$': 'esbuild-jest',
   },
+  moduleNameMapper: {
+    '\\.(css)$': 'identity-obj-proxy',
+  },
+  setupFiles: ["jest-canvas-mock"]
 };
