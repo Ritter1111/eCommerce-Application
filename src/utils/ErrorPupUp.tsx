@@ -1,6 +1,6 @@
 import { toast } from 'react-toastify';
 
-export const notify = (error: string) =>
+export const errorNotify = (error: string) =>
   toast.error(`${error}`, {
     position: 'top-right',
     autoClose: 5000,
