@@ -13,6 +13,7 @@ import {
   Checkbox,
   Avatar,
 } from '@mui/material';
+import Paper from '@mui/material/Paper';
 import { ISignUpData } from '../../../interfaces/signup.interface';
 import { customInputTheme } from '../../../components/custom-input-theme';
 import styles from './SignUp.module.css';
@@ -85,6 +86,11 @@ export default function SignUp() {
     defaultShippingAddress,
   };
 
+  const gridItemStyle = {
+    marginTop: "-0.5rem",
+    marginBottom: "-0.5rem",
+  };
+
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
     setSignUpData((prevData) => ({
@@ -114,292 +120,342 @@ export default function SignUp() {
   }
 
   return (
-    <Container maxWidth="xs">
-      <div className={styles.container}>
-        <Avatar sx={{ m: 1, width: 46, height: 46, bgcolor: 'text.disabled' }}>
-          <Person />
-        </Avatar>
-        <Typography variant="h5">Sign Up</Typography>
-        <form
-          onSubmit={(event) =>
-            handleSubmit(event, signUpState, setErrors, navigate, setIsAuth)
-          }
-        >
-          <ThemeProvider theme={customInputTheme(outerTheme)}>
-            <TextField
-              label="Email"
-              name="email"
-              variant="outlined"
-              value={signUpData.email}
-              onChange={handleInputChange}
-              error={!!errors.email}
-              helperText={errors.email}
-              fullWidth
-              margin="normal"
-            />
-            <TextField
-              label="Password"
-              name="password"
-              type="password"
-              variant="outlined"
-              value={signUpData.password}
-              onChange={handleInputChange}
-              error={!!errors.password}
-              helperText={errors.password}
-              fullWidth
-              margin="normal"
-            />
-            <TextField
-              label="First Name"
-              name="firstName"
-              variant="outlined"
-              value={signUpData.firstName}
-              onChange={handleInputChange}
-              error={!!errors.firstName}
-              helperText={errors.firstName}
-              fullWidth
-              margin="normal"
-            />
-            <TextField
-              label="Last Name"
-              name="lastName"
-              variant="outlined"
-              value={signUpData.lastName}
-              onChange={handleInputChange}
-              error={!!errors.lastName}
-              helperText={errors.lastName}
-              fullWidth
-              margin="normal"
-            />
-            <TextField
-              label="Date of Birth"
-              name="bd"
-              type="date"
-              variant="outlined"
-              value={signUpData.bd}
-              onChange={handleInputChange}
-              error={!!errors.bd}
-              helperText={errors.bd}
-              fullWidth
-              margin="normal"
-              InputLabelProps={{ shrink: true }}
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  name="sameAddress"
-                  checked={signUpData.sameAddress}
-                  onChange={() =>
-                    setSignUpData({
-                      ...signUpData,
-                      sameAddress: !signUpData.sameAddress,
-                    })
-                  }
-                  sx={{
-                    color: 'gray',
-                    '&.Mui-checked': {
-                      color: 'black',
-                    },
-                  }}
-                />
-              }
-              label="Use same address for billing and shipping"
-            />
-            <TextField
-              label="Billing Street"
-              name="billingStreet"
-              value={signUpData.billingStreet}
-              onChange={handleInputChange}
-              error={!!errors.billingStreet}
-              helperText={errors.billingStreet}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-            />
-            <TextField
-              label="Billing City"
-              name="billingCity"
-              value={signUpData.billingCity}
-              onChange={handleInputChange}
-              error={!!errors.billingCity}
-              helperText={errors.billingCity}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-            />
-            <TextField
-              label="Billing Postal Code"
-              name="billingPostalCode"
-              value={signUpData.billingPostalCode}
-              onChange={handleInputChange}
-              error={!!errors.billingPostalCode}
-              helperText={errors.billingPostalCode}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-            />
-            <Autocomplete
-              id="billing-country"
-              options={[
-                'Germany (DE)',
-                'France (FR)',
-                'United Kingdom (GB)',
-                'Italy (IT)',
-                'Spain (ES)',
-                'Ukraine (UA)',
-                'Poland (PL)',
-                'Sweden (SE)',
-                'Norway (NO)',
-                'Finland (FI)',
-                'Denmark (DK)',
-                'Switzerland (CH)',
-                'Austria (AT)',
-                'Greece (GR)',
-                'Portugal (PT)',
-              ]}
-              value={selectedBillingCountry}
-              onChange={handleBillingCountryChange}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Billing Country"
-                  name="billing-country"
-                  variant="outlined"
-                  error={!!errors.billingCountry}
-                  helperText={errors.billingCountry}
-                  fullWidth
-                  margin="normal"
-                />
-              )}
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  name="default billing address"
-                  checked={defaultBillingAddress}
-                  onChange={() =>
-                    setdefaultBillingAddress(!defaultBillingAddress)
-                  }
-                  sx={{
-                    color: 'gray',
-                    '&.Mui-checked': {
-                      color: 'black',
-                    },
-                  }}
-                />
-              }
-              label="It is default billing address?"
-            />
-            <TextField
-              label="Shipping Street"
-              name="shippingStreet"
-              value={signUpData.shippingStreet}
-              onChange={handleInputChange}
-              fullWidth
-              error={!!errors.shippingStreet}
-              helperText={errors.shippingStreet}
-              margin="normal"
-              variant="outlined"
-              disabled={signUpData.sameAddress}
-            />
-            <TextField
-              label="Shipping City"
-              name="shippingCity"
-              value={signUpData.shippingCity}
-              onChange={handleInputChange}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-              disabled={signUpData.sameAddress}
-              error={!!errors.shippingCity}
-              helperText={errors.shippingCity}
-            />
-            <TextField
-              label="Shipping Postal Code"
-              name="shippingPostalCode"
-              value={signUpData.shippingPostalCode}
-              onChange={handleInputChange}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-              disabled={signUpData.sameAddress}
-              error={!!errors.shippingPostalCode}
-              helperText={errors.shippingPostalCode}
-            />
-            <Autocomplete
-              id="shipping-country"
-              options={[
-                'Germany (DE)',
-                'France (FR)',
-                'United Kingdom (GB)',
-                'Italy (IT)',
-                'Spain (ES)',
-                'Ukraine (UA)',
-                'Poland (PL)',
-                'Sweden (SE)',
-                'Norway (NO)',
-                'Finland (FI)',
-                'Denmark (DK)',
-                'Switzerland (CH)',
-                'Austria (AT)',
-                'Greece (GR)',
-                'Portugal (PT)',
-              ]}
-              value={selectedShippingCountry}
-              disabled={signUpData.sameAddress}
-              onChange={handleShippingCountryChange}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Shipping Country"
-                  name="shipping-country"
-                  variant="outlined"
-                  error={!!errors.shippingCountry}
-                  helperText={errors.shippingCountry}
-                  fullWidth
-                  margin="normal"
-                />
-              )}
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  name="default shipping address"
-                  checked={defaultShippingAddress}
-                  onChange={() =>
-                    setdefaultShippingAddress(!defaultShippingAddress)
-                  }
-                  sx={{
-                    color: 'gray',
-                    '&.Mui-checked': {
-                      color: 'black',
-                    },
-                  }}
-                />
-              }
-              label="It is default Shipping address?"
-            />
-          </ThemeProvider>
-          <Button
-            variant="contained"
-            style={{ backgroundColor: 'black' }}
-            type="submit"
-            fullWidth
-            sx={{ mt: 2 }}
-            size="large"
+    <Container maxWidth="md" sx={{ mb: 4 }}>
+      <Paper
+        variant="outlined"
+        sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 }, bgcolor: '#f6f6f63b' }}
+      >
+        <div className={styles.container}>
+          <Avatar sx={{ m: 1, width: 46, height: 46, bgcolor: 'black' }}>
+            <Person />
+          </Avatar>
+          <Typography variant="h5">Sign Up</Typography>
+          <form
+            onSubmit={(event) =>
+              handleSubmit(event, signUpState, setErrors, navigate, setIsAuth)
+            }
           >
-            Sign Up
-          </Button>
-        </form>
-        <ToastContainer />
-        <Grid container>
-          <Grid item sx={{ mt: 2, mb: 2 }}>
-            <Link to="/login" className={styles.link}>
-              {'Have an account? Log In'}
-            </Link>
+            <ThemeProvider theme={customInputTheme(outerTheme)}>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sx={gridItemStyle}>
+                  <TextField
+                    label="Email"
+                    name="email"
+                    variant="standard"
+                    value={signUpData.email}
+                    onChange={handleInputChange}
+                    error={!!errors.email}
+                    helperText={errors.email}
+                    fullWidth
+                    margin="normal"
+                  />
+                </Grid>
+                <Grid item xs={12} sx={gridItemStyle}>
+                  <TextField
+                    label="Password"
+                    name="password"
+                    type="password"
+                    variant="standard"
+                    value={signUpData.password}
+                    onChange={handleInputChange}
+                    error={!!errors.password}
+                    helperText={errors.password}
+                    fullWidth
+                    margin="normal"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} sx={gridItemStyle}>
+                  <TextField
+                    label="First Name"
+                    name="firstName"
+                    variant="standard"
+                    value={signUpData.firstName}
+                    onChange={handleInputChange}
+                    error={!!errors.firstName}
+                    helperText={errors.firstName}
+                    fullWidth
+                    margin="normal"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} sx={gridItemStyle}>
+                  <TextField
+                    label="Last Name"
+                    name="lastName"
+                    variant="standard"
+                    value={signUpData.lastName}
+                    onChange={handleInputChange}
+                    error={!!errors.lastName}
+                    helperText={errors.lastName}
+                    fullWidth
+                    margin="normal"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Date of Birth"
+                    name="bd"
+                    required
+                    type="date"
+                    variant="standard"
+                    value={signUpData.bd}
+                    onChange={handleInputChange}
+                    error={!!errors.bd}
+                    helperText={errors.bd}
+                    fullWidth
+                    margin="normal"
+                    InputLabelProps={{ shrink: true }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        name="sameAddress"
+                        checked={signUpData.sameAddress}
+                        onChange={() =>
+                          setSignUpData({
+                            ...signUpData,
+                            sameAddress: !signUpData.sameAddress,
+                          })
+                        }
+                        sx={{
+                          color: 'gray',
+                          '&.Mui-checked': {
+                            color: 'black',
+                          },
+                        }}
+                      />
+                    }
+                    label="Use same address for billing and shipping"
+                  />
+                </Grid>
+                <Grid item xs={12} sx={gridItemStyle}>
+                  <Typography sx={{ fontWeight: 'bold' }} variant="h6" align='center' gutterBottom>
+                    Billing Address
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}  sx={gridItemStyle}>
+                  <TextField
+                    label=" Street"
+                    name="billingStreet"
+                    value={signUpData.billingStreet}
+                    onChange={handleInputChange}
+                    error={!!errors.billingStreet}
+                    helperText={errors.billingStreet}
+                    fullWidth
+                    margin="normal"
+                    variant="standard"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} sx={gridItemStyle}>
+                  <TextField
+                    label=" City"
+                    name="billingCity"
+                    value={signUpData.billingCity}
+                    onChange={handleInputChange}
+                    error={!!errors.billingCity}
+                    helperText={errors.billingCity}
+                    fullWidth
+                    margin="normal"
+                    variant="standard"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} sx={gridItemStyle}>
+                  <TextField
+                    label=" Postal Code"
+                    name="billingPostalCode"
+                    value={signUpData.billingPostalCode}
+                    onChange={handleInputChange}
+                    error={!!errors.billingPostalCode}
+                    helperText={errors.billingPostalCode}
+                    fullWidth
+                    margin="normal"
+                    variant="standard"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} sx={gridItemStyle}>
+                  <Autocomplete
+                    id="billing-country"
+                    options={[
+                      'Germany (DE)',
+                      'France (FR)',
+                      'United Kingdom (GB)',
+                      'Italy (IT)',
+                      'Spain (ES)',
+                      'Ukraine (UA)',
+                      'Poland (PL)',
+                      'Sweden (SE)',
+                      'Norway (NO)',
+                      'Finland (FI)',
+                      'Denmark (DK)',
+                      'Switzerland (CH)',
+                      'Austria (AT)',
+                      'Greece (GR)',
+                      'Portugal (PT)',
+                    ]}
+                    value={selectedBillingCountry}
+                    onChange={handleBillingCountryChange}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label=" Country"
+                        name="billing-country"
+                        variant="standard"
+                        error={!!errors.billingCountry}
+                        helperText={errors.billingCountry}
+                        fullWidth
+                        margin="normal"
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        name="default billing address"
+                        checked={defaultBillingAddress}
+                        onChange={() =>
+                          setdefaultBillingAddress(!defaultBillingAddress)
+                        }
+                        sx={{
+                          color: 'gray',
+                          '&.Mui-checked': {
+                            color: 'black',
+                          },
+                        }}
+                      />
+                    }
+                    label="It is default billing address?"
+                  />
+                </Grid>
+                <Grid item xs={12} sx={gridItemStyle}>
+                  <Typography sx={{ fontWeight: 'bold' }} variant="h6" align='center' gutterBottom>
+                  Shipping Address
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6} sx={gridItemStyle}>
+                  <TextField
+                    label="Street"
+                    name="shippingStreet"
+                    value={signUpData.shippingStreet}
+                    onChange={handleInputChange}
+                    fullWidth
+                    error={!!errors.shippingStreet}
+                    helperText={errors.shippingStreet}
+                    margin="normal"
+                    variant="standard"
+                    disabled={signUpData.sameAddress}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} sx={gridItemStyle}>
+                  <TextField
+                    label="City"
+                    name="shippingCity"
+                    value={signUpData.shippingCity}
+                    onChange={handleInputChange}
+                    fullWidth
+                    margin="normal"
+                    variant="standard"
+                    disabled={signUpData.sameAddress}
+                    error={!!errors.shippingCity}
+                    helperText={errors.shippingCity}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} sx={gridItemStyle}>
+                  <TextField
+                    label=" Postal Code"
+                    name="shippingPostalCode"
+                    value={signUpData.shippingPostalCode}
+                    onChange={handleInputChange}
+                    fullWidth
+                    margin="normal"
+                    variant="standard"
+                    disabled={signUpData.sameAddress}
+                    error={!!errors.shippingPostalCode}
+                    helperText={errors.shippingPostalCode}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} sx={gridItemStyle}>
+                  <Autocomplete
+                    id="shipping-country"
+                    options={[
+                      'Germany (DE)',
+                      'France (FR)',
+                      'United Kingdom (GB)',
+                      'Italy (IT)',
+                      'Spain (ES)',
+                      'Ukraine (UA)',
+                      'Poland (PL)',
+                      'Sweden (SE)',
+                      'Norway (NO)',
+                      'Finland (FI)',
+                      'Denmark (DK)',
+                      'Switzerland (CH)',
+                      'Austria (AT)',
+                      'Greece (GR)',
+                      'Portugal (PT)',
+                    ]}
+                    value={selectedShippingCountry}
+                    disabled={signUpData.sameAddress}
+                    onChange={handleShippingCountryChange}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Country"
+                        name="shipping-country"
+                        variant="standard"
+                        error={!!errors.shippingCountry}
+                        helperText={errors.shippingCountry}
+                        fullWidth
+                        margin="normal"
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        name="default shipping address"
+                        checked={defaultShippingAddress}
+                        onChange={() =>
+                          setdefaultShippingAddress(!defaultShippingAddress)
+                        }
+                        sx={{
+                          color: 'gray',
+                          '&.Mui-checked': {
+                            color: 'black',
+                          },
+                        }}
+                      />
+                    }
+                    label="It is default Shipping address?"
+                  />
+                </Grid>
+              </Grid>
+            </ThemeProvider>
+            <Button
+              variant="contained"
+              style={{ backgroundColor: 'black' }}
+              type="submit"
+              fullWidth
+              sx={{ mt: 2 }}
+              size="large"
+            >
+              Sign Up
+            </Button>
+          </form>
+          <ToastContainer />
+          <Grid container>
+            <Grid item sx={{ mt: 2, mb: 2 }}>
+              <Link to="/login" className={styles.link}>
+                {'Have an account? Log In'}
+              </Link>
+            </Grid>
           </Grid>
-        </Grid>
-      </div>
+        </div>
+      </Paper>
     </Container>
   );
 }

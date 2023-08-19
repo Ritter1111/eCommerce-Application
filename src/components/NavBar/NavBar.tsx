@@ -91,14 +91,21 @@ export default function NavBar() {
                   letterSpacing: '.2rem',
                 }}
               >
-                STORE
+                ETHNOWEAR
               </Typography>
             </Box>
           </Link>
-          <Box data-testid="menu-btn" onClick={() => toggleMenu()} sx={{ display: { xs: 'block', md: 'none' } }}>
-            {isMenuOpen ? <Close/> : <Menu/>}
+          <Box
+            data-testid="menu-btn"
+            onClick={() => toggleMenu()}
+            sx={{ display: { xs: 'block', md: 'none' } }}
+          >
+            {isMenuOpen ? <Close /> : <Menu />}
           </Box>
-          <Box data-testid="nav-menu" className={`${isMenuOpen ? classes.active : ''} ${classes.menu}`}>
+          <Box
+            data-testid="nav-menu"
+            className={`${isMenuOpen ? classes.active : ''} ${classes.menu}`}
+          >
             {routes.map((route, index) => (
               <NavLink
                 key={index}

@@ -1,4 +1,4 @@
-import { createTheme, outlinedInputClasses, Theme } from '@mui/material';
+import { createTheme, Theme } from '@mui/material';
 
 export const customInputTheme = (outerTheme: Theme) =>
   createTheme({
@@ -6,6 +6,16 @@ export const customInputTheme = (outerTheme: Theme) =>
       mode: outerTheme.palette.mode,
     },
     components: {
+      MuiInput: {
+        styleOverrides: {
+          underline: {
+            '&:after': {
+              borderBottomColor: 'black',
+            },
+          },
+        },
+      },
+
       MuiTextField: {
         styleOverrides: {
           root: {
@@ -24,10 +34,10 @@ export const customInputTheme = (outerTheme: Theme) =>
             borderColor: 'var(--TextField-brandBorderColor)',
           },
           root: {
-            [`&:hover .${outlinedInputClasses.notchedOutline}`]: {
+            [`&:hover .MuiOutlinedInput-notchedOutline`]: {
               borderColor: 'var(--TextField-brandBorderHoverColor)',
             },
-            [`&.Mui-focused .${outlinedInputClasses.notchedOutline}`]: {
+            [`&.Mui-focused .MuiOutlinedInput-notchedOutline`]: {
               borderColor: 'var(--TextField-brandBorderFocusedColor)',
             },
           },

@@ -69,17 +69,20 @@ export const refreshToken = async ({
   refreshToken,
 }: Partial<IDataCustomer>) => {
   try {
-    const response = await fetch(`${process.env.REACT_APP_CTP_AUTH_URL}/oauth/token`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Basic ${encodedCredentials}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        grant_type: 'refresh_token',
-        refresh_token: `${refreshToken}`,
-      }),
-    });
+    const response = await fetch(
+      `${process.env.REACT_APP_CTP_AUTH_URL}/oauth/token`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Basic ${encodedCredentials}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          grant_type: 'refresh_token',
+          refresh_token: `${refreshToken}`,
+        }),
+      }
+    );
     return response.json();
   } catch (error) {
     console.error('Error getting refresh token:', error);
