@@ -16,6 +16,7 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 import 'react-toastify/dist/ReactToastify.css';
 import { formFieldsDefault } from '../../../utils/consts';
 import { getCustometWithToken } from '../../../utils/getCustomer';
+
 import { AuthContext } from '../../../context';
 import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
@@ -126,10 +127,14 @@ export default function LogIn() {
       setMessagePassword('');
     } else if (!validateCapitalChar(newPassword)) {
       setErrorPassword(true);
-      setMessagePassword('Password should contain at least one uppercase letter');
+      setMessagePassword(
+        'Password should contain at least one uppercase letter'
+      );
     } else if (!validateLowerChar(newPassword)) {
       setErrorPassword(true);
-      setMessagePassword('Password should contain at least one lowercase letter');
+      setMessagePassword(
+        'Password should contain at least one lowercase letter'
+      );
     } else if (!validateSpecialChar(newPassword)) {
       setErrorPassword(true);
       setMessagePassword(
@@ -140,7 +145,9 @@ export default function LogIn() {
       setMessagePassword('Password must contain at least one digit (0-9).');
     } else if (!validatePasswordSpaces(newPassword)) {
       setErrorPassword(true);
-      setMessagePassword('Password must not contain leading or trailing whitespace.');
+      setMessagePassword(
+        'Password must not contain leading or trailing whitespace.'
+      );
     } else if (!validateLengthPassword(newPassword)) {
       setErrorPassword(true);
       setMessagePassword('Password must be at least 8 characters long.');
@@ -150,7 +157,7 @@ export default function LogIn() {
   return (
     <Container maxWidth="xs">
       <div className={styles.container}>
-        <Avatar sx={{ m: 1, width: 46, height: 46, bgcolor: 'text.disabled' }}>
+        <Avatar sx={{ m: 1, width: 46, height: 46, bgcolor: 'black' }}>
           <LockOpenIcon />
         </Avatar>
         <Typography variant="h5">Log in</Typography>
@@ -158,7 +165,7 @@ export default function LogIn() {
           <TextField
             label="Email"
             name="email"
-            variant="outlined"
+            variant="standard"
             margin="normal"
             fullWidth
             error={error || errorEmail}
@@ -174,7 +181,7 @@ export default function LogIn() {
           <TextField
             label="Password"
             type={showPassword ? 'text' : 'password'}
-            variant="outlined"
+            variant="standard"
             fullWidth
             error={error || errorPassword}
             helperText={errorMessage.password || passwordError}

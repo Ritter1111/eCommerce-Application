@@ -1,6 +1,6 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter } from 'react-router-dom';
 import '@testing-library/jest-dom/extend-expect';
 import { AuthContext } from '../../context';
 import NavBar from './NavBar';
@@ -53,7 +53,6 @@ describe('NavBar component', () => {
 
     fireEvent.click(menuButton);
     expect(menu).not.toHaveClass('active menu MuiBox-root css-0');
-
   });
 
   it('logs out when authenticated', () => {
