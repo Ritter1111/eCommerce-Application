@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { AppBar, Container, Typography, Box, Button } from '@mui/material';
+import React, { useContext, useEffect, useState, useRef  } from 'react';
+import { AppBar, Container, Typography, Box } from '@mui/material';
 import { Link, NavLink } from 'react-router-dom';
 import classes from './NavBar.module.css';
 import './pageLinks.css';
@@ -22,7 +22,9 @@ import routes from '../../utils/routes';
 export default function NavBar() {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const { isAuth, setIsAuth } = useContext(AuthContext);
-  document.body.style.overflowY = `${isMenuOpen ? 'hidden' : 'auto'}`;
+  const menuRef = useRef<HTMLDivElement | null>(null);
+
+  document.body.style.overflowY = isMenuOpen ? 'hidden' : 'auto';
 
   const closeMenu = () => {
     setMenuOpen(false);
@@ -37,16 +39,25 @@ export default function NavBar() {
     localStorage.clear();
   };
 
-  // close burger menu if it was open and screen width >= 900
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 900 && isMenuOpen) {
         closeMenu();
       }
     };
+
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (menuRef.current && !(event.target instanceof Node && menuRef.current.contains(event.target))) {
+        closeMenu();
+      }
+    };
+
     window.addEventListener('resize', handleResize);
+    document.addEventListener('mousedown', handleOutsideClick);
+
     return () => {
       window.removeEventListener('resize', handleResize);
+      document.removeEventListener('mousedown', handleOutsideClick);
     };
   }, [isMenuOpen]);
 
@@ -98,12 +109,13 @@ export default function NavBar() {
           <Box
             data-testid="menu-btn"
             onClick={() => toggleMenu()}
-            sx={{ display: { xs: 'block', md: 'none' } }}
+            sx={{ display: { xs: 'block', md: 'none'}, position: 'relative', zIndex: 1000, right: '0' }}
           >
             {isMenuOpen ? <Close /> : <Menu />}
           </Box>
           <Box
             data-testid="nav-menu"
+            ref={menuRef}
             className={`${isMenuOpen ? classes.active : ''} ${classes.menu}`}
           >
             {routes.map((route, index) => (
@@ -118,17 +130,18 @@ export default function NavBar() {
               </NavLink>
             ))}
             {isAuth ? (
-              <Button
+              <NavLink
                 onClick={() => {
                   logout();
                   closeMenu();
                 }}
+                to={MAIN_ROUTE}
                 className={classes.btn}
-                sx={{ color: 'black', textTransform: 'none' }}
+                title="Log In"
               >
-                <Logout sx={{ mr: 0.5 }} />
+              <Logout sx={{ mr: 0.5 }} />
                 Logout
-              </Button>
+              </NavLink>
             ) : (
               <>
                 <NavLink
