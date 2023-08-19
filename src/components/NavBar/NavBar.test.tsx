@@ -13,7 +13,7 @@ describe('NavBar component', () => {
       </BrowserRouter>
     );
 
-    expect(getByText(/store/i)).toBeInTheDocument();
+    expect(getByText(/ethnowear/i)).toBeInTheDocument();
     expect(getByText(/home/i)).toBeInTheDocument();
     expect(getByText(/log in/i)).toBeInTheDocument();
     expect(getByText(/sign up/i)).toBeInTheDocument();

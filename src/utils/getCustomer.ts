@@ -22,22 +22,28 @@ export async function getCustometWithToken(
       email: data.email,
       password: data.password,
     });
-    const myCustomer = await getCustomer({
-      accessToken: token.access_token,
-      email: data.email,
-      password: data.password,
-    });
 
+    if(token.statusCode === statusCodes.BAD_REQUEST) {
     if (setError && setErrorMessage) {
-      if (token.statusCode === statusCodes.BAD_REQUEST) {
+      // if (token.statusCode === statusCodes.BAD_REQUEST) {
         errorNotify(token.message);
         setError(true);
         setErrorMessage({
           email: '',
           password: 'Incorect password or email',
         });
-      }
+      // }
     }
+    return
+  }
+
+
+    const myCustomer = await getCustomer({
+      accessToken: token.access_token,
+      email: data.email,
+      password: data.password,
+    });
+
 
     if (myCustomer.customer.id) {
       navigate('/');

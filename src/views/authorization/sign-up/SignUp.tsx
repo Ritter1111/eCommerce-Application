@@ -123,11 +123,11 @@ export default function SignUp() {
     <Container maxWidth="md" sx={{ mb: 4 }}>
       <Paper
         variant="outlined"
-        sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 }, bgcolor: '#f6f6f63b' }}
+        sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 }, bgcolor: '#f6f6f63b', boxShadow: '0 2px 7px -4px #222;' }}
       >
         <div className={styles.container}>
-          <Avatar sx={{ m: 1, width: 46, height: 46, bgcolor: 'black' }}>
-            <Person />
+          <Avatar sx={{ m: 1, width: 46, height: 46, bgcolor: 'white' }}>
+            <Person sx={{color: 'black'}}/>
           </Avatar>
           <Typography variant="h5">Sign Up</Typography>
           <form
@@ -194,7 +194,6 @@ export default function SignUp() {
                   <TextField
                     label="Date of Birth"
                     name="bd"
-                    required
                     type="date"
                     variant="standard"
                     value={signUpData.bd}
