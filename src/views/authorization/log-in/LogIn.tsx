@@ -7,8 +7,8 @@ import {
   Avatar,
   ThemeProvider,
   useTheme,
+  Grid
 } from '@mui/material';
-import Grid from '@mui/material/Grid';
 import styles from './LogIn.module.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
@@ -17,7 +17,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { formFieldsDefault } from '../../../utils/consts';
 import { getCustometWithToken } from '../../../utils/getCustomer';
 import { AuthContext } from '../../../context';
-import { customInputTheme } from '../../../components/custom-input-theme';
+import { customInputTheme } from '../../../utils/custom-input-theme'
 import {
   validateCapitalChar,
   validateContainsAtSymbol,

@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { ISignUpData } from '../../../interfaces/signup.interface';
-import { customInputTheme } from '../../../components/custom-input-theme';
+import { customInputTheme } from '../../../utils/custom-input-theme'
 import styles from './SignUp.module.css';
 import { handleSubmit } from './Api-Signup';
 import { ToastContainer } from 'react-toastify';
