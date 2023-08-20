@@ -87,8 +87,8 @@ export default function SignUp() {
   };
 
   const gridItemStyle = {
-    marginTop: "-0.5rem",
-    marginBottom: "-0.5rem",
+    marginTop: '-0.5rem',
+    marginBottom: '-0.5rem',
   };
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -123,11 +123,16 @@ export default function SignUp() {
     <Container maxWidth="md" sx={{ mb: 4 }}>
       <Paper
         variant="outlined"
-        sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 }, bgcolor: '#f6f6f63b', boxShadow: '0 2px 7px -4px #222;' }}
+        sx={{
+          my: { xs: 3, md: 6 },
+          p: { xs: 2, md: 3 },
+          bgcolor: '#f6f6f63b',
+          boxShadow: '0 2px 7px -4px #222;',
+        }}
       >
         <div className={styles.container}>
           <Avatar sx={{ m: 1, width: 46, height: 46, bgcolor: 'white' }}>
-            <Person sx={{color: 'black'}}/>
+            <Person sx={{ color: 'black' }} />
           </Avatar>
           <Typography variant="h5">Sign Up</Typography>
           <form
@@ -229,11 +234,16 @@ export default function SignUp() {
                   />
                 </Grid>
                 <Grid item xs={12} sx={gridItemStyle}>
-                  <Typography sx={{ fontWeight: 'bold' }} variant="h6" align='center' gutterBottom>
+                  <Typography
+                    sx={{ fontWeight: 'bold' }}
+                    variant="h6"
+                    align="center"
+                    gutterBottom
+                  >
                     Billing Address
                   </Typography>
                 </Grid>
-                <Grid item xs={12} sm={6}  sx={gridItemStyle}>
+                <Grid item xs={12} sm={6} sx={gridItemStyle}>
                   <TextField
                     label=" Street"
                     name="billingStreet"
@@ -329,8 +339,13 @@ export default function SignUp() {
                   />
                 </Grid>
                 <Grid item xs={12} sx={gridItemStyle}>
-                  <Typography sx={{ fontWeight: 'bold' }} variant="h6" align='center' gutterBottom>
-                  Shipping Address
+                  <Typography
+                    sx={{ fontWeight: 'bold' }}
+                    variant="h6"
+                    align="center"
+                    gutterBottom
+                  >
+                    Shipping Address
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={6} sx={gridItemStyle}>

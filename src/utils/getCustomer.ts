@@ -25,25 +25,21 @@ export async function getCustometWithToken(
 
     if(token.statusCode === statusCodes.BAD_REQUEST) {
     if (setError && setErrorMessage) {
-      // if (token.statusCode === statusCodes.BAD_REQUEST) {
         errorNotify(token.message);
         setError(true);
         setErrorMessage({
           email: '',
           password: 'Incorect password or email',
         });
-      // }
     }
-    return
+    return;
   }
-
 
     const myCustomer = await getCustomer({
       accessToken: token.access_token,
       email: data.email,
       password: data.password,
     });
-
 
     if (myCustomer.customer.id) {
       navigate('/');

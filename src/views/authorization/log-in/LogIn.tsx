@@ -157,7 +157,7 @@ export default function LogIn() {
     <Container maxWidth="xs">
       <div className={styles.container}>
         <Avatar sx={{ m: 1, width: 46, height: 46, bgcolor: 'white' }}>
-          <LockOpenIcon sx={{color: 'black'}}/>
+          <LockOpenIcon sx={{ color: 'black' }} />
         </Avatar>
         <Typography variant="h5">Log in</Typography>
         <ThemeProvider theme={customInputTheme(outerTheme)}>
