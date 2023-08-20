@@ -5,6 +5,11 @@ export interface IDataCustomer {
   password: string
 }
 
+export interface PasswordInputProps {
+  showPassword: boolean;
+  handleClickShowPassword: () => void;
+}
+
 export interface IDataForm {
   email: string,
   password: string

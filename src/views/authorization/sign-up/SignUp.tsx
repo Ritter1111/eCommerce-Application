@@ -15,12 +15,13 @@ import {
 } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { ISignUpData } from '../../../interfaces/signup.interface';
-import { customInputTheme } from '../../../components/custom-input-theme';
+import { customInputTheme } from '../../../utils/custom-input-theme'
 import styles from './SignUp.module.css';
 import { handleSubmit } from './Api-Signup';
 import { ToastContainer } from 'react-toastify';
 import { AuthContext } from '../../../context';
 import { Person } from '@mui/icons-material';
+import PasswordVisibility from '../log-in/PasswordVisibility';
 
 export default function SignUp() {
   const [signUpData, setSignUpData] = useState<ISignUpData>({
@@ -71,10 +72,15 @@ export default function SignUp() {
   >(null);
   const [defaultBillingAddress, setdefaultBillingAddress] = useState(false);
   const [defaultShippingAddress, setdefaultShippingAddress] = useState(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const { setIsAuth } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const outerTheme = useTheme();
+
+  function handleClickShowPassword() {
+    setShowPassword((prev) => !prev);
+  }
 
   const signUpState = {
     signUpData,
@@ -87,8 +93,8 @@ export default function SignUp() {
   };
 
   const gridItemStyle = {
-    marginTop: "-0.5rem",
-    marginBottom: "-0.5rem",
+    marginTop: '-0.5rem',
+    marginBottom: '-0.5rem',
   };
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -123,11 +129,16 @@ export default function SignUp() {
     <Container maxWidth="md" sx={{ mb: 4 }}>
       <Paper
         variant="outlined"
-        sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 }, bgcolor: '#f6f6f63b' }}
+        sx={{
+          my: { xs: 3, md: 6 },
+          p: { xs: 2, md: 3 },
+          bgcolor: '#f6f6f63b',
+          boxShadow: '0 2px 7px -4px #222;',
+        }}
       >
         <div className={styles.container}>
-          <Avatar sx={{ m: 1, width: 46, height: 46, bgcolor: 'black' }}>
-            <Person />
+          <Avatar sx={{ m: 1, width: 46, height: 46, bgcolor: 'white' }}>
+            <Person sx={{ color: 'black' }} />
           </Avatar>
           <Typography variant="h5">Sign Up</Typography>
           <form
@@ -137,7 +148,7 @@ export default function SignUp() {
           >
             <ThemeProvider theme={customInputTheme(outerTheme)}>
               <Grid container spacing={2}>
-                <Grid item xs={12} sx={gridItemStyle}>
+                <Grid item xs={12}  sm={6} sx={gridItemStyle}>
                   <TextField
                     label="Email"
                     name="email"
@@ -150,11 +161,11 @@ export default function SignUp() {
                     margin="normal"
                   />
                 </Grid>
-                <Grid item xs={12} sx={gridItemStyle}>
+                <Grid item xs={12}  sm={6} sx={gridItemStyle}>
                   <TextField
                     label="Password"
                     name="password"
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     variant="standard"
                     value={signUpData.password}
                     onChange={handleInputChange}
@@ -162,6 +173,14 @@ export default function SignUp() {
                     helperText={errors.password}
                     fullWidth
                     margin="normal"
+                    InputProps={{
+                      endAdornment: (
+                        <PasswordVisibility
+                          showPassword={showPassword}
+                          handleClickShowPassword={handleClickShowPassword}
+                        />
+                      ),
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6} sx={gridItemStyle}>
@@ -194,7 +213,6 @@ export default function SignUp() {
                   <TextField
                     label="Date of Birth"
                     name="bd"
-                    required
                     type="date"
                     variant="standard"
                     value={signUpData.bd}
@@ -230,11 +248,16 @@ export default function SignUp() {
                   />
                 </Grid>
                 <Grid item xs={12} sx={gridItemStyle}>
-                  <Typography sx={{ fontWeight: 'bold' }} variant="h6" align='center' gutterBottom>
+                  <Typography
+                    sx={{ fontWeight: 'bold' }}
+                    variant="h6"
+                    align="center"
+                    gutterBottom
+                  >
                     Billing Address
                   </Typography>
                 </Grid>
-                <Grid item xs={12} sm={6}  sx={gridItemStyle}>
+                <Grid item xs={12} sm={6} sx={gridItemStyle}>
                   <TextField
                     label=" Street"
                     name="billingStreet"
@@ -330,8 +353,13 @@ export default function SignUp() {
                   />
                 </Grid>
                 <Grid item xs={12} sx={gridItemStyle}>
-                  <Typography sx={{ fontWeight: 'bold' }} variant="h6" align='center' gutterBottom>
-                  Shipping Address
+                  <Typography
+                    sx={{ fontWeight: 'bold' }}
+                    variant="h6"
+                    align="center"
+                    gutterBottom
+                  >
+                    Shipping Address
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={6} sx={gridItemStyle}>

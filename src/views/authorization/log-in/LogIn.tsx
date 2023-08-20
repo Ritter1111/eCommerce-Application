@@ -7,8 +7,8 @@ import {
   Avatar,
   ThemeProvider,
   useTheme,
+  Grid
 } from '@mui/material';
-import Grid from '@mui/material/Grid';
 import styles from './LogIn.module.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
@@ -16,13 +16,8 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 import 'react-toastify/dist/ReactToastify.css';
 import { formFieldsDefault } from '../../../utils/consts';
 import { getCustometWithToken } from '../../../utils/getCustomer';
-
 import { AuthContext } from '../../../context';
-import IconButton from '@mui/material/IconButton';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { customInputTheme } from '../../../components/custom-input-theme';
-import InputAdornment from '@mui/material/InputAdornment';
+import { customInputTheme } from '../../../utils/custom-input-theme'
 import {
   validateCapitalChar,
   validateContainsAtSymbol,
@@ -36,6 +31,7 @@ import {
   validateSpecialChar,
 } from './Validate-Login';
 import { errorNotify } from '../../../utils/ErrorPupUp';
+import PasswordVisibility from './PasswordVisibility';
 
 export default function LogIn() {
   const [data, setData] = useState(formFieldsDefault);
@@ -157,8 +153,8 @@ export default function LogIn() {
   return (
     <Container maxWidth="xs">
       <div className={styles.container}>
-        <Avatar sx={{ m: 1, width: 46, height: 46, bgcolor: 'black' }}>
-          <LockOpenIcon />
+        <Avatar sx={{ m: 1, width: 46, height: 46, bgcolor: 'white' }}>
+          <LockOpenIcon sx={{ color: 'black' }} />
         </Avatar>
         <Typography variant="h5">Log in</Typography>
         <ThemeProvider theme={customInputTheme(outerTheme)}>
@@ -195,15 +191,10 @@ export default function LogIn() {
             }}
             InputProps={{
               endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    edge="end"
-                  >
-                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
+                <PasswordVisibility
+                  showPassword={showPassword}
+                  handleClickShowPassword={handleClickShowPassword}
+                />
               ),
             }}
           />

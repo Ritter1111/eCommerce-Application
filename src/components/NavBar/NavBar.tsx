@@ -62,7 +62,11 @@ export default function NavBar() {
   }, [isMenuOpen]);
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: 'black' }} elevation={0}>
+    <AppBar
+      position="static"
+      sx={{ backgroundColor: 'white', boxShadow: '0 4px 6px -6px #222;' }}
+      elevation={0}
+    >
       <Container
         maxWidth="xl"
         sx={{ height: 63, display: 'flex', alignItems: 'center' }}
@@ -91,7 +95,7 @@ export default function NavBar() {
                 color: 'white',
               }}
             >
-              <ShoppingBag sx={{ mr: 1 }} />
+              <ShoppingBag sx={{ mr: 1, color: '#212121' }} />
               <Typography
                 variant="h6"
                 noWrap
@@ -100,6 +104,7 @@ export default function NavBar() {
                   fontFamily: 'monospace',
                   fontWeight: 700,
                   letterSpacing: '.2rem',
+                  color: '#212121',
                 }}
               >
                 ETHNOWEAR
@@ -109,7 +114,7 @@ export default function NavBar() {
           <Box
             data-testid="menu-btn"
             onClick={() => toggleMenu()}
-            sx={{ display: { xs: 'block', md: 'none'}, position: 'relative', zIndex: 1000, right: '0' }}
+            sx={{ color: '#212121',  display: { xs: 'block', md: 'none'}, position: 'relative', zIndex: 1000, right: '0' }}
           >
             {isMenuOpen ? <Close /> : <Menu />}
           </Box>
