@@ -21,6 +21,7 @@ import { handleSubmit } from './Api-Signup';
 import { ToastContainer } from 'react-toastify';
 import { AuthContext } from '../../../context';
 import { Person } from '@mui/icons-material';
+import PasswordVisibility from '../log-in/PasswordVisibility';
 
 export default function SignUp() {
   const [signUpData, setSignUpData] = useState<ISignUpData>({
@@ -71,10 +72,15 @@ export default function SignUp() {
   >(null);
   const [defaultBillingAddress, setdefaultBillingAddress] = useState(false);
   const [defaultShippingAddress, setdefaultShippingAddress] = useState(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const { setIsAuth } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const outerTheme = useTheme();
+
+  function handleClickShowPassword() {
+    setShowPassword((prev) => !prev);
+  }
 
   const signUpState = {
     signUpData,
@@ -142,7 +148,7 @@ export default function SignUp() {
           >
             <ThemeProvider theme={customInputTheme(outerTheme)}>
               <Grid container spacing={2}>
-                <Grid item xs={12} sx={gridItemStyle}>
+                <Grid item xs={12}  sm={6} sx={gridItemStyle}>
                   <TextField
                     label="Email"
                     name="email"
@@ -155,11 +161,11 @@ export default function SignUp() {
                     margin="normal"
                   />
                 </Grid>
-                <Grid item xs={12} sx={gridItemStyle}>
+                <Grid item xs={12}  sm={6} sx={gridItemStyle}>
                   <TextField
                     label="Password"
                     name="password"
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     variant="standard"
                     value={signUpData.password}
                     onChange={handleInputChange}
@@ -167,6 +173,14 @@ export default function SignUp() {
                     helperText={errors.password}
                     fullWidth
                     margin="normal"
+                    InputProps={{
+                      endAdornment: (
+                        <PasswordVisibility
+                          showPassword={showPassword}
+                          handleClickShowPassword={handleClickShowPassword}
+                        />
+                      ),
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6} sx={gridItemStyle}>
