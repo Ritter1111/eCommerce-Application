@@ -9,9 +9,12 @@ const Home = () => {
     <Container maxWidth="xl">
       <Box sx={{
         display: 'flex',
-        flexDirection: 'column',
+        flexDirection: {xs: 'column', md: 'row'},
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+        flexWrap: 'wrap',
+        gap: '30px',
         mt: 4,
-        rowGap: '10px',
         }}>
       {routes.map((route, index) => (
         <Link
