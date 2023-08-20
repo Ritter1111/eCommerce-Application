@@ -1,5 +1,6 @@
+import AboutUs from "../views/about-us/AboutUs";
 import Home from "../views/home/Home";
-import {  MAIN_ROUTE } from "./consts";
+import { ABOUTUS_ROUTE, MAIN_ROUTE } from "./consts";
 
 const routes = [
   {
@@ -7,6 +8,12 @@ const routes = [
     path: MAIN_ROUTE,
     element: Home,
     title: "Go to Home"
+  },
+  {
+    name: 'About Us',
+    path: ABOUTUS_ROUTE,
+    element: AboutUs,
+    title: "About Us"
   },
 ];
 
