@@ -1,20 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import AppRouter from './AppRouter';
+import { BrowserRouter } from 'react-router-dom';
+import NavBar from './NavBar/NavBar';
+import { AuthContext } from '../context';
 
-interface AppProps {
-  num1: number;
-  num2: number;
-}
+export default function App() {
+  const [isAuth, setIsAuth] = useState(false);
 
-const App: React.FC<AppProps> = ({ num1, num2 }) => {
-  const sum = num1 + num2;
+  useEffect(() => {
+    if (localStorage.getItem('authToken')) setIsAuth(true);
+  }, []);
 
   return (
-    <div>
-      <h1>
-        Sum of {num1} and {num2} is {sum}
-      </h1>
-    </div>
+    <AuthContext.Provider value={{ isAuth, setIsAuth }}>
+      <BrowserRouter>
+        <NavBar />
+        <AppRouter />
+      </BrowserRouter>
+    </AuthContext.Provider>
   );
-};
-
-export default App;
+}

@@ -1,0 +1,15 @@
+.container {  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 3.5rem;
+}
+
+.link {
+  color: black;
+  font-size: 14px;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
