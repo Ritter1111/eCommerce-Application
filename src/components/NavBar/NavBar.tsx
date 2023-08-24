@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useRef  } from 'react';
+import React, { useContext, useEffect, useState, useRef } from 'react';
 import { AppBar, Container, Typography, Box } from '@mui/material';
 import { Link, NavLink } from 'react-router-dom';
 import classes from './NavBar.module.css';
@@ -47,7 +47,12 @@ export default function NavBar() {
     };
 
     const handleOutsideClick = (event: MouseEvent) => {
-      if (menuRef.current && !(event.target instanceof Node && menuRef.current.contains(event.target))) {
+      if (
+        menuRef.current &&
+        !(
+          event.target instanceof Node && menuRef.current.contains(event.target)
+        )
+      ) {
         closeMenu();
       }
     };
@@ -114,7 +119,13 @@ export default function NavBar() {
           <Box
             data-testid="menu-btn"
             onClick={() => toggleMenu()}
-            sx={{ color: '#212121',  display: { xs: 'block', md: 'none'}, position: 'relative', zIndex: 1000, right: '0' }}
+            sx={{
+              color: '#212121',
+              display: { xs: 'block', md: 'none' },
+              position: 'relative',
+              zIndex: 1000,
+              right: '0',
+            }}
           >
             {isMenuOpen ? <Close /> : <Menu />}
           </Box>
@@ -144,7 +155,7 @@ export default function NavBar() {
                 className={classes.btn}
                 title="Log In"
               >
-              <Logout sx={{ mr: 0.5 }} />
+                <Logout sx={{ mr: 0.5 }} />
                 Logout
               </NavLink>
             ) : (

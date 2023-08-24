@@ -49,10 +49,12 @@ export function validateForm(
   ) {
     newErrors.password = 'Password should have at least 8 characters';
   } else if (
-    !/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/.test(signUpState.signUpData.password)
+    !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[ -/:@[-`{-~])/.test(
+      signUpState.signUpData.password
+    )
   ) {
     newErrors.password =
-      'Password should have at least one uppercase letter, one lowercase letter, and one number';
+      'Password should have at least one uppercase letter, one lowercase letter, one number, and one special character (e.g., !@#$%^&*)';
   }
   if (!signUpState.signUpData.firstName) {
     newErrors.firstName = 'First name is required';
