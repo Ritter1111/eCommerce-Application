@@ -41,13 +41,25 @@ export default function UserProfile() {
     null
   );
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
+  const [firstName, setFirstName] = useState<string>(
+    userState.customer.firstName
+  );
+  const [lastName, setLastName] = useState<string>(userState.customer.lastName);
+  const [email, setEmail] = useState<string>(userState.customer.email);
+  const [dateOfBirth, setdateOfBirth] = useState<string>(
+    userState.customer.dateOfBirth
+  );
+  const [currentPassword, setCurrentPassword] = useState<string>('');
+  const [newPassword, setNewPassword] = useState<string>('');
   const addresses = userState.customer.addresses;
   const billingAddressesId = userState.customer.billingAddressIds;
   const shippingAddressesId = userState.customer.shippingAddressIds;
-  const billingAddresses: Iaddress[] = [];
-  const shippingAddresses: Iaddress[] = [];
+  const defaultBillingAddressId = userState.customer.defaultBillingAddressId;
+  const defaultShippingAddressId = userState.customer.defaultShippingAddressId;
+  const billingAddresses: IAddress[] = [];
+  const shippingAddresses: IAddress[] = [];
 
-  interface Iaddress {
+  interface IAddress {
     city: string;
     country: string;
     id: string;
@@ -55,7 +67,7 @@ export default function UserProfile() {
     streetName: string;
   }
 
-  addresses.forEach((address: Iaddress) => {
+  addresses.forEach((address: IAddress) => {
     if (address.id.includes(billingAddressesId)) {
       billingAddresses.push(address);
     }
@@ -123,8 +135,14 @@ export default function UserProfile() {
                       variant="standard"
                       fullWidth
                       margin="normal"
-                      defaultValue={userState.customer.firstName}
+                      value={firstName}
                       disabled={!changeName}
+                      onChange={(
+                        event: React.ChangeEvent<HTMLInputElement>
+                      ) => {
+                        const { value } = event.target;
+                        setFirstName(value);
+                      }}
                     />
                   </Grid>
                   {!changeName && (
@@ -139,7 +157,12 @@ export default function UserProfile() {
                       <IconButton>
                         <CheckOutlinedIcon />
                       </IconButton>
-                      <IconButton onClick={() => setChangeName(false)}>
+                      <IconButton
+                        onClick={() => {
+                          setChangeName(false);
+                          setFirstName(userState.customer.firstName);
+                        }}
+                      >
                         <CancelOutlinedIcon />
                       </IconButton>
                     </Grid>
@@ -151,7 +174,13 @@ export default function UserProfile() {
                       variant="standard"
                       fullWidth
                       margin="normal"
-                      defaultValue={userState.customer.lastName}
+                      value={lastName}
+                      onChange={(
+                        event: React.ChangeEvent<HTMLInputElement>
+                      ) => {
+                        const { value } = event.target;
+                        setLastName(value);
+                      }}
                       disabled={!changeLastName}
                     />
                   </Grid>
@@ -167,7 +196,12 @@ export default function UserProfile() {
                       <IconButton>
                         <CheckOutlinedIcon />
                       </IconButton>
-                      <IconButton onClick={() => setChangeLastName(false)}>
+                      <IconButton
+                        onClick={() => {
+                          setChangeLastName(false);
+                          setLastName(userState.customer.lastName);
+                        }}
+                      >
                         <CancelOutlinedIcon />
                       </IconButton>
                     </Grid>
@@ -181,7 +215,13 @@ export default function UserProfile() {
                       fullWidth
                       margin="normal"
                       InputLabelProps={{ shrink: true }}
-                      defaultValue={userState.customer.dateOfBirth}
+                      value={dateOfBirth}
+                      onChange={(
+                        event: React.ChangeEvent<HTMLInputElement>
+                      ) => {
+                        const { value } = event.target;
+                        setdateOfBirth(value);
+                      }}
                       disabled={!changeBd}
                     />
                   </Grid>
@@ -197,7 +237,12 @@ export default function UserProfile() {
                       <IconButton>
                         <CheckOutlinedIcon />
                       </IconButton>
-                      <IconButton onClick={() => setChangeBd(false)}>
+                      <IconButton
+                        onClick={() => {
+                          setChangeBd(false);
+                          setdateOfBirth(userState.customer.dateOfBirth);
+                        }}
+                      >
                         <CancelOutlinedIcon />
                       </IconButton>
                     </Grid>
@@ -226,10 +271,25 @@ export default function UserProfile() {
                       key={i}
                     >
                       <Grid item xs={9} sm={5}>
+                        {address.id === defaultBillingAddressId && (
+                          <Typography
+                            variant="caption"
+                            align="left"
+                            sx={{
+                              backgroundColor: 'lightgray',
+                              color: 'white',
+                              padding: 0.3,
+                              borderRadius: 30,
+                            }}
+                          >
+                            default
+                          </Typography>
+                        )}
                         <Typography variant="body1" align="left">
                           {address.streetName}, {address.postalCode}{' '}
                           {address.city}, {address.country}
                         </Typography>
+                        {/* вызывать фун-ю по клику, открывать полэ для измененый з заполнеными полями данного адреса делать запрос по айдышныку */}
                       </Grid>
                       <Grid item xs={1} textAlign="end">
                         <IconButton
@@ -278,10 +338,25 @@ export default function UserProfile() {
                       key={i}
                     >
                       <Grid item xs={9} sm={5}>
+                        {address.id === defaultShippingAddressId && (
+                          <Typography
+                            variant="caption"
+                            align="left"
+                            sx={{
+                              backgroundColor: 'lightgray',
+                              color: 'white',
+                              padding: 0.3,
+                              borderRadius: 30,
+                            }}
+                          >
+                            default
+                          </Typography>
+                        )}
                         <Typography variant="body1" align="left">
                           {address.streetName}, {address.postalCode}{' '}
                           {address.city}, {address.country}
                         </Typography>
+                        {/* вызывать фун-ю по клику, открывать полэ для измененый з заполнеными полями данного адреса делать запрос по айдышныку */}
                       </Grid>
                       <Grid item xs={1} textAlign="end">
                         <IconButton
@@ -399,7 +474,13 @@ export default function UserProfile() {
                         style={{ borderColor: 'black', color: 'black' }}
                         sx={{ mt: 3, ml: 2 }}
                         size="small"
-                        onClick={() => setIsEditAddress(false)}
+                        onClick={() => {
+                          setIsEditAddress(false);
+                          setSelectedCity(null);
+                          setSelectedCountry(null);
+                          setSelectedPostalCode(null);
+                          setSelectedStreet(null);
+                        }}
                       >
                         Cancel
                       </Button>
@@ -416,6 +497,13 @@ export default function UserProfile() {
                       variant="standard"
                       fullWidth
                       margin="normal"
+                      value={email}
+                      onChange={(
+                        event: React.ChangeEvent<HTMLInputElement>
+                      ) => {
+                        const { value } = event.target;
+                        setEmail(value);
+                      }}
                       disabled={!changeEmail}
                     />
                   </Grid>
@@ -431,7 +519,12 @@ export default function UserProfile() {
                       <IconButton>
                         <CheckOutlinedIcon />
                       </IconButton>
-                      <IconButton onClick={() => setChangeEmail(false)}>
+                      <IconButton
+                        onClick={() => {
+                          setChangeEmail(false);
+                          setEmail(userState.customer.email);
+                        }}
+                      >
                         <CancelOutlinedIcon />
                       </IconButton>
                     </Grid>
@@ -455,6 +548,13 @@ export default function UserProfile() {
                       fullWidth
                       margin="normal"
                       disabled={!changePassword}
+                      value={currentPassword}
+                      onChange={(
+                        event: React.ChangeEvent<HTMLInputElement>
+                      ) => {
+                        const { value } = event.target;
+                        setCurrentPassword(value);
+                      }}
                       InputProps={{
                         endAdornment: (
                           <PasswordVisibility
@@ -476,6 +576,13 @@ export default function UserProfile() {
                       fullWidth
                       margin="normal"
                       disabled={!changePassword}
+                      value={newPassword}
+                      onChange={(
+                        event: React.ChangeEvent<HTMLInputElement>
+                      ) => {
+                        const { value } = event.target;
+                        setNewPassword(value);
+                      }}
                       InputProps={{
                         endAdornment: (
                           <PasswordVisibility
@@ -500,7 +607,13 @@ export default function UserProfile() {
                       <IconButton>
                         <CheckOutlinedIcon />
                       </IconButton>
-                      <IconButton onClick={() => setChangePassword(false)}>
+                      <IconButton
+                        onClick={() => {
+                          setChangePassword(false);
+                          setCurrentPassword('');
+                          setNewPassword('');
+                        }}
+                      >
                         <CancelOutlinedIcon />
                       </IconButton>
                     </Grid>
