@@ -11,19 +11,36 @@ import {
   Box,
   IconButton,
   Button,
+  Autocomplete,
 } from '@mui/material';
 import styles from './UserProfile.module.css';
 import { customInputTheme } from '../../utils/custom-input-theme';
 import BadgeIcon from '@mui/icons-material/Badge';
 import DriveFileRenameOutlineOutlinedIcon from '@mui/icons-material/DriveFileRenameOutlineOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import PasswordVisibility from '../authorization/log-in/PasswordVisibility';
 
 export default function UserProfile() {
   const userState = JSON.parse(localStorage.getItem('customer') || '');
   const [tabValue, setTabValue] = useState('1');
-  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showCurrentPassword, setShowCurrentPassword] =
+    useState<boolean>(false);
+  const [showNewPassword, setShowNewPassword] = useState<boolean>(false);
+  const [changePassword, setChangePassword] = useState<boolean>(false);
+  const [changeEmail, setChangeEmail] = useState<boolean>(false);
+  const [changeName, setChangeName] = useState<boolean>(false);
+  const [changeLastName, setChangeLastName] = useState<boolean>(false);
+  const [changeBd, setChangeBd] = useState<boolean>(false);
   const [isEditAddress, setIsEditAddress] = useState<boolean>(false);
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const [selectedStreet, setSelectedStreet] = useState<string | null>(null);
+  const [selectedPostalCode, setSelectedPostalCode] = useState<string | null>(
+    null
+  );
+  const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const addresses = userState.customer.addresses;
   const billingAddressesId = userState.customer.billingAddressIds;
   const shippingAddressesId = userState.customer.shippingAddressIds;
@@ -54,12 +71,15 @@ export default function UserProfile() {
     marginBottom: '-0.5rem',
   };
 
-  function handleClickShowPassword() {
-    setShowPassword((prev) => !prev);
-  }
-
   function handleTabChange(event: React.SyntheticEvent, newTabValue: string) {
     setTabValue(newTabValue);
+  }
+
+  function handleCountryChange(
+    event: React.ChangeEvent<object>,
+    value: string | null
+  ) {
+    setSelectedCountry(value);
   }
 
   return (
@@ -104,13 +124,26 @@ export default function UserProfile() {
                       fullWidth
                       margin="normal"
                       defaultValue={userState.customer.firstName}
+                      disabled={!changeName}
                     />
                   </Grid>
-                  <Grid item xs={1} textAlign="end">
-                    <IconButton>
-                      <DriveFileRenameOutlineOutlinedIcon />
-                    </IconButton>
-                  </Grid>
+                  {!changeName && (
+                    <Grid item xs={1} textAlign="end">
+                      <IconButton onClick={() => setChangeName(true)}>
+                        <DriveFileRenameOutlineOutlinedIcon />
+                      </IconButton>
+                    </Grid>
+                  )}
+                  {changeName && (
+                    <Grid item xs={1.5} textAlign="end">
+                      <IconButton>
+                        <CheckOutlinedIcon />
+                      </IconButton>
+                      <IconButton onClick={() => setChangeName(false)}>
+                        <CancelOutlinedIcon />
+                      </IconButton>
+                    </Grid>
+                  )}
                   <Grid item sm={6} xs={10}>
                     <TextField
                       label="Last Name"
@@ -119,13 +152,26 @@ export default function UserProfile() {
                       fullWidth
                       margin="normal"
                       defaultValue={userState.customer.lastName}
+                      disabled={!changeLastName}
                     />
                   </Grid>
-                  <Grid item xs={1} textAlign="end">
-                    <IconButton>
-                      <DriveFileRenameOutlineOutlinedIcon />
-                    </IconButton>
-                  </Grid>
+                  {!changeLastName && (
+                    <Grid item xs={1} textAlign="end">
+                      <IconButton onClick={() => setChangeLastName(true)}>
+                        <DriveFileRenameOutlineOutlinedIcon />
+                      </IconButton>
+                    </Grid>
+                  )}
+                  {changeLastName && (
+                    <Grid item xs={1.5} textAlign="end">
+                      <IconButton>
+                        <CheckOutlinedIcon />
+                      </IconButton>
+                      <IconButton onClick={() => setChangeLastName(false)}>
+                        <CancelOutlinedIcon />
+                      </IconButton>
+                    </Grid>
+                  )}
                   <Grid item sm={6} xs={10}>
                     <TextField
                       label="Date of Birth"
@@ -136,13 +182,26 @@ export default function UserProfile() {
                       margin="normal"
                       InputLabelProps={{ shrink: true }}
                       defaultValue={userState.customer.dateOfBirth}
+                      disabled={!changeBd}
                     />
                   </Grid>
-                  <Grid item xs={1} textAlign="end">
-                    <IconButton>
-                      <DriveFileRenameOutlineOutlinedIcon />
-                    </IconButton>
-                  </Grid>
+                  {!changeBd && (
+                    <Grid item xs={1} textAlign="end">
+                      <IconButton onClick={() => setChangeBd(true)}>
+                        <DriveFileRenameOutlineOutlinedIcon />
+                      </IconButton>
+                    </Grid>
+                  )}
+                  {changeBd && (
+                    <Grid item xs={1.5} textAlign="end">
+                      <IconButton>
+                        <CheckOutlinedIcon />
+                      </IconButton>
+                      <IconButton onClick={() => setChangeBd(false)}>
+                        <CancelOutlinedIcon />
+                      </IconButton>
+                    </Grid>
+                  )}
                 </Grid>
               </TabPanel>
               <TabPanel value="2">
@@ -166,15 +225,28 @@ export default function UserProfile() {
                       justifyContent="center"
                       key={i}
                     >
-                      <Grid item xs={10} sm={6}>
+                      <Grid item xs={9} sm={5}>
                         <Typography variant="body1" align="left">
                           {address.streetName}, {address.postalCode}{' '}
                           {address.city}, {address.country}
                         </Typography>
                       </Grid>
                       <Grid item xs={1} textAlign="end">
-                        <IconButton onClick={() => setIsEditAddress(true)}>
+                        <IconButton
+                          onClick={() => {
+                            setIsEditAddress(true);
+                            setSelectedCity(address.city);
+                            setSelectedCountry(address.country);
+                            setSelectedPostalCode(address.postalCode);
+                            setSelectedStreet(address.streetName);
+                          }}
+                        >
                           <DriveFileRenameOutlineOutlinedIcon />
+                        </IconButton>
+                      </Grid>
+                      <Grid item xs={1} textAlign="end">
+                        <IconButton>
+                          <DeleteOutlineOutlinedIcon />
                         </IconButton>
                       </Grid>
                     </Grid>
@@ -184,7 +256,7 @@ export default function UserProfile() {
                   container
                   alignItems="flex-end"
                   justifyContent="center"
-                  mt={3}
+                  mt={4}
                 >
                   <Grid item xs={11} sm={7}>
                     <Typography
@@ -205,22 +277,40 @@ export default function UserProfile() {
                       justifyContent="center"
                       key={i}
                     >
-                      <Grid item xs={10} sm={6}>
+                      <Grid item xs={9} sm={5}>
                         <Typography variant="body1" align="left">
                           {address.streetName}, {address.postalCode}{' '}
                           {address.city}, {address.country}
                         </Typography>
                       </Grid>
                       <Grid item xs={1} textAlign="end">
-                        <IconButton onClick={() => setIsEditAddress(true)}>
+                        <IconButton
+                          onClick={() => {
+                            setIsEditAddress(true);
+                            setSelectedCity(address.city);
+                            setSelectedCountry(address.country);
+                            setSelectedPostalCode(address.postalCode);
+                            setSelectedStreet(address.streetName);
+                          }}
+                        >
                           <DriveFileRenameOutlineOutlinedIcon />
+                        </IconButton>
+                      </Grid>
+                      <Grid item xs={1} textAlign="end">
+                        <IconButton>
+                          <DeleteOutlineOutlinedIcon />
                         </IconButton>
                       </Grid>
                     </Grid>
                   );
                 })}
                 {isEditAddress && (
-                  <Grid container alignItems="flex-end" justifyContent="center" sx={{ tran: 100 }}>
+                  <Grid
+                    container
+                    alignItems="flex-end"
+                    justifyContent="center"
+                    sx={{ tran: 100 }}
+                  >
                     <Grid item xs={11} sm={7} mt={3}>
                       <Typography
                         sx={{ fontWeight: 'bold' }}
@@ -234,37 +324,65 @@ export default function UserProfile() {
                     <Grid item xs={11} sm={7} sx={gridItemStyle}>
                       <TextField
                         label="Street"
-                        name="shippingStreet"
+                        name="street"
                         fullWidth
                         margin="normal"
                         variant="standard"
+                        value={selectedStreet}
                       />
                     </Grid>
                     <Grid item xs={11} sm={7} sx={gridItemStyle}>
                       <TextField
                         label="City"
-                        name="shippingCity"
+                        name="city"
                         fullWidth
                         margin="normal"
                         variant="standard"
+                        value={selectedCity}
                       />
                     </Grid>
                     <Grid item xs={11} sm={7} sx={gridItemStyle}>
                       <TextField
                         label="Postal Code"
-                        name="shippingPostalCode"
+                        name="postalCode"
                         fullWidth
                         margin="normal"
                         variant="standard"
+                        value={selectedPostalCode}
                       />
                     </Grid>
                     <Grid item xs={11} sm={7} sx={gridItemStyle}>
-                      <TextField
-                        label="Country"
-                        name="shipping-country"
-                        variant="standard"
-                        fullWidth
-                        margin="normal"
+                      <Autocomplete
+                        id="country"
+                        options={[
+                          'Germany (DE)',
+                          'France (FR)',
+                          'United Kingdom (GB)',
+                          'Italy (IT)',
+                          'Spain (ES)',
+                          'Ukraine (UA)',
+                          'Poland (PL)',
+                          'Sweden (SE)',
+                          'Norway (NO)',
+                          'Finland (FI)',
+                          'Denmark (DK)',
+                          'Switzerland (CH)',
+                          'Austria (AT)',
+                          'Greece (GR)',
+                          'Portugal (PT)',
+                        ]}
+                        value={selectedCountry}
+                        onChange={handleCountryChange}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Country"
+                            name="country"
+                            variant="standard"
+                            fullWidth
+                            margin="normal"
+                          />
+                        )}
                       />
                     </Grid>
                     <Grid item xs={11} sm={7} sx={gridItemStyle}>
@@ -298,36 +416,95 @@ export default function UserProfile() {
                       variant="standard"
                       fullWidth
                       margin="normal"
+                      disabled={!changeEmail}
                     />
                   </Grid>
-                  <Grid item xs={1} textAlign="end">
-                    <IconButton>
-                      <DriveFileRenameOutlineOutlinedIcon />
-                    </IconButton>
+                  {!changeEmail && (
+                    <Grid item xs={1} textAlign="end">
+                      <IconButton onClick={() => setChangeEmail(true)}>
+                        <DriveFileRenameOutlineOutlinedIcon />
+                      </IconButton>
+                    </Grid>
+                  )}
+                  {changeEmail && (
+                    <Grid item xs={1.5} textAlign="end">
+                      <IconButton>
+                        <CheckOutlinedIcon />
+                      </IconButton>
+                      <IconButton onClick={() => setChangeEmail(false)}>
+                        <CancelOutlinedIcon />
+                      </IconButton>
+                    </Grid>
+                  )}
+                  <Grid item xs={11} sm={7} mt={4}>
+                    <Typography
+                      sx={{ fontWeight: 'bold' }}
+                      variant="h6"
+                      align="left"
+                      gutterBottom
+                    >
+                      Reset password:
+                    </Typography>
                   </Grid>
-                  <Grid item sm={6} xs={10}>
+                  <Grid item sm={7} xs={11}>
                     <TextField
-                      label="Password"
+                      label="Current password"
                       name="password"
-                      type={showPassword ? 'text' : 'password'}
+                      type={showCurrentPassword ? 'text' : 'password'}
                       variant="standard"
                       fullWidth
                       margin="normal"
+                      disabled={!changePassword}
                       InputProps={{
                         endAdornment: (
                           <PasswordVisibility
-                            showPassword={showPassword}
-                            handleClickShowPassword={handleClickShowPassword}
+                            showPassword={showCurrentPassword}
+                            handleClickShowPassword={() =>
+                              setShowCurrentPassword(!showCurrentPassword)
+                            }
                           />
                         ),
                       }}
                     />
                   </Grid>
-                  <Grid item xs={1} textAlign="end">
-                    <IconButton>
-                      <DriveFileRenameOutlineOutlinedIcon />
-                    </IconButton>
+                  <Grid item sm={7} xs={11}>
+                    <TextField
+                      label="New password"
+                      name="password"
+                      type={showNewPassword ? 'text' : 'password'}
+                      variant="standard"
+                      fullWidth
+                      margin="normal"
+                      disabled={!changePassword}
+                      InputProps={{
+                        endAdornment: (
+                          <PasswordVisibility
+                            showPassword={showNewPassword}
+                            handleClickShowPassword={() =>
+                              setShowNewPassword(!showNewPassword)
+                            }
+                          />
+                        ),
+                      }}
+                    />
                   </Grid>
+                  {!changePassword && (
+                    <Grid item sm={7} xs={11} textAlign="start">
+                      <IconButton onClick={() => setChangePassword(true)}>
+                        <DriveFileRenameOutlineOutlinedIcon />
+                      </IconButton>
+                    </Grid>
+                  )}
+                  {changePassword && (
+                    <Grid item sm={7} xs={11} textAlign="start">
+                      <IconButton>
+                        <CheckOutlinedIcon />
+                      </IconButton>
+                      <IconButton onClick={() => setChangePassword(false)}>
+                        <CancelOutlinedIcon />
+                      </IconButton>
+                    </Grid>
+                  )}
                 </Grid>
               </TabPanel>
             </TabContext>
