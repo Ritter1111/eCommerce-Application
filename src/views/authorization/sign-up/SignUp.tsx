@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { ISignUpData } from '../../../interfaces/signup.interface';
-import { customInputTheme } from '../../../utils/custom-input-theme'
+import { customInputTheme } from '../../../utils/custom-input-theme';
 import styles from './SignUp.module.css';
 import { handleSubmit } from './Api-Signup';
 import { ToastContainer } from 'react-toastify';
@@ -148,7 +148,7 @@ export default function SignUp() {
           >
             <ThemeProvider theme={customInputTheme(outerTheme)}>
               <Grid container spacing={2}>
-                <Grid item xs={12}  sm={6} sx={gridItemStyle}>
+                <Grid item xs={12} sm={6} sx={gridItemStyle}>
                   <TextField
                     label="Email"
                     name="email"
@@ -161,7 +161,7 @@ export default function SignUp() {
                     margin="normal"
                   />
                 </Grid>
-                <Grid item xs={12}  sm={6} sx={gridItemStyle}>
+                <Grid item xs={12} sm={6} sx={gridItemStyle}>
                   <TextField
                     label="Password"
                     name="password"

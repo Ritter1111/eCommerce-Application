@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useRef  } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { AppBar, Container, Typography, Box } from '@mui/material';
 import { Link, NavLink } from 'react-router-dom';
 import classes from './NavBar.module.css';
@@ -104,12 +104,15 @@ export default function NavBar() {
           <Box
             data-testid="menu-btn"
             onClick={() => toggleMenu()}
-            sx={{ color: '#212121',  display: { xs: 'block', md: 'none'}}}
+            sx={{ color: '#212121', display: { xs: 'block', md: 'none' } }}
           >
             {isMenuOpen ? <Close /> : <Menu />}
           </Box>
-          <Box onClick={closeMenu} className={`${isMenuOpen ? classes.active : ''} ${classes.overlay}`}>
           <Box
+            onClick={closeMenu}
+            className={`${isMenuOpen ? classes.active : ''} ${classes.overlay}`}
+          >
+            <Box
               data-testid="nav-menu"
               onClick={(e) => e.stopPropagation()}
               className={`${isMenuOpen ? classes.active : ''} ${classes.menu}`}
@@ -135,7 +138,7 @@ export default function NavBar() {
                   className={classes.btn}
                   title="Log In"
                 >
-                <Logout sx={{ mr: 0.5 }} />
+                  <Logout sx={{ mr: 0.5 }} />
                   Logout
                 </NavLink>
               ) : (
@@ -162,7 +165,7 @@ export default function NavBar() {
               )}
             </Box>
           </Box>
-          </Box>
+        </Box>
       </Container>
     </AppBar>
   );

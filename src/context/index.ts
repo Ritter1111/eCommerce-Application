@@ -11,3 +11,15 @@ const initialValue = {
 }
 
 export const AuthContext = createContext<IAuthContext>(initialValue);
+
+type IAccessTolenContext = {
+  token: string;
+  setToken: (newState: string) => void
+}
+
+const IAccessTolenContext = {
+  token: '',
+  setToken: () => {}
+}
+
+export const AccessTokenContext = createContext<IAccessTolenContext>(IAccessTolenContext);
