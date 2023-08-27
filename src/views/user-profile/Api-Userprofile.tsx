@@ -104,3 +104,38 @@ export async function setNewDateOfBirth(version: string, dateOfBirth: string) {
     console.error(`Error setting new date of birth:`, error);
   }
 }
+
+export async function setNewEmail(version: string, email: string) {
+  try {
+    const response = await fetch(
+      `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+        },
+        body: JSON.stringify({
+          version: version,
+          actions: [
+            {
+              action: 'changeEmail',
+              email: email,
+            },
+          ],
+        }),
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      successNotify(`Your email has been successfully changed to ${email}`);
+      localStorage.setItem('customer', JSON.stringify(data));
+      console.log(`New email set successfully`);
+    } else {
+      console.error(`Failed to set new email`);
+    }
+  } catch (error) {
+    console.error(`Error setting new email:`, error);
+  }
+}

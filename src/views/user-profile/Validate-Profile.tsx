@@ -51,3 +51,17 @@ export function validateDateOfBirth(
   setErrors(newErrors);
   return Object.keys(newErrors).length === 0;
 }
+
+export function validateEmail(
+  setErrors: React.Dispatch<React.SetStateAction<Partial<ProfileData>>>,
+  email: string
+) {
+  const newErrors: Partial<ProfileData> = {};
+  if (!email) {
+    newErrors.email = 'Email is required';
+  } else if (!/^\S+@\S+\.\S+$/.test(email)) {
+    newErrors.email = 'Invalid email format';
+  }
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+}

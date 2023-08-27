@@ -25,11 +25,12 @@ import PasswordVisibility from '../authorization/log-in/PasswordVisibility';
 import { AddressData, ProfileData } from '../../types/user-profile.type';
 import {
   setNewDateOfBirth,
+  setNewEmail,
   setNewFirstName,
   setNewLastName,
 } from './Api-Userprofile';
 import { ToastContainer } from 'react-toastify';
-import { validateDateOfBirth, validateLastName, validateName } from './Validate-Profile';
+import { validateDateOfBirth, validateEmail, validateLastName, validateName } from './Validate-Profile';
 
 export default function UserProfile() {
   const userState = JSON.parse(localStorage.getItem('customer') || '');
@@ -522,6 +523,8 @@ export default function UserProfile() {
                       variant="standard"
                       fullWidth
                       margin="normal"
+                      error={!!errors.email}
+                      helperText={errors.email}
                       value={email}
                       onChange={(
                         event: React.ChangeEvent<HTMLInputElement>
@@ -541,13 +544,19 @@ export default function UserProfile() {
                   )}
                   {changeEmail && (
                     <Grid item xs={1.5} textAlign="end">
-                      <IconButton>
+                      <IconButton 
+                        onClick={() => {
+                          validateEmail(setErrors, email)  &&
+                            (setNewEmail(userState.version, email),
+                            setChangeEmail(false))
+                        }}>
                         <CheckOutlinedIcon />
                       </IconButton>
                       <IconButton
                         onClick={() => {
                           setChangeEmail(false);
                           setEmail(userState.email);
+                          errors.email = '';
                         }}
                       >
                         <CancelOutlinedIcon />
