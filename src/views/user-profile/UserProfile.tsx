@@ -22,6 +22,7 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import PasswordVisibility from '../authorization/log-in/PasswordVisibility';
+import { AddressData } from '../../types/user-profile.type';
 
 export default function UserProfile() {
   const userState = JSON.parse(localStorage.getItem('customer') || '');
@@ -42,32 +43,24 @@ export default function UserProfile() {
   );
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [firstName, setFirstName] = useState<string>(
-    userState.customer.firstName
+    userState.firstName
   );
-  const [lastName, setLastName] = useState<string>(userState.customer.lastName);
-  const [email, setEmail] = useState<string>(userState.customer.email);
+  const [lastName, setLastName] = useState<string>(userState.lastName);
+  const [email, setEmail] = useState<string>(userState.email);
   const [dateOfBirth, setdateOfBirth] = useState<string>(
-    userState.customer.dateOfBirth
+    userState.dateOfBirth
   );
   const [currentPassword, setCurrentPassword] = useState<string>('');
   const [newPassword, setNewPassword] = useState<string>('');
-  const addresses = userState.customer.addresses;
-  const billingAddressesId = userState.customer.billingAddressIds;
-  const shippingAddressesId = userState.customer.shippingAddressIds;
-  const defaultBillingAddressId = userState.customer.defaultBillingAddressId;
-  const defaultShippingAddressId = userState.customer.defaultShippingAddressId;
-  const billingAddresses: IAddress[] = [];
-  const shippingAddresses: IAddress[] = [];
+  const addresses = userState.addresses;
+  const billingAddressesId = userState.billingAddressIds;
+  const shippingAddressesId = userState.shippingAddressIds;
+  const defaultBillingAddressId = userState.defaultBillingAddressId;
+  const defaultShippingAddressId = userState.defaultShippingAddressId;
+  const billingAddresses: AddressData[] = [];
+  const shippingAddresses: AddressData[] = [];
 
-  interface IAddress {
-    city: string;
-    country: string;
-    id: string;
-    postalCode: string;
-    streetName: string;
-  }
-
-  addresses.forEach((address: IAddress) => {
+  addresses.forEach((address: AddressData) => {
     if (address.id.includes(billingAddressesId)) {
       billingAddresses.push(address);
     }
@@ -92,6 +85,40 @@ export default function UserProfile() {
     value: string | null
   ) {
     setSelectedCountry(value);
+  }
+
+  async function setNewFirstName() {
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+          },
+          body: JSON.stringify({
+            version: userState.version,
+            actions: [
+              {
+                action: "setFirstName",
+                firstName: firstName,
+              },
+            ],
+          }),
+        }
+      );
+  
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('customer', JSON.stringify(data));
+        console.log(`New name set successfully`);
+      } else {
+        console.error(`Failed to set new name`);
+      }
+    } catch (error) {
+      console.error(`Error setting new name:`, error);
+    }
   }
 
   return (
@@ -154,13 +181,16 @@ export default function UserProfile() {
                   )}
                   {changeName && (
                     <Grid item xs={1.5} textAlign="end">
-                      <IconButton>
+                      <IconButton onClick={() => {
+                          setNewFirstName();
+                          setChangeName(false);
+                        }}>
                         <CheckOutlinedIcon />
                       </IconButton>
                       <IconButton
                         onClick={() => {
                           setChangeName(false);
-                          setFirstName(userState.customer.firstName);
+                          setFirstName(userState.firstName);
                         }}
                       >
                         <CancelOutlinedIcon />
@@ -199,7 +229,7 @@ export default function UserProfile() {
                       <IconButton
                         onClick={() => {
                           setChangeLastName(false);
-                          setLastName(userState.customer.lastName);
+                          setLastName(userState.lastName);
                         }}
                       >
                         <CancelOutlinedIcon />
@@ -240,7 +270,7 @@ export default function UserProfile() {
                       <IconButton
                         onClick={() => {
                           setChangeBd(false);
-                          setdateOfBirth(userState.customer.dateOfBirth);
+                          setdateOfBirth(userState.dateOfBirth);
                         }}
                       >
                         <CancelOutlinedIcon />
@@ -522,7 +552,7 @@ export default function UserProfile() {
                       <IconButton
                         onClick={() => {
                           setChangeEmail(false);
-                          setEmail(userState.customer.email);
+                          setEmail(userState.email);
                         }}
                       >
                         <CancelOutlinedIcon />
