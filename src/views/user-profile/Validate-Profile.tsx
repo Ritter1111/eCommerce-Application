@@ -65,3 +65,25 @@ export function validateEmail(
   setErrors(newErrors);
   return Object.keys(newErrors).length === 0;
 }
+
+export function validateNewPassword(
+  setErrors: React.Dispatch<React.SetStateAction<Partial<ProfileData>>>,
+  newPassword: string
+) {
+  const newErrors: Partial<ProfileData> = {};
+  if (
+    !newPassword ||
+    newPassword.length < 8
+  ) {
+    newErrors.password = 'Password should have at least 8 characters';
+  } else if (
+    !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[ -/:@[-`{-~])/.test(
+      newPassword
+    )
+  ) {
+    newErrors.password =
+      'Password should have at least one uppercase letter, one lowercase letter, one number, and one special character (e.g., !@#$%^&*)';
+  }
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+}

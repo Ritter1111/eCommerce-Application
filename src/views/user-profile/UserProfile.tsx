@@ -24,13 +24,14 @@ import { TabContext, TabList, TabPanel } from '@mui/lab';
 import PasswordVisibility from '../authorization/log-in/PasswordVisibility';
 import { AddressData, ProfileData } from '../../types/user-profile.type';
 import {
+  resetPassword,
   setNewDateOfBirth,
   setNewEmail,
   setNewFirstName,
   setNewLastName,
 } from './Api-Userprofile';
 import { ToastContainer } from 'react-toastify';
-import { validateDateOfBirth, validateEmail, validateLastName, validateName } from './Validate-Profile';
+import { validateDateOfBirth, validateEmail, validateLastName, validateName, validateNewPassword } from './Validate-Profile';
 
 export default function UserProfile() {
   const userState = JSON.parse(localStorage.getItem('customer') || '');
@@ -611,6 +612,8 @@ export default function UserProfile() {
                       margin="normal"
                       disabled={!changePassword}
                       value={newPassword}
+                      error={!!errors.password}
+                      helperText={errors.password}
                       onChange={(
                         event: React.ChangeEvent<HTMLInputElement>
                       ) => {
@@ -638,7 +641,15 @@ export default function UserProfile() {
                   )}
                   {changePassword && (
                     <Grid item sm={7} xs={11} textAlign="start">
-                      <IconButton>
+                      <IconButton 
+                        onClick={() => {
+                          validateNewPassword(setErrors, newPassword) && 
+                            (resetPassword(userState.version, newPassword, currentPassword),
+                            setChangePassword(false)),
+                            setCurrentPassword('');
+                            setNewPassword('');
+                        }}
+                        >
                         <CheckOutlinedIcon />
                       </IconButton>
                       <IconButton
@@ -646,6 +657,7 @@ export default function UserProfile() {
                           setChangePassword(false);
                           setCurrentPassword('');
                           setNewPassword('');
+                          errors.password = ''
                         }}
                       >
                         <CancelOutlinedIcon />

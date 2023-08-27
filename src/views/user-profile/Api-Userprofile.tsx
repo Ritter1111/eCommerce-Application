@@ -1,3 +1,4 @@
+import { errorNotify } from '../../utils/ErrorPupUp';
 import { successNotify } from '../../utils/SuccessPopUp';
 
 export async function setNewFirstName(version: string, firstName: string) {
@@ -137,5 +138,39 @@ export async function setNewEmail(version: string, email: string) {
     }
   } catch (error) {
     console.error(`Error setting new email:`, error);
+  }
+}
+
+export async function resetPassword(version: string, newPassword: string, currentPassword: string){
+  try {
+    const response = await fetch(
+      `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me/password`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+        },
+        body: JSON.stringify({
+          version: version,
+          currentPassword: currentPassword,
+          newPassword: newPassword,
+        }),
+      }
+    );
+
+    const data = await response.json();
+    if (response.ok) {
+      successNotify(`Your passwor has been successfully changed`);
+      localStorage.setItem('customer', JSON.stringify(data));
+      console.log(`New password set successfully`);
+    } else {
+      if (data.statusCode === 400) {
+        errorNotify(`Wrong current password`);
+      }
+      console.error(`Failed to set new password`);
+    }
+  } catch (error) {
+    console.error(`Error setting new password:`, error);
   }
 }
