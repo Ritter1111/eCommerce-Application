@@ -1,3 +1,5 @@
+import { successNotify } from '../../utils/SuccessPopUp';
+
 export async function setNewFirstName(version: string, firstName: string) {
   try {
     const response = await fetch(
@@ -12,7 +14,7 @@ export async function setNewFirstName(version: string, firstName: string) {
           version: version,
           actions: [
             {
-              action: "setFirstName",
+              action: 'setFirstName',
               firstName: firstName,
             },
           ],
@@ -22,6 +24,7 @@ export async function setNewFirstName(version: string, firstName: string) {
 
     if (response.ok) {
       const data = await response.json();
+      successNotify(`Your name has been successfully changed to ${firstName}`);
       localStorage.setItem('customer', JSON.stringify(data));
       console.log(`New name set successfully`);
     } else {
@@ -46,7 +49,7 @@ export async function setNewLastName(version: string, lastName: string) {
           version: version,
           actions: [
             {
-              action: "setLastName",
+              action: 'setLastName',
               lastName: lastName,
             },
           ],
@@ -56,6 +59,7 @@ export async function setNewLastName(version: string, lastName: string) {
 
     if (response.ok) {
       const data = await response.json();
+      successNotify(`Your last name has been successfully changed to ${lastName}`);
       localStorage.setItem('customer', JSON.stringify(data));
       console.log(`New last name set successfully`);
     } else {
@@ -80,7 +84,7 @@ export async function setNewDateOfBirth(version: string, dateOfBirth: string) {
           version: version,
           actions: [
             {
-              action: "setDateOfBirth",
+              action: 'setDateOfBirth',
               dateOfBirth: dateOfBirth,
             },
           ],
@@ -90,6 +94,7 @@ export async function setNewDateOfBirth(version: string, dateOfBirth: string) {
 
     if (response.ok) {
       const data = await response.json();
+      successNotify(`Your date of birth has been successfully changed to ${dateOfBirth}`);
       localStorage.setItem('customer', JSON.stringify(data));
       console.log(`New date of birth set successfully`);
     } else {

@@ -5,3 +5,12 @@ export type AddressData = {
   postalCode: string,
   streetName: string,
 }
+
+export type ProfileData = {
+  email: string,
+  password: string,
+  firstName: string,
+  lastName: string,
+  bd: string,
+  address: AddressData,
+}

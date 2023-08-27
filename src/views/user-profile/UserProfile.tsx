@@ -22,8 +22,14 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import PasswordVisibility from '../authorization/log-in/PasswordVisibility';
-import { AddressData } from '../../types/user-profile.type';
-import { setNewDateOfBirth, setNewFirstName, setNewLastName } from './Api-Userprofile';
+import { AddressData, ProfileData } from '../../types/user-profile.type';
+import {
+  setNewDateOfBirth,
+  setNewFirstName,
+  setNewLastName,
+} from './Api-Userprofile';
+import { ToastContainer } from 'react-toastify';
+import { validateDateOfBirth, validateLastName, validateName } from './Validate-Profile';
 
 export default function UserProfile() {
   const userState = JSON.parse(localStorage.getItem('customer') || '');
@@ -43,16 +49,13 @@ export default function UserProfile() {
     null
   );
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
-  const [firstName, setFirstName] = useState<string>(
-    userState.firstName
-  );
+  const [firstName, setFirstName] = useState<string>(userState.firstName);
   const [lastName, setLastName] = useState<string>(userState.lastName);
   const [email, setEmail] = useState<string>(userState.email);
-  const [dateOfBirth, setdateOfBirth] = useState<string>(
-    userState.dateOfBirth
-  );
+  const [dateOfBirth, setdateOfBirth] = useState<string>(userState.dateOfBirth);
   const [currentPassword, setCurrentPassword] = useState<string>('');
   const [newPassword, setNewPassword] = useState<string>('');
+  const [errors, setErrors] = useState<Partial<ProfileData>>({});
   const addresses = userState.addresses;
   const billingAddressesId = userState.billingAddressIds;
   const shippingAddressesId = userState.shippingAddressIds;
@@ -94,6 +97,7 @@ export default function UserProfile() {
         <Avatar sx={{ m: 1, width: 46, height: 46, bgcolor: 'white' }}>
           <BadgeIcon sx={{ color: 'black' }} />
         </Avatar>
+        <ToastContainer />
         <Typography variant="h5">User profile</Typography>
         <ThemeProvider theme={customInputTheme(outerTheme)}>
           <Box sx={{ width: '100%', typography: 'body1' }}>
@@ -131,6 +135,8 @@ export default function UserProfile() {
                       margin="normal"
                       value={firstName}
                       disabled={!changeName}
+                      error={!!errors.firstName}
+                      helperText={errors.firstName}
                       onChange={(
                         event: React.ChangeEvent<HTMLInputElement>
                       ) => {
@@ -148,16 +154,20 @@ export default function UserProfile() {
                   )}
                   {changeName && (
                     <Grid item xs={1.5} textAlign="end">
-                      <IconButton onClick={() => {
-                          setNewFirstName(userState.version, firstName);
-                          setChangeName(false);
-                        }}>
+                      <IconButton
+                        onClick={() => {
+                          validateName(setErrors, firstName) &&
+                            (setNewFirstName(userState.version, firstName),
+                            setChangeName(false));
+                        }}
+                      >
                         <CheckOutlinedIcon />
                       </IconButton>
                       <IconButton
                         onClick={() => {
                           setChangeName(false);
                           setFirstName(userState.firstName);
+                          errors.firstName = '';
                         }}
                       >
                         <CancelOutlinedIcon />
@@ -172,6 +182,8 @@ export default function UserProfile() {
                       fullWidth
                       margin="normal"
                       value={lastName}
+                      error={!!errors.lastName}
+                      helperText={errors.lastName}
                       onChange={(
                         event: React.ChangeEvent<HTMLInputElement>
                       ) => {
@@ -190,16 +202,20 @@ export default function UserProfile() {
                   )}
                   {changeLastName && (
                     <Grid item xs={1.5} textAlign="end">
-                      <IconButton onClick={() => {
-                          setNewLastName(userState.version, lastName);
-                          setChangeLastName(false);
-                        }}>
+                      <IconButton
+                        onClick={() => {
+                          validateLastName(setErrors, lastName) &&
+                            (setNewLastName(userState.version, lastName),
+                            setChangeLastName(false));
+                        }}
+                      >
                         <CheckOutlinedIcon />
                       </IconButton>
                       <IconButton
                         onClick={() => {
                           setChangeLastName(false);
                           setLastName(userState.lastName);
+                          errors.lastName = '';
                         }}
                       >
                         <CancelOutlinedIcon />
@@ -214,6 +230,8 @@ export default function UserProfile() {
                       variant="standard"
                       fullWidth
                       margin="normal"
+                      error={!!errors.bd}
+                      helperText={errors.bd}
                       InputLabelProps={{ shrink: true }}
                       value={dateOfBirth}
                       onChange={(
@@ -234,16 +252,20 @@ export default function UserProfile() {
                   )}
                   {changeBd && (
                     <Grid item xs={1.5} textAlign="end">
-                      <IconButton onClick={() => {
-                          setNewDateOfBirth(userState.version, dateOfBirth);
-                          setChangeBd(false);
-                        }}>
+                      <IconButton
+                        onClick={() => {
+                          validateDateOfBirth(setErrors, dateOfBirth) &&
+                            (setNewDateOfBirth(userState.version, dateOfBirth),
+                            setChangeBd(false));
+                        }}
+                      >
                         <CheckOutlinedIcon />
                       </IconButton>
                       <IconButton
                         onClick={() => {
                           setChangeBd(false);
                           setdateOfBirth(userState.dateOfBirth);
+                          errors.bd = '';
                         }}
                       >
                         <CancelOutlinedIcon />
