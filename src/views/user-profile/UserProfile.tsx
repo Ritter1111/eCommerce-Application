@@ -23,6 +23,7 @@ import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import PasswordVisibility from '../authorization/log-in/PasswordVisibility';
 import { AddressData } from '../../types/user-profile.type';
+import { setNewDateOfBirth, setNewFirstName, setNewLastName } from './Api-Userprofile';
 
 export default function UserProfile() {
   const userState = JSON.parse(localStorage.getItem('customer') || '');
@@ -87,40 +88,6 @@ export default function UserProfile() {
     setSelectedCountry(value);
   }
 
-  async function setNewFirstName() {
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('authToken')}`,
-          },
-          body: JSON.stringify({
-            version: userState.version,
-            actions: [
-              {
-                action: "setFirstName",
-                firstName: firstName,
-              },
-            ],
-          }),
-        }
-      );
-  
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem('customer', JSON.stringify(data));
-        console.log(`New name set successfully`);
-      } else {
-        console.error(`Failed to set new name`);
-      }
-    } catch (error) {
-      console.error(`Error setting new name:`, error);
-    }
-  }
-
   return (
     <Container maxWidth="md" sx={{ mb: 4 }}>
       <div className={styles.container}>
@@ -182,7 +149,7 @@ export default function UserProfile() {
                   {changeName && (
                     <Grid item xs={1.5} textAlign="end">
                       <IconButton onClick={() => {
-                          setNewFirstName();
+                          setNewFirstName(userState.version, firstName);
                           setChangeName(false);
                         }}>
                         <CheckOutlinedIcon />
@@ -223,7 +190,10 @@ export default function UserProfile() {
                   )}
                   {changeLastName && (
                     <Grid item xs={1.5} textAlign="end">
-                      <IconButton>
+                      <IconButton onClick={() => {
+                          setNewLastName(userState.version, lastName);
+                          setChangeLastName(false);
+                        }}>
                         <CheckOutlinedIcon />
                       </IconButton>
                       <IconButton
@@ -264,7 +234,10 @@ export default function UserProfile() {
                   )}
                   {changeBd && (
                     <Grid item xs={1.5} textAlign="end">
-                      <IconButton>
+                      <IconButton onClick={() => {
+                          setNewDateOfBirth(userState.version, dateOfBirth);
+                          setChangeBd(false);
+                        }}>
                         <CheckOutlinedIcon />
                       </IconButton>
                       <IconButton
