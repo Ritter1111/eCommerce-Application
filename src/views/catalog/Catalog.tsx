@@ -1,16 +1,33 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AccessTokenContext } from '../../context';
 import { CircularProgress, Container, Typography, Grid } from '@mui/material';
-import { Root } from '../../interfaces/product.interface';
+import { ProductsResp } from '../../interfaces/product.interface';
 import ProductCard from '../../components/Card/ProductCard';
-
+import { useApi } from "../../hooks/useApi";
 
 function Catalog() {
-  const [carts, setCarts]= useState<Root[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [carts, setCarts]= useState<ProductsResp[]>([]);
   const { token } = useContext(AccessTokenContext);
+  // const [isLoading, setIsLoading] = useState(false);
+
+  const [fetchCarts, isLoading, cartsError] = useApi(async () => {
+    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/products`;
+    const response = await fetch(apiUrl, {
+      headers: {
+      Authorization: `Bearer ${token}`
+        }
+    });
+    const data = await response.json();
+    setCarts(data.results)
+  });
 
   useEffect(() => {
+    if (token) {
+      fetchCarts();
+    }
+  }, [token]);
+
+/*   useEffect(() => {
     setIsLoading(true);
     if (token) {
       const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/products`;
@@ -24,33 +41,25 @@ function Catalog() {
       .catch(error => console.error('Error fetching data:', error))
       .finally(() => setIsLoading(false))
     }
-  }, [token]);
-
-  /* useEffect(() => {
-    if (carts && carts.length > 0) {
-      carts.forEach(element => {
-        console.log(element);
-      });
-    }
-  }, [carts]); */
+  }, [token]); */
 
   return (
     <Container maxWidth="lg">
       <Typography variant="h1" align="center" sx={{ fontSize: '48px', mt: 4, mb: 4 }}>Our products</Typography>
-      {isLoading ? (
-        <CircularProgress />
-      ) : (
-        <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-          {
-            carts.map((el: Root) => (
-              <Grid item xs={12} sm={4} md={4} key={el.lastVariantId}>
-                {<ProductCard data={el.masterData.current}/>}
-              </Grid>
-            ))
-          }
-        </Grid>
-      )
+      {cartsError &&
+        <Typography align="center" variant="h4">Oops, something went wrong. Please try again later.</Typography>
       }
+      {isLoading ? (
+        <CircularProgress style={{ width: '70px', height: '70px' }} color="inherit" sx={{ margin: '0 auto', display: 'block' }} />
+      ) : (
+          <Grid container spacing={4} columns={{ xs: 4, sm: 8, md: 12 }} >
+            {carts.map((el) => (
+              <Grid item key={el.id} sx={{ maxWidth: 300, margin: '0 auto' }}>
+                {<ProductCard data={el.masterData.current} />}
+              </Grid>
+            ))}
+          </Grid>
+      )}
     </Container>
   );
 }
