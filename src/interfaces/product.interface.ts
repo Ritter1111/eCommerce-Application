@@ -1,3 +1,6 @@
+export interface ProductCardProps {
+  data: Current;
+}
 export interface ProductsResp {
   id: string
   version: number

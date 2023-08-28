@@ -44,7 +44,9 @@ export default function App() {
 
   return (
     <AuthContext.Provider value={{ isAuth, setIsAuth }}>
-      <AccessTokenContext.Provider value={{ token: accessToken, setToken: setAccessToken }}>
+      <AccessTokenContext.Provider
+        value={{ token: accessToken, setToken: setAccessToken }}
+      >
         <BrowserRouter>
           <NavBar />
           <AppRouter />
