@@ -1,4 +1,5 @@
 import { ProfileData } from '../../types/user-profile.type';
+import { validatePostalCode } from '../authorization/sign-up/Validate-Signup';
 
 export function validateName(
   setErrors: React.Dispatch<React.SetStateAction<Partial<ProfileData>>>,
@@ -71,19 +72,43 @@ export function validateNewPassword(
   newPassword: string
 ) {
   const newErrors: Partial<ProfileData> = {};
-  if (
-    !newPassword ||
-    newPassword.length < 8
-  ) {
+  if (!newPassword || newPassword.length < 8) {
     newErrors.password = 'Password should have at least 8 characters';
   } else if (
-    !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[ -/:@[-`{-~])/.test(
-      newPassword
-    )
+    !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[ -/:@[-`{-~])/.test(newPassword)
   ) {
     newErrors.password =
       'Password should have at least one uppercase letter, one lowercase letter, one number, and one special character (e.g., !@#$%^&*)';
   }
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+}
+
+export function addressValidation(
+  setErrors: React.Dispatch<React.SetStateAction<Partial<ProfileData>>>,
+  city: string,
+  streetName: string,
+  postalCode: string,
+  country: string | null
+) {
+  const newErrors: Partial<ProfileData> = {};
+  console.log(country)
+  if (!streetName) {
+    newErrors.streetName = 'Street is required';
+  }
+  if (!city) {
+    newErrors.city = 'City is required';
+  } else if (!/^[A-Za-z\s]+$/.test(city)) {
+    newErrors.city = 'City should only contain letters and spaces';
+  }
+  if (!validatePostalCode(postalCode, country || '')) {
+    newErrors.postalCode =
+      'Invalid postal code format for the selected country';
+  }
+  if (!country) {
+    newErrors.country = 'Country is required';
+  }
+
   setErrors(newErrors);
   return Object.keys(newErrors).length === 0;
 }

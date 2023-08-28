@@ -60,7 +60,9 @@ export async function setNewLastName(version: string, lastName: string) {
 
     if (response.ok) {
       const data = await response.json();
-      successNotify(`Your last name has been successfully changed to ${lastName}`);
+      successNotify(
+        `Your last name has been successfully changed to ${lastName}`
+      );
       localStorage.setItem('customer', JSON.stringify(data));
       console.log(`New last name set successfully`);
     } else {
@@ -95,7 +97,9 @@ export async function setNewDateOfBirth(version: string, dateOfBirth: string) {
 
     if (response.ok) {
       const data = await response.json();
-      successNotify(`Your date of birth has been successfully changed to ${dateOfBirth}`);
+      successNotify(
+        `Your date of birth has been successfully changed to ${dateOfBirth}`
+      );
       localStorage.setItem('customer', JSON.stringify(data));
       console.log(`New date of birth set successfully`);
     } else {
@@ -141,7 +145,11 @@ export async function setNewEmail(version: string, email: string) {
   }
 }
 
-export async function resetPassword(version: string, newPassword: string, currentPassword: string){
+export async function resetPassword(
+  version: string,
+  newPassword: string,
+  currentPassword: string
+) {
   try {
     const response = await fetch(
       `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me/password`,
@@ -172,5 +180,49 @@ export async function resetPassword(version: string, newPassword: string, curren
     }
   } catch (error) {
     console.error(`Error setting new password:`, error);
+  }
+}
+
+export async function changeAddress(version: string, addressId: string, city: string, street: string, postalCode: string, country: string | null) {
+  try {
+    const response = await fetch(
+      `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+        },
+        body: JSON.stringify({
+          version: version,
+          actions: [
+            {
+              action: 'changeAddress',
+              addressId: addressId,
+              address: {
+                streetName: street,
+                postalCode: postalCode,
+                city: city,
+                country: country?.slice(
+                  country.indexOf('(') + 1,
+                  -1
+                ),
+              }
+            },
+          ],
+        }),
+      }
+    );
+
+    const data = await response.json();
+    if (response.ok) {
+      successNotify(`Your address has been successfully changed`);
+      localStorage.setItem('customer', JSON.stringify(data));
+      console.log(`Address change successfully`);
+    } else {
+      console.error(`Failed to change address`);
+    }
+  } catch (error) {
+    console.error(`Error changing address:`, error);
   }
 }

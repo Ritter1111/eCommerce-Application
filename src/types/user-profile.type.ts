@@ -12,5 +12,9 @@ export type ProfileData = {
   firstName: string,
   lastName: string,
   bd: string,
-  address: AddressData,
+  city: string,
+  country: string,
+  id: string,
+  postalCode: string,
+  streetName: string,
 }

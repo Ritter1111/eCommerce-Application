@@ -22,8 +22,12 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import PasswordVisibility from '../authorization/log-in/PasswordVisibility';
-import { AddressData, ProfileData } from '../../types/user-profile.type';
 import {
+  AddressData,
+  ProfileData,
+} from '../../types/user-profile.type';
+import {
+  changeAddress,
   resetPassword,
   setNewDateOfBirth,
   setNewEmail,
@@ -31,7 +35,15 @@ import {
   setNewLastName,
 } from './Api-Userprofile';
 import { ToastContainer } from 'react-toastify';
-import { validateDateOfBirth, validateEmail, validateLastName, validateName, validateNewPassword } from './Validate-Profile';
+import {
+  addressValidation,
+  validateDateOfBirth,
+  validateEmail,
+  validateLastName,
+  validateName,
+  validateNewPassword,
+} from './Validate-Profile';
+import { Countries } from '../../enums/user-profile.enam';
 
 export default function UserProfile() {
   const userState = JSON.parse(localStorage.getItem('customer') || '');
@@ -45,12 +57,11 @@ export default function UserProfile() {
   const [changeLastName, setChangeLastName] = useState<boolean>(false);
   const [changeBd, setChangeBd] = useState<boolean>(false);
   const [isEditAddress, setIsEditAddress] = useState<boolean>(false);
-  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
-  const [selectedStreet, setSelectedStreet] = useState<string | null>(null);
-  const [selectedPostalCode, setSelectedPostalCode] = useState<string | null>(
-    null
-  );
-  const [selectedCity, setSelectedCity] = useState<string | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState<string | null>('');
+  const [selectedStreet, setSelectedStreet] = useState<string>('');
+  const [selectedPostalCode, setSelectedPostalCode] = useState<string>('');
+  const [selectedCity, setSelectedCity] = useState<string>('');
+  const [selectedAddressId, setSelectedAddressId] = useState<string>('');
   const [firstName, setFirstName] = useState<string>(userState.firstName);
   const [lastName, setLastName] = useState<string>(userState.lastName);
   const [email, setEmail] = useState<string>(userState.email);
@@ -74,7 +85,7 @@ export default function UserProfile() {
       shippingAddresses.push(address);
     }
   });
-
+  
   const outerTheme = useTheme();
 
   const gridItemStyle = {
@@ -90,7 +101,9 @@ export default function UserProfile() {
     event: React.ChangeEvent<object>,
     value: string | null
   ) {
-    setSelectedCountry(value);
+    setSelectedCountry(value?.length === 2
+      ? Countries[value as keyof typeof Countries]
+      : value);
   }
 
   return (
@@ -316,16 +329,22 @@ export default function UserProfile() {
                           {address.streetName}, {address.postalCode}{' '}
                           {address.city}, {address.country}
                         </Typography>
-                        {/* вызывать фун-ю по клику, открывать полэ для измененый з заполнеными полями данного адреса делать запрос по айдышныку */}
                       </Grid>
                       <Grid item xs={1} textAlign="end">
                         <IconButton
                           onClick={() => {
                             setIsEditAddress(true);
                             setSelectedCity(address.city);
-                            setSelectedCountry(address.country);
+                            setSelectedCountry(address.country?.length === 2
+                              ? Countries[address.country as keyof typeof Countries]
+                              : address.country);
                             setSelectedPostalCode(address.postalCode);
                             setSelectedStreet(address.streetName);
+                            setSelectedAddressId(address.id);
+                            errors.city = '';
+                            errors.country = '';
+                            errors.postalCode = '';
+                            errors.streetName = '';
                           }}
                         >
                           <DriveFileRenameOutlineOutlinedIcon />
@@ -383,16 +402,22 @@ export default function UserProfile() {
                           {address.streetName}, {address.postalCode}{' '}
                           {address.city}, {address.country}
                         </Typography>
-                        {/* вызывать фун-ю по клику, открывать полэ для измененый з заполнеными полями данного адреса делать запрос по айдышныку */}
                       </Grid>
                       <Grid item xs={1} textAlign="end">
                         <IconButton
                           onClick={() => {
                             setIsEditAddress(true);
                             setSelectedCity(address.city);
-                            setSelectedCountry(address.country);
+                            setSelectedCountry(address.country?.length === 2
+                              ? Countries[address.country as keyof typeof Countries]
+                              : address.country);
                             setSelectedPostalCode(address.postalCode);
                             setSelectedStreet(address.streetName);
+                            setSelectedAddressId(address.id);
+                            errors.city = '';
+                            errors.country = '';
+                            errors.postalCode = '';
+                            errors.streetName = '';
                           }}
                         >
                           <DriveFileRenameOutlineOutlinedIcon />
@@ -430,7 +455,15 @@ export default function UserProfile() {
                         fullWidth
                         margin="normal"
                         variant="standard"
+                        error={!!errors.streetName}
+                        helperText={errors.streetName}
                         value={selectedStreet}
+                        onChange={(
+                          event: React.ChangeEvent<HTMLInputElement>
+                        ) => {
+                          const { value } = event.target;
+                          setSelectedStreet(value);
+                        }}
                       />
                     </Grid>
                     <Grid item xs={11} sm={7} sx={gridItemStyle}>
@@ -440,7 +473,15 @@ export default function UserProfile() {
                         fullWidth
                         margin="normal"
                         variant="standard"
+                        error={!!errors.city}
+                        helperText={errors.city}
                         value={selectedCity}
+                        onChange={(
+                          event: React.ChangeEvent<HTMLInputElement>
+                        ) => {
+                          const { value } = event.target;
+                          setSelectedCity(value);
+                        }}
                       />
                     </Grid>
                     <Grid item xs={11} sm={7} sx={gridItemStyle}>
@@ -450,7 +491,15 @@ export default function UserProfile() {
                         fullWidth
                         margin="normal"
                         variant="standard"
+                        error={!!errors.postalCode}
+                        helperText={errors.postalCode}
                         value={selectedPostalCode}
+                        onChange={(
+                          event: React.ChangeEvent<HTMLInputElement>
+                        ) => {
+                          const { value } = event.target;
+                          setSelectedPostalCode(value);
+                        }}
                       />
                     </Grid>
                     <Grid item xs={11} sm={7} sx={gridItemStyle}>
@@ -473,7 +522,11 @@ export default function UserProfile() {
                           'Greece (GR)',
                           'Portugal (PT)',
                         ]}
-                        value={selectedCountry}
+                        value={
+                          selectedCountry?.length === 2
+                            ? Countries[selectedCountry as keyof typeof Countries]
+                            : selectedCountry
+                        }
                         onChange={handleCountryChange}
                         renderInput={(params) => (
                           <TextField
@@ -483,6 +536,8 @@ export default function UserProfile() {
                             variant="standard"
                             fullWidth
                             margin="normal"
+                            error={!!errors.country}
+                            helperText={errors.country}
                           />
                         )}
                       />
@@ -493,6 +548,20 @@ export default function UserProfile() {
                         style={{ borderColor: 'black', color: 'black' }}
                         sx={{ mt: 3 }}
                         size="small"
+                        onClick={() => {
+                          addressValidation(
+                            setErrors,
+                            selectedCity,
+                            selectedStreet,
+                            selectedPostalCode,
+                            selectedCountry
+                          ) &&
+                          (changeAddress(userState.version, selectedAddressId, selectedCity,
+                            selectedStreet,
+                            selectedPostalCode,
+                            selectedCountry),
+                            setIsEditAddress(false))
+                        }}
                       >
                         Save
                       </Button>
@@ -503,10 +572,15 @@ export default function UserProfile() {
                         size="small"
                         onClick={() => {
                           setIsEditAddress(false);
-                          setSelectedCity(null);
-                          setSelectedCountry(null);
-                          setSelectedPostalCode(null);
-                          setSelectedStreet(null);
+                          setSelectedCity('');
+                          setSelectedCountry('');
+                          setSelectedPostalCode('');
+                          setSelectedStreet('');
+                          setSelectedAddressId('');
+                          errors.city = '';
+                          errors.country = '';
+                          errors.postalCode = '';
+                          errors.streetName = '';
                         }}
                       >
                         Cancel
@@ -545,12 +619,13 @@ export default function UserProfile() {
                   )}
                   {changeEmail && (
                     <Grid item xs={1.5} textAlign="end">
-                      <IconButton 
+                      <IconButton
                         onClick={() => {
-                          validateEmail(setErrors, email)  &&
+                          validateEmail(setErrors, email) &&
                             (setNewEmail(userState.version, email),
-                            setChangeEmail(false))
-                        }}>
+                            setChangeEmail(false));
+                        }}
+                      >
                         <CheckOutlinedIcon />
                       </IconButton>
                       <IconButton
@@ -641,15 +716,19 @@ export default function UserProfile() {
                   )}
                   {changePassword && (
                     <Grid item sm={7} xs={11} textAlign="start">
-                      <IconButton 
+                      <IconButton
                         onClick={() => {
-                          validateNewPassword(setErrors, newPassword) && 
-                            (resetPassword(userState.version, newPassword, currentPassword),
+                          validateNewPassword(setErrors, newPassword) &&
+                            (resetPassword(
+                              userState.version,
+                              newPassword,
+                              currentPassword
+                            ),
                             setChangePassword(false)),
                             setCurrentPassword('');
-                            setNewPassword('');
+                          setNewPassword('');
                         }}
-                        >
+                      >
                         <CheckOutlinedIcon />
                       </IconButton>
                       <IconButton
@@ -657,7 +736,7 @@ export default function UserProfile() {
                           setChangePassword(false);
                           setCurrentPassword('');
                           setNewPassword('');
-                          errors.password = ''
+                          errors.password = '';
                         }}
                       >
                         <CancelOutlinedIcon />
