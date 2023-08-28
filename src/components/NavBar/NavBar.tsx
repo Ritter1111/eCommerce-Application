@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useRef } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { AppBar, Container, Typography, Box } from '@mui/material';
 import { Link, NavLink } from 'react-router-dom';
 import classes from './NavBar.module.css';
@@ -22,7 +22,6 @@ import routes from '../../utils/routes';
 export default function NavBar() {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const { isAuth, setIsAuth } = useContext(AuthContext);
-  const menuRef = useRef<HTMLDivElement | null>(null);
 
   document.body.style.overflowY = isMenuOpen ? 'hidden' : 'auto';
 
@@ -45,24 +44,11 @@ export default function NavBar() {
         closeMenu();
       }
     };
-
-    const handleOutsideClick = (event: MouseEvent) => {
-      if (
-        menuRef.current &&
-        !(
-          event.target instanceof Node && menuRef.current.contains(event.target)
-        )
-      ) {
-        closeMenu();
-      }
-    };
-
+   
     window.addEventListener('resize', handleResize);
-    document.addEventListener('mousedown', handleOutsideClick);
 
     return () => {
       window.removeEventListener('resize', handleResize);
-      document.removeEventListener('mousedown', handleOutsideClick);
     };
   }, [isMenuOpen]);
 
@@ -90,7 +76,6 @@ export default function NavBar() {
             }}
             to={MAIN_ROUTE}
             title="Go to Home"
-            className={classes.link}
           >
             <Box
               sx={{
@@ -119,67 +104,66 @@ export default function NavBar() {
           <Box
             data-testid="menu-btn"
             onClick={() => toggleMenu()}
-            sx={{
-              color: '#212121',
-              display: { xs: 'block', md: 'none' },
-              position: 'relative',
-              zIndex: 1000,
-              right: '0',
-            }}
+            sx={{ color: '#212121', display: { xs: 'block', md: 'none' } }}
           >
             {isMenuOpen ? <Close /> : <Menu />}
           </Box>
           <Box
-            data-testid="nav-menu"
-            ref={menuRef}
-            className={`${isMenuOpen ? classes.active : ''} ${classes.menu}`}
+            onClick={closeMenu}
+            className={`${isMenuOpen ? classes.active : ''} ${classes.overlay}`}
           >
-            {routes.map((route, index) => (
-              <NavLink
-                key={index}
-                onClick={() => closeMenu()}
-                to={route.path}
-                className="pages__link"
-                title={route.title}
-              >
-                {route.name}
-              </NavLink>
-            ))}
-            {isAuth ? (
-              <NavLink
-                onClick={() => {
-                  logout();
-                  closeMenu();
-                }}
-                to={MAIN_ROUTE}
-                className={classes.btn}
-                title="Log In"
-              >
-                <Logout sx={{ mr: 0.5 }} />
-                Logout
-              </NavLink>
-            ) : (
-              <>
+           <Box
+              data-testid="nav-menu"
+              onClick={(e) => e.stopPropagation()}
+              className={`${isMenuOpen ? classes.active : ''} ${classes.menu}`}
+            >
+              {routes.map((route, index) => (
                 <NavLink
+                  key={index}
                   onClick={() => closeMenu()}
-                  to={LOGIN_ROUTE}
+                  to={route.path}
+                  className="pages__link"
+                  title={route.title}
+                >
+                  {route.name}
+                </NavLink>
+              ))}
+              {isAuth ? (
+                <NavLink
+                  onClick={() => {
+                    logout();
+                    closeMenu();
+                  }}
+                  to={MAIN_ROUTE}
                   className={classes.btn}
                   title="Log In"
                 >
-                  <LockOpen sx={{ mr: 0.5 }} />
-                  Log In
+                  <Logout sx={{ mr: 0.5 }} />
+                  Logout
                 </NavLink>
-                <NavLink
-                  onClick={() => closeMenu()}
-                  to={REGISTRATION_ROUTE}
-                  className={classes.btn}
-                  title="Sign Up"
-                >
-                  <Person sx={{ mr: 0.5 }} />
-                  Sign Up
-                </NavLink>
-              </>
-            )}
+              ) : (
+                <>
+                  <NavLink
+                    onClick={() => closeMenu()}
+                    to={LOGIN_ROUTE}
+                    className={classes.btn}
+                    title="Log In"
+                  >
+                    <LockOpen sx={{ mr: 0.5 }} />
+                    Log In
+                  </NavLink>
+                  <NavLink
+                    onClick={() => closeMenu()}
+                    to={REGISTRATION_ROUTE}
+                    className={classes.btn}
+                    title="Sign Up"
+                  >
+                    <Person sx={{ mr: 0.5 }} />
+                    Sign Up
+                  </NavLink>
+                </>
+              )}
+            </Box>
           </Box>
         </Box>
       </Container>
