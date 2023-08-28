@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { Currency } from '../../enums/product.enum';
 import { ProductCardProps } from '../../interfaces/product.interface';
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 export function truncateStringToSpace(str: string, maxLength: number) {
   if (str.length <= maxLength) {
@@ -109,9 +109,7 @@ function ProductCard(props: ProductCardProps) {
               </>
             ) : (
               <Typography sx={{ fontWeight: 'bold' }}>
-                {formatCentsToCurrency(
-                  iremPriceInCents
-                )}
+                {formatCentsToCurrency(iremPriceInCents)}
                 {currencySymbol}
               </Typography>
             )}
