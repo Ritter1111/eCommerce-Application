@@ -209,7 +209,7 @@ export default function SignUp() {
                     margin="normal"
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={12} sx={gridItemStyle}>
                   <TextField
                     label="Date of Birth"
                     name="bd"

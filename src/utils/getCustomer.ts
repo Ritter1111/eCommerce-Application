@@ -45,6 +45,7 @@ export async function getCustometWithToken(
       navigate('/');
       saveToken(token);
       setIsAuth(true);
+      localStorage.setItem('customer', JSON.stringify(myCustomer));
     }
 
     return myCustomer;

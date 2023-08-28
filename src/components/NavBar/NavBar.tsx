@@ -44,7 +44,7 @@ export default function NavBar() {
         closeMenu();
       }
     };
-
+   
     window.addEventListener('resize', handleResize);
 
     return () => {
@@ -112,7 +112,7 @@ export default function NavBar() {
             onClick={closeMenu}
             className={`${isMenuOpen ? classes.active : ''} ${classes.overlay}`}
           >
-            <Box
+           <Box
               data-testid="nav-menu"
               onClick={(e) => e.stopPropagation()}
               className={`${isMenuOpen ? classes.active : ''} ${classes.menu}`}
