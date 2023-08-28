@@ -1,4 +1,5 @@
 export interface ProductCardProps {
+  id: string
   data: Current;
 }
 export interface ProductsResp {

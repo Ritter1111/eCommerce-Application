@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { AccessTokenContext } from '../../context';
 import { CircularProgress, Container, Typography, Grid } from '@mui/material';
 import { ProductsResp } from '../../interfaces/product.interface';
-import ProductCard from '../../components/Card/ProductCard';
+import ProductCard from '../../components/ProductCard/ProductCard';
 import { useApi } from '../../hooks/useApi';
 
 function Catalog() {
@@ -50,7 +50,7 @@ function Catalog() {
         <Grid container spacing={4} columns={{ xs: 4, sm: 8, md: 12 }}>
           {carts.map((el) => (
             <Grid item key={el.id} sx={{ maxWidth: 300, margin: '0 auto' }}>
-              {<ProductCard data={el.masterData.current} />}
+              {<ProductCard id={el.id} data={el.masterData.current} />}
             </Grid>
           ))}
         </Grid>

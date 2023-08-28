@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import { Currency } from '../../enums/product.enum';
 import { ProductCardProps } from '../../interfaces/product.interface';
+import { useNavigate } from 'react-router-dom';
 
 export function truncateStringToSpace(str: string, maxLength: number) {
   if (str.length <= maxLength) {
@@ -28,9 +29,11 @@ export function formatCentsToCurrency(cents: number) {
   return `${dollars}.${formattedCents}`;
 }
 
-function ProductCard({ data }: ProductCardProps) {
+function ProductCard(props: ProductCardProps) {
+  const navigate = useNavigate();
+  const data = props.data;
   const currencyCode = data.masterVariant.prices[0].value.currencyCode;
-  const discount = data.masterVariant.prices[0].discounted;
+  const itemDiscount = data.masterVariant.prices[0].discounted;
   const itemName = data.name['en-US'];
   const itemDeskr = data.description['en-US'];
   const iremPriceInCents = data.masterVariant.prices[0].value.centAmount;
@@ -53,6 +56,7 @@ function ProductCard({ data }: ProductCardProps) {
           justifyContent: 'space-between',
           height: '100%',
         }}
+        onClick={() => navigate(`/catalog/${props.id}`)}
       >
         <CardMedia
           component="img"
@@ -82,12 +86,12 @@ function ProductCard({ data }: ProductCardProps) {
             <Typography color="text.secondary" sx={{ mr: 1 }}>
               PRICE:
             </Typography>
-            {discount ? (
+            {itemDiscount ? (
               <>
                 <Typography
                   sx={{ fontWeight: 'bold', color: '#da0000', mr: 1 }}
                 >
-                  {formatCentsToCurrency(discount.value.centAmount)}
+                  {formatCentsToCurrency(itemDiscount.value.centAmount)}
                   {currencySymbol}
                 </Typography>
                 <Typography
@@ -105,9 +109,7 @@ function ProductCard({ data }: ProductCardProps) {
               </>
             ) : (
               <Typography sx={{ fontWeight: 'bold' }}>
-                {formatCentsToCurrency(
-                  iremPriceInCents
-                )}
+                {formatCentsToCurrency(iremPriceInCents)}
                 {currencySymbol}
               </Typography>
             )}
