@@ -10,6 +10,8 @@ import {
 import { Currency } from '../../enums/product.enum';
 import { ProductCardProps } from '../../interfaces/product.interface';
 import { useNavigate } from 'react-router-dom';
+import { formatCentsToCurrency } from '../../utils/format-to-cents';
+import ProductPrice from '../Price/Price';
 
 export function truncateStringToSpace(str: string, maxLength: number) {
   if (str.length <= maxLength) {
@@ -22,13 +24,6 @@ export function truncateStringToSpace(str: string, maxLength: number) {
   }
 }
 
-export function formatCentsToCurrency(cents: number) {
-  const dollars = Math.floor(cents / 100);
-  const centsPart = cents % 100;
-  const formattedCents = centsPart < 10 ? `0${centsPart}` : centsPart;
-  return `${dollars}.${formattedCents}`;
-}
-
 function ProductCard(props: ProductCardProps) {
   const navigate = useNavigate();
   const data = props.data;
@@ -36,7 +31,7 @@ function ProductCard(props: ProductCardProps) {
   const itemDiscount = data.masterVariant.prices[0].discounted;
   const itemName = data.name['en-US'];
   const itemDeskr = data.description['en-US'];
-  const iremPriceInCents = data.masterVariant.prices[0].value.centAmount;
+  const iremPriceInCents = data.masterVariant.prices[0].value;
   const currencySymbol = currencyCode === Currency.USD ? '$' : '';
 
   return (
@@ -87,29 +82,14 @@ function ProductCard(props: ProductCardProps) {
               PRICE:
             </Typography>
             {itemDiscount ? (
-              <>
-                <Typography
-                  sx={{ fontWeight: 'bold', color: '#da0000', mr: 1 }}
-                >
-                  {formatCentsToCurrency(itemDiscount.value.centAmount)}
-                  {currencySymbol}
-                </Typography>
-                <Typography
-                  sx={{
-                    textDecoration: 'line-through',
-                    fontSize: '14px',
-                    color: '#bdbdbd',
-                  }}
-                >
-                  {formatCentsToCurrency(
-                    data.masterVariant.prices[0].value.centAmount
-                  )}
-                  {currencySymbol}
-                </Typography>
-              </>
+              <ProductPrice
+                itemDiscount={itemDiscount}
+                currencyCode={currencyCode}
+                itemPriceInCents={iremPriceInCents}
+              />
             ) : (
               <Typography sx={{ fontWeight: 'bold' }}>
-                {formatCentsToCurrency(iremPriceInCents)}
+                {formatCentsToCurrency(iremPriceInCents.centAmount)}
                 {currencySymbol}
               </Typography>
             )}

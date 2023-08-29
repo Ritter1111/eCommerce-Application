@@ -5,16 +5,9 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
+import { ISliderProps } from '../interfaces/detailedPage.interface';
 
-interface Slide {
-  image: string;
-}
-
-interface SliderProps {
-  slides: Slide[];
-}
-
-export const Slider: React.FC<SliderProps> = ({ slides }) => {
+export const Slider: React.FC<ISliderProps> = ({ slides }) => {
   return (
     <Swiper
       modules={[Navigation, Pagination, Scrollbar, A11y]}
@@ -26,7 +19,7 @@ export const Slider: React.FC<SliderProps> = ({ slides }) => {
     >
       {slides.map((slide) => (
         <SwiperSlide key={slide.image}>
-          <img src={slide.image} style={{ width: '100%', height: '750px' }} />
+          <img src={slide.image} style={{ width: '100%', height: 'auto' }} />
         </SwiperSlide>
       ))}
     </Swiper>
