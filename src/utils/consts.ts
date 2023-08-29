@@ -6,8 +6,7 @@ export const LOGIN_ROUTE = '/login';
 export const REGISTRATION_ROUTE = '/registration';
 export const ABOUTUS_ROUTE = '/about-us';
 export const CATALOG_ROUTE = '/catalog';
-export const PRODUCT_ID_ROUTE = '/catalog/:id';
-
+export const PRODUCT_ID_ROUTE = '/:id';
 
 export const grey = blueGrey['A700'];
 export const formFieldsDefault: IDataForm = {

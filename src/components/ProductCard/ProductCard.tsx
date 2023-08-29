@@ -42,10 +42,10 @@ function ProductCard(props: ProductCardProps) {
   return (
     <Card
       sx={{
-        maxWidth: 300,
+        maxWidth: 250,
         height: '100%',
         boxShadow: 'none',
-        borderRadius: '30px',
+        borderRadius: '10px',
         border: '1px solid #bdbdbd85',
       }}
     >
@@ -56,7 +56,7 @@ function ProductCard(props: ProductCardProps) {
           justifyContent: 'space-between',
           height: '100%',
         }}
-        onClick={() => navigate(`/catalog/${props.id}`)}
+        onClick={() => navigate(`/${props.id}`)}
       >
         <CardMedia
           component="img"

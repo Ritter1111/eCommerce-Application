@@ -10,7 +10,7 @@ import {
 import LogIn from '../views/authorization/log-in/LogIn';
 import { AuthContext } from '../context';
 import SignUp from '../views/authorization/sign-up/SignUp';
-import ProductIdPage from '../views/productIdPage/ProductIdPage';
+import DetailedProductPage from '../views/detailedPoductPage/DetailedProductPage';
 
 const AppRouter = () => {
   const { isAuth } = useContext(AuthContext);
@@ -27,7 +27,7 @@ const AppRouter = () => {
         path={LOGIN_ROUTE}
         element={isAuth ? <Navigate to="/" /> : <LogIn />}
       />
-      <Route path={PRODUCT_ID_ROUTE} element={<ProductIdPage />} />
+      <Route path={PRODUCT_ID_ROUTE} element={<DetailedProductPage />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
