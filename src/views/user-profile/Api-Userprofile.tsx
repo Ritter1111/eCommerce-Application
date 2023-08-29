@@ -402,3 +402,81 @@ export async function removeAddresses(version: string, addressId: string) {
     console.error(`Error remove addresses:`, error);
   }
 }
+
+export async function setDefaultShippingAddress(
+  version: string,
+  addressId: string
+) {
+  try {
+    const response = await fetch(
+      `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+        },
+        body: JSON.stringify({
+          version: version,
+          actions: [
+            {
+              action: `setDefaultShippingAddress`,
+              addressId: `${addressId}`,
+            },
+          ],
+        }),
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log(`Shipping default address seted successfully`);
+      localStorage.setItem('customer', JSON.stringify(data));
+      successNotify(
+        `Your default shipping address has been successfully seted`
+      );
+    } else {
+      console.error(`Failed to set shipping default address`);
+    }
+  } catch (error) {
+    console.error(`Error setting shipping default address:`, error);
+  }
+}
+
+export async function setDefaultBillingAddress(
+  version: string,
+  addressId: string
+) {
+  try {
+    const response = await fetch(
+      `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+        },
+        body: JSON.stringify({
+          version: version,
+          actions: [
+            {
+              action: `setDefaultBillingAddress`,
+              addressId: `${addressId}`,
+            },
+          ],
+        }),
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem('customer', JSON.stringify(data));
+      console.log(`Billing default address seted successfully`);
+      successNotify(`Your default billing address has been successfully seted`);
+    } else {
+      console.error(`Failed to set billing default address`);
+    }
+  } catch (error) {
+    console.error(`Error setting billing default address:`, error);
+  }
+}

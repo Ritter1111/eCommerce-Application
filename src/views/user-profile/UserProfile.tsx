@@ -15,6 +15,7 @@ import {
   Dialog,
   DialogTitle,
   DialogActions,
+  Radio,
 } from '@mui/material';
 import styles from './UserProfile.module.css';
 import { customInputTheme } from '../../utils/custom-input-theme';
@@ -32,6 +33,8 @@ import {
   changeAddress,
   removeAddresses,
   resetPassword,
+  setDefaultBillingAddress,
+  setDefaultShippingAddress,
   setNewDateOfBirth,
   setNewEmail,
   setNewFirstName,
@@ -185,9 +188,13 @@ export default function UserProfile() {
                     <Grid item xs={1.5} textAlign="end">
                       <IconButton
                         onClick={() => {
-                          validateName(setErrors, firstName) &&
-                            (setNewFirstName(userState.version, firstName),
-                            setChangeName(false));
+                          if (firstName !== userState.firstName) {
+                            validateName(setErrors, firstName) &&
+                              (setNewFirstName(userState.version, firstName),
+                              setChangeName(false));
+                          } else {
+                            setChangeName(false);
+                          }
                         }}
                       >
                         <CheckOutlinedIcon />
@@ -233,9 +240,13 @@ export default function UserProfile() {
                     <Grid item xs={1.5} textAlign="end">
                       <IconButton
                         onClick={() => {
-                          validateLastName(setErrors, lastName) &&
-                            (setNewLastName(userState.version, lastName),
-                            setChangeLastName(false));
+                          if (lastName !== userState.lastName) {
+                            validateLastName(setErrors, lastName) &&
+                              (setNewLastName(userState.version, lastName),
+                              setChangeLastName(false));
+                          } else {
+                            setChangeLastName(false);
+                          }
                         }}
                       >
                         <CheckOutlinedIcon />
@@ -283,9 +294,16 @@ export default function UserProfile() {
                     <Grid item xs={1.5} textAlign="end">
                       <IconButton
                         onClick={() => {
-                          validateDateOfBirth(setErrors, dateOfBirth) &&
-                            (setNewDateOfBirth(userState.version, dateOfBirth),
-                            setChangeBd(false));
+                          if (dateOfBirth !== userState.dateOfBirth) {
+                            validateDateOfBirth(setErrors, dateOfBirth) &&
+                              (setNewDateOfBirth(
+                                userState.version,
+                                dateOfBirth
+                              ),
+                              setChangeBd(false));
+                          } else {
+                            setChangeBd(false);
+                          }
                         }}
                       >
                         <CheckOutlinedIcon />
@@ -305,7 +323,7 @@ export default function UserProfile() {
               </TabPanel>
               <TabPanel value="2">
                 <Grid container alignItems="flex-end" justifyContent="center">
-                  <Grid item xs={10} sm={6}>
+                  <Grid item xs={10.5} sm={6.5}>
                     <Typography
                       sx={{ fontWeight: 'bold' }}
                       variant="h6"
@@ -336,10 +354,33 @@ export default function UserProfile() {
                   return (
                     <Grid
                       container
-                      alignItems="flex-end"
+                      alignItems="center"
                       justifyContent="center"
                       key={i}
                     >
+                      <Grid item xs={0.5} textAlign="start">
+                        <Radio
+                          name="default-billing"
+                          size="small"
+                          value={address.id}
+                          checked={address.id === defaultBillingAddressId}
+                          sx={{
+                            color: 'black',
+                            '&.Mui-checked': {
+                              color: 'black',
+                            },
+                          }}
+                          onChange={async () => {
+                            await setDefaultBillingAddress(
+                              userState.version,
+                              address.id
+                            );
+                            setUserState(
+                              JSON.parse(localStorage.getItem('customer') || '')
+                            );
+                          }}
+                        />
+                      </Grid>
                       <Grid item xs={9} sm={5}>
                         {address.id === defaultBillingAddressId && (
                           <Typography
@@ -405,7 +446,7 @@ export default function UserProfile() {
                   justifyContent="center"
                   mt={4}
                 >
-                  <Grid item xs={10} sm={6}>
+                  <Grid item xs={10.5} sm={6.5}>
                     <Typography
                       sx={{ fontWeight: 'bold' }}
                       variant="h6"
@@ -436,10 +477,33 @@ export default function UserProfile() {
                   return (
                     <Grid
                       container
-                      alignItems="flex-end"
+                      alignItems="center"
                       justifyContent="center"
                       key={i}
                     >
+                      <Grid item xs={0.5} textAlign="start">
+                        <Radio
+                          name="default-shipping"
+                          size="small"
+                          checked={address.id === defaultShippingAddressId}
+                          value={address.id}
+                          sx={{
+                            color: 'black',
+                            '&.Mui-checked': {
+                              color: 'black',
+                            },
+                          }}
+                          onChange={async () => {
+                            await setDefaultShippingAddress(
+                              userState.version,
+                              address.id
+                            );
+                            setUserState(
+                              JSON.parse(localStorage.getItem('customer') || '')
+                            );
+                          }}
+                        />
+                      </Grid>
                       <Grid item xs={9} sm={5}>
                         {address.id === defaultShippingAddressId && (
                           <Typography
@@ -506,7 +570,7 @@ export default function UserProfile() {
                     justifyContent="center"
                     sx={{ tran: 100 }}
                   >
-                    <Grid item xs={11} sm={7} mt={3}>
+                    <Grid item xs={11.5} sm={7.5} mt={3}>
                       <Typography
                         sx={{ fontWeight: 'bold' }}
                         variant="h6"
@@ -520,7 +584,7 @@ export default function UserProfile() {
                           : 'Add new billing address:'}
                       </Typography>
                     </Grid>
-                    <Grid item xs={11} sm={7} sx={gridItemStyle}>
+                    <Grid item xs={11.5} sm={7.5} sx={gridItemStyle}>
                       <TextField
                         label="Street"
                         name="street"
@@ -538,7 +602,7 @@ export default function UserProfile() {
                         }}
                       />
                     </Grid>
-                    <Grid item xs={11} sm={7} sx={gridItemStyle}>
+                    <Grid item xs={11.5} sm={7.5} sx={gridItemStyle}>
                       <TextField
                         label="City"
                         name="city"
@@ -556,7 +620,7 @@ export default function UserProfile() {
                         }}
                       />
                     </Grid>
-                    <Grid item xs={11} sm={7} sx={gridItemStyle}>
+                    <Grid item xs={11.5} sm={7.5} sx={gridItemStyle}>
                       <TextField
                         label="Postal Code"
                         name="postalCode"
@@ -574,7 +638,7 @@ export default function UserProfile() {
                         }}
                       />
                     </Grid>
-                    <Grid item xs={11} sm={7} sx={gridItemStyle}>
+                    <Grid item xs={11.5} sm={7.5} sx={gridItemStyle}>
                       <Autocomplete
                         id="country"
                         options={[
@@ -616,7 +680,7 @@ export default function UserProfile() {
                         )}
                       />
                     </Grid>
-                    <Grid item xs={11} sm={7} sx={gridItemStyle}>
+                    <Grid item xs={11.5} sm={7.5} sx={gridItemStyle}>
                       <Button
                         variant="outlined"
                         style={{ borderColor: 'black', color: 'black' }}
@@ -750,9 +814,13 @@ export default function UserProfile() {
                     <Grid item xs={1.5} textAlign="end">
                       <IconButton
                         onClick={() => {
-                          validateEmail(setErrors, email) &&
-                            (setNewEmail(userState.version, email),
-                            setChangeEmail(false));
+                          if (email !== userState.email) {
+                            validateEmail(setErrors, email) &&
+                              (setNewEmail(userState.version, email),
+                              setChangeEmail(false));
+                          } else {
+                            setChangeEmail(false);
+                          }
                         }}
                       >
                         <CheckOutlinedIcon />
@@ -891,7 +959,7 @@ export default function UserProfile() {
                 setOpenAlert(false);
                 setSelectedAddressId('');
               }}
-              sx={{color: 'black'}}
+              sx={{ color: 'black' }}
             >
               No
             </Button>
@@ -904,7 +972,7 @@ export default function UserProfile() {
                     JSON.parse(localStorage.getItem('customer') || '')
                   );
               }}
-              sx={{color: 'black'}}
+              sx={{ color: 'black' }}
             >
               Yes
             </Button>
