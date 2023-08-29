@@ -7,6 +7,7 @@ import {
   ThemeProvider,
   useTheme,
   Button,
+  Paper,
 } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { customInputTheme } from '../../utils/custom-input-theme';
@@ -17,6 +18,7 @@ import ProductPrice from '../../components/Price/Price';
 import { formatCentsToCurrency } from '../../utils/format-to-cents';
 import { Currency } from '../../enums/product.enum';
 import { Slider } from '../../utils/Slider';
+import styles from './DetailedProductPage.module.css';
 
 function DetailedProductPage() {
   const outerTheme = useTheme();
@@ -90,18 +92,37 @@ function DetailedProductPage() {
               alignItems: 'left',
             }}
           >
+            {itemDiscount ? (
+              <Box
+                sx={{
+                  backgroundColor: '#da0000',
+                  color: 'white',
+                  width: '60px',
+                  height: '30px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Typography variant="body1">DEAL</Typography>
+              </Box>
+            ) : (
+              <></>
+            )}
             <Typography variant="h5" component="h1">
               {productData && productData.masterData.current.name['en-US']}
             </Typography>
-            <Typography color="text.secondary" sx={{ mr: 1 }}>
+            <Typography color="text.secondary" sx={{ mr: 1, mt: '10px' }}>
               PRICE:
             </Typography>
             {itemDiscount && currencyCode && itemPriceInCents ? (
-              <ProductPrice
-                itemDiscount={itemDiscount}
-                currencyCode={currencyCode}
-                itemPriceInCents={itemPriceInCents}
-              />
+              <>
+                <ProductPrice
+                  itemDiscount={itemDiscount}
+                  currencyCode={currencyCode}
+                  itemPriceInCents={itemPriceInCents}
+                />
+              </>
             ) : (
               <Typography sx={{ fontWeight: 'bold' }}>
                 {productData &&
@@ -110,10 +131,25 @@ function DetailedProductPage() {
                 {currencySymbol}
               </Typography>
             )}
+            <Typography
+              color="text.secondary"
+              sx={{ mr: 1, mt: '10px', mb: '5px' }}
+            >
+              SIZE:
+            </Typography>
+            <Box display="flex" color="text.secondary">
+              <Box sx={{ mr: 4 }}>XXS</Box>
+              <Box sx={{ mr: 4 }}>XS</Box>
+              <Box sx={{ mr: 4 }}>S</Box>
+              <Box sx={{ mr: 4 }}>M</Box>
+              <Box sx={{ mr: 4 }}>L</Box>
+              <Box sx={{ mr: 4 }}>XL</Box>
+              <Box sx={{ mr: 4 }}>XXL</Box>
+            </Box>
             <Button
               variant="contained"
               fullWidth
-              sx={{ mt: 2 }}
+              sx={{ mt: 3 }}
               size="small"
               style={{
                 backgroundColor: 'black',
@@ -121,13 +157,17 @@ function DetailedProductPage() {
                 marginBottom: '25px',
                 fontSize: '0.8rem',
               }}
+              className={styles.btn}
             >
               Add to card
             </Button>
-            <Typography variant="body1">
-              {productData &&
-                productData.masterData.current.description['en-US']}
-            </Typography>
+            <Typography sx={{ mr: 1, mt: '10px' }}>Description:</Typography>
+            <Paper className={styles.scroll} sx={{ boxShadow: 'none' }}>
+              <Typography variant="body2" color="text.secondary">
+                {productData &&
+                  productData.masterData.current.description['en-US']}
+              </Typography>
+            </Paper>
           </Box>
         </Grid>
       </Grid>

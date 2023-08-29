@@ -13,20 +13,20 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
 
   return (
     <>
-        <Typography sx={{ fontWeight: 'bold', color: '#da0000', mr: 1 }}>
-          {formatCentsToCurrency(itemDiscount.value.centAmount)}
-          {currencySymbol}
-        </Typography>
-        <Typography
-          sx={{
-            textDecoration: 'line-through',
-            fontSize: '14px',
-            color: '#bdbdbd',
-          }}
-        >
-          {formatCentsToCurrency(itemPriceInCents.centAmount)}
-          {currencySymbol}
-        </Typography>
+      <Typography sx={{ fontWeight: 'bold', color: '#da0000', mr: 1 }}>
+        {formatCentsToCurrency(itemDiscount.value.centAmount)}
+        {currencySymbol}
+      </Typography>
+      <Typography
+        sx={{
+          textDecoration: 'line-through',
+          fontSize: '14px',
+          color: '#bdbdbd',
+        }}
+      >
+        {formatCentsToCurrency(itemPriceInCents.centAmount)}
+        {currencySymbol}
+      </Typography>
     </>
   );
 };
