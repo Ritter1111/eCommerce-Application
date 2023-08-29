@@ -234,7 +234,7 @@ export async function changeAddress(
 async function setShippingAddress(
   addressId: string,
   version: string,
-  type: string,
+  type: string
 ) {
   try {
     const response = await fetch(
@@ -259,7 +259,7 @@ async function setShippingAddress(
 
     if (response.ok) {
       const data = await response.json();
-      console.log(data)
+      console.log(data);
       localStorage.setItem('customer', JSON.stringify(data));
       console.log(`${type} seted successfully`);
     } else {
@@ -273,7 +273,7 @@ async function setShippingAddress(
 async function setBillingAddress(
   addressId: string,
   version: string,
-  type: string,
+  type: string
 ) {
   try {
     const response = await fetch(
@@ -308,8 +308,14 @@ async function setBillingAddress(
   }
 }
 
-
-export async function addAddresses(version: string, streetName: string, postalCode: string, city: string, country: string | null, type: string) {
+export async function addAddresses(
+  version: string,
+  streetName: string,
+  postalCode: string,
+  city: string,
+  country: string | null,
+  type: string
+) {
   try {
     const response = await fetch(
       `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me`,
@@ -338,20 +344,20 @@ export async function addAddresses(version: string, streetName: string, postalCo
 
     if (response.ok) {
       const data = await response.json();
-      console.log(`New ddresses added successfully`);
+      console.log(`New addresses added successfully`);
       successNotify(`Your new address has been successfully added`);
       if (type === 'billing') {
         await setBillingAddress(
           data.addresses[data.addresses.length - 1].id,
           data.version,
-          type,
+          type
         );
       }
       if (type === 'shipping') {
         await setShippingAddress(
           data.addresses[data.addresses.length - 1].id,
           data.version,
-          type,
+          type
         );
       }
     } else {
@@ -359,5 +365,40 @@ export async function addAddresses(version: string, streetName: string, postalCo
     }
   } catch (error) {
     console.error(`Error adding new addresses:`, error);
+  }
+}
+
+export async function removeAddresses(version: string, addressId: string) {
+  try {
+    const response = await fetch(
+      `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+        },
+        body: JSON.stringify({
+          version: version,
+          actions: [
+            {
+              action: 'removeAddress',
+              addressId: addressId,
+            },
+          ],
+        }),
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem('customer', JSON.stringify(data));
+      console.log(`Addresses remove successfully`);
+      successNotify(`Your address has been successfully removed`);
+    } else {
+      console.error(`Failed to remove addresses`);
+    }
+  } catch (error) {
+    console.error(`Error remove addresses:`, error);
   }
 }

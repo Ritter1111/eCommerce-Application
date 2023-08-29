@@ -12,6 +12,9 @@ import {
   IconButton,
   Button,
   Autocomplete,
+  Dialog,
+  DialogTitle,
+  DialogActions,
 } from '@mui/material';
 import styles from './UserProfile.module.css';
 import { customInputTheme } from '../../utils/custom-input-theme';
@@ -27,6 +30,7 @@ import { AddressData, ProfileData } from '../../types/user-profile.type';
 import {
   addAddresses,
   changeAddress,
+  removeAddresses,
   resetPassword,
   setNewDateOfBirth,
   setNewEmail,
@@ -74,6 +78,7 @@ export default function UserProfile() {
   const [currentPassword, setCurrentPassword] = useState<string>('');
   const [newPassword, setNewPassword] = useState<string>('');
   const [errors, setErrors] = useState<Partial<ProfileData>>({});
+  const [openAlert, setOpenAlert] = useState<boolean>(false);
   const addresses = userState.addresses;
   const billingAddressesId = userState.billingAddressIds;
   const shippingAddressesId = userState.shippingAddressIds;
@@ -87,12 +92,12 @@ export default function UserProfile() {
       if (address.id === id) {
         billingAddresses.push(address);
       }
-    }) 
+    });
     shippingAddressesId.forEach((id: string) => {
       if (address.id === id) {
         shippingAddresses.push(address);
       }
-    }) 
+    });
   });
 
   const outerTheme = useTheme();
@@ -311,17 +316,18 @@ export default function UserProfile() {
                     </Typography>
                   </Grid>
                   <Grid item xs={1} textAlign="end">
-                  <IconButton onClick={() => {
-                      setSelectedCity('');
-                      setSelectedCountry(null);
-                      setSelectedPostalCode('');
-                      setSelectedStreet('');
-                      setSelectedAddressId('');
-                      setSelectedAddressId('');
-                      setIsEditAddress(true);
-                      setAddNewShippingAddress(false);
-                      setAddNewBillingAddress(true);
-                    }}>
+                    <IconButton
+                      onClick={() => {
+                        setSelectedCity('');
+                        setSelectedCountry(null);
+                        setSelectedPostalCode('');
+                        setSelectedStreet('');
+                        setSelectedAddressId('');
+                        setIsEditAddress(true);
+                        setAddNewShippingAddress(false);
+                        setAddNewBillingAddress(true);
+                      }}
+                    >
                       <AddCircleOutlineIcon />
                     </IconButton>
                   </Grid>
@@ -381,7 +387,12 @@ export default function UserProfile() {
                         </IconButton>
                       </Grid>
                       <Grid item xs={1} textAlign="end">
-                        <IconButton>
+                        <IconButton
+                          onClick={() => {
+                            setOpenAlert(true);
+                            setSelectedAddressId(address.id);
+                          }}
+                        >
                           <DeleteOutlineOutlinedIcon />
                         </IconButton>
                       </Grid>
@@ -405,17 +416,18 @@ export default function UserProfile() {
                     </Typography>
                   </Grid>
                   <Grid item xs={1} textAlign="end">
-                    <IconButton onClick={() => {
-                      setSelectedCity('');
-                      setSelectedCountry(null);
-                      setSelectedPostalCode('');
-                      setSelectedStreet('');
-                      setSelectedAddressId('');
-                      setSelectedAddressId('');
-                      setIsEditAddress(true);
-                      setAddNewShippingAddress(true);
-                      setAddNewBillingAddress(false);
-                    }}>
+                    <IconButton
+                      onClick={() => {
+                        setSelectedCity('');
+                        setSelectedCountry(null);
+                        setSelectedPostalCode('');
+                        setSelectedStreet('');
+                        setSelectedAddressId('');
+                        setIsEditAddress(true);
+                        setAddNewShippingAddress(true);
+                        setAddNewBillingAddress(false);
+                      }}
+                    >
                       <AddCircleOutlineIcon />
                     </IconButton>
                   </Grid>
@@ -475,7 +487,12 @@ export default function UserProfile() {
                         </IconButton>
                       </Grid>
                       <Grid item xs={1} textAlign="end">
-                        <IconButton>
+                        <IconButton
+                          onClick={() => {
+                            setOpenAlert(true);
+                            setSelectedAddressId(address.id);
+                          }}
+                        >
                           <DeleteOutlineOutlinedIcon />
                         </IconButton>
                       </Grid>
@@ -635,7 +652,7 @@ export default function UserProfile() {
                                 selectedStreet,
                                 selectedPostalCode,
                                 selectedCountry
-                              ) && 
+                              ) &&
                               (await addAddresses(
                                 userState.version,
                                 selectedCity,
@@ -656,7 +673,7 @@ export default function UserProfile() {
                                 selectedStreet,
                                 selectedPostalCode,
                                 selectedCountry
-                              ) && 
+                              ) &&
                               (await addAddresses(
                                 userState.version,
                                 selectedCity,
@@ -670,7 +687,7 @@ export default function UserProfile() {
                                 JSON.parse(
                                   localStorage.getItem('customer') || ''
                                 )
-                              ))
+                              ));
                         }}
                       >
                         Save
@@ -860,6 +877,39 @@ export default function UserProfile() {
             </TabContext>
           </Box>
         </ThemeProvider>
+        <Dialog
+          open={openAlert}
+          onClose={() => {
+            setOpenAlert(false);
+            setSelectedAddressId('');
+          }}
+        >
+          <DialogTitle>{'Do you want to remove this address?'}</DialogTitle>
+          <DialogActions>
+            <Button
+              onClick={() => {
+                setOpenAlert(false);
+                setSelectedAddressId('');
+              }}
+              sx={{color: 'black'}}
+            >
+              No
+            </Button>
+            <Button
+              onClick={async () => {
+                await removeAddresses(userState.version, selectedAddressId),
+                  setOpenAlert(false),
+                  setSelectedAddressId(''),
+                  setUserState(
+                    JSON.parse(localStorage.getItem('customer') || '')
+                  );
+              }}
+              sx={{color: 'black'}}
+            >
+              Yes
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     </Container>
   );
