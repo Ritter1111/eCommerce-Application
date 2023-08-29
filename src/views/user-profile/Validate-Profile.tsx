@@ -92,7 +92,6 @@ export function addressValidation(
   country: string | null
 ) {
   const newErrors: Partial<ProfileData> = {};
-  console.log(country)
   if (!streetName) {
     newErrors.streetName = 'Street is required';
   }

@@ -20,13 +20,12 @@ import DriveFileRenameOutlineOutlinedIcon from '@mui/icons-material/DriveFileRen
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import PasswordVisibility from '../authorization/log-in/PasswordVisibility';
+import { AddressData, ProfileData } from '../../types/user-profile.type';
 import {
-  AddressData,
-  ProfileData,
-} from '../../types/user-profile.type';
-import {
+  addAddresses,
   changeAddress,
   resetPassword,
   setNewDateOfBirth,
@@ -46,7 +45,9 @@ import {
 import { Countries } from '../../enums/user-profile.enam';
 
 export default function UserProfile() {
-  const userState = JSON.parse(localStorage.getItem('customer') || '');
+  const [userState, setUserState] = useState(
+    JSON.parse(localStorage.getItem('customer') || '')
+  );
   const [tabValue, setTabValue] = useState('1');
   const [showCurrentPassword, setShowCurrentPassword] =
     useState<boolean>(false);
@@ -56,6 +57,10 @@ export default function UserProfile() {
   const [changeName, setChangeName] = useState<boolean>(false);
   const [changeLastName, setChangeLastName] = useState<boolean>(false);
   const [changeBd, setChangeBd] = useState<boolean>(false);
+  const [addNewShippingAddress, setAddNewShippingAddress] =
+    useState<boolean>(false);
+  const [addNewBillingAddress, setAddNewBillingAddress] =
+    useState<boolean>(false);
   const [isEditAddress, setIsEditAddress] = useState<boolean>(false);
   const [selectedCountry, setSelectedCountry] = useState<string | null>('');
   const [selectedStreet, setSelectedStreet] = useState<string>('');
@@ -74,18 +79,22 @@ export default function UserProfile() {
   const shippingAddressesId = userState.shippingAddressIds;
   const defaultBillingAddressId = userState.defaultBillingAddressId;
   const defaultShippingAddressId = userState.defaultShippingAddressId;
-  const billingAddresses: AddressData[] = [];
   const shippingAddresses: AddressData[] = [];
+  const billingAddresses: AddressData[] = [];
 
   addresses.forEach((address: AddressData) => {
-    if (address.id.includes(billingAddressesId)) {
-      billingAddresses.push(address);
-    }
-    if (address.id.includes(shippingAddressesId)) {
-      shippingAddresses.push(address);
-    }
+    billingAddressesId.forEach((id: string) => {
+      if (address.id === id) {
+        billingAddresses.push(address);
+      }
+    }) 
+    shippingAddressesId.forEach((id: string) => {
+      if (address.id === id) {
+        shippingAddresses.push(address);
+      }
+    }) 
   });
-  
+
   const outerTheme = useTheme();
 
   const gridItemStyle = {
@@ -101,9 +110,9 @@ export default function UserProfile() {
     event: React.ChangeEvent<object>,
     value: string | null
   ) {
-    setSelectedCountry(value?.length === 2
-      ? Countries[value as keyof typeof Countries]
-      : value);
+    setSelectedCountry(
+      value?.length === 2 ? Countries[value as keyof typeof Countries] : value
+    );
   }
 
   return (
@@ -291,7 +300,7 @@ export default function UserProfile() {
               </TabPanel>
               <TabPanel value="2">
                 <Grid container alignItems="flex-end" justifyContent="center">
-                  <Grid item xs={11} sm={7}>
+                  <Grid item xs={10} sm={6}>
                     <Typography
                       sx={{ fontWeight: 'bold' }}
                       variant="h6"
@@ -300,6 +309,21 @@ export default function UserProfile() {
                     >
                       Billing Addresses:
                     </Typography>
+                  </Grid>
+                  <Grid item xs={1} textAlign="end">
+                  <IconButton onClick={() => {
+                      setSelectedCity('');
+                      setSelectedCountry(null);
+                      setSelectedPostalCode('');
+                      setSelectedStreet('');
+                      setSelectedAddressId('');
+                      setSelectedAddressId('');
+                      setIsEditAddress(true);
+                      setAddNewShippingAddress(false);
+                      setAddNewBillingAddress(true);
+                    }}>
+                      <AddCircleOutlineIcon />
+                    </IconButton>
                   </Grid>
                 </Grid>
                 {billingAddresses.map((address, i) => {
@@ -335,12 +359,18 @@ export default function UserProfile() {
                           onClick={() => {
                             setIsEditAddress(true);
                             setSelectedCity(address.city);
-                            setSelectedCountry(address.country?.length === 2
-                              ? Countries[address.country as keyof typeof Countries]
-                              : address.country);
+                            setSelectedCountry(
+                              address.country?.length === 2
+                                ? Countries[
+                                    address.country as keyof typeof Countries
+                                  ]
+                                : address.country
+                            );
                             setSelectedPostalCode(address.postalCode);
                             setSelectedStreet(address.streetName);
                             setSelectedAddressId(address.id);
+                            setAddNewBillingAddress(false);
+                            setAddNewShippingAddress(false);
                             errors.city = '';
                             errors.country = '';
                             errors.postalCode = '';
@@ -364,7 +394,7 @@ export default function UserProfile() {
                   justifyContent="center"
                   mt={4}
                 >
-                  <Grid item xs={11} sm={7}>
+                  <Grid item xs={10} sm={6}>
                     <Typography
                       sx={{ fontWeight: 'bold' }}
                       variant="h6"
@@ -373,6 +403,21 @@ export default function UserProfile() {
                     >
                       Shipping Addresses:
                     </Typography>
+                  </Grid>
+                  <Grid item xs={1} textAlign="end">
+                    <IconButton onClick={() => {
+                      setSelectedCity('');
+                      setSelectedCountry(null);
+                      setSelectedPostalCode('');
+                      setSelectedStreet('');
+                      setSelectedAddressId('');
+                      setSelectedAddressId('');
+                      setIsEditAddress(true);
+                      setAddNewShippingAddress(true);
+                      setAddNewBillingAddress(false);
+                    }}>
+                      <AddCircleOutlineIcon />
+                    </IconButton>
                   </Grid>
                 </Grid>
                 {shippingAddresses.map((address, i) => {
@@ -408,12 +453,18 @@ export default function UserProfile() {
                           onClick={() => {
                             setIsEditAddress(true);
                             setSelectedCity(address.city);
-                            setSelectedCountry(address.country?.length === 2
-                              ? Countries[address.country as keyof typeof Countries]
-                              : address.country);
+                            setSelectedCountry(
+                              address.country?.length === 2
+                                ? Countries[
+                                    address.country as keyof typeof Countries
+                                  ]
+                                : address.country
+                            );
                             setSelectedPostalCode(address.postalCode);
                             setSelectedStreet(address.streetName);
                             setSelectedAddressId(address.id);
+                            setAddNewBillingAddress(false);
+                            setAddNewShippingAddress(false);
                             errors.city = '';
                             errors.country = '';
                             errors.postalCode = '';
@@ -445,7 +496,11 @@ export default function UserProfile() {
                         align="left"
                         gutterBottom
                       >
-                        Set changes:
+                        {selectedAddressId
+                          ? 'Set changes:'
+                          : addNewShippingAddress
+                          ? 'Add new shipping address:'
+                          : 'Add new billing address:'}
                       </Typography>
                     </Grid>
                     <Grid item xs={11} sm={7} sx={gridItemStyle}>
@@ -524,7 +579,9 @@ export default function UserProfile() {
                         ]}
                         value={
                           selectedCountry?.length === 2
-                            ? Countries[selectedCountry as keyof typeof Countries]
+                            ? Countries[
+                                selectedCountry as keyof typeof Countries
+                              ]
                             : selectedCountry
                         }
                         onChange={handleCountryChange}
@@ -548,19 +605,72 @@ export default function UserProfile() {
                         style={{ borderColor: 'black', color: 'black' }}
                         sx={{ mt: 3 }}
                         size="small"
-                        onClick={() => {
-                          addressValidation(
-                            setErrors,
-                            selectedCity,
-                            selectedStreet,
-                            selectedPostalCode,
-                            selectedCountry
-                          ) &&
-                          (changeAddress(userState.version, selectedAddressId, selectedCity,
-                            selectedStreet,
-                            selectedPostalCode,
-                            selectedCountry),
-                            setIsEditAddress(false))
+                        onClick={async () => {
+                          selectedAddressId
+                            ? addressValidation(
+                                setErrors,
+                                selectedCity,
+                                selectedStreet,
+                                selectedPostalCode,
+                                selectedCountry
+                              ) &&
+                              (await changeAddress(
+                                userState.version,
+                                selectedAddressId,
+                                selectedCity,
+                                selectedStreet,
+                                selectedPostalCode,
+                                selectedCountry
+                              ),
+                              setIsEditAddress(false),
+                              setUserState(
+                                JSON.parse(
+                                  localStorage.getItem('customer') || ''
+                                )
+                              ))
+                            : addNewBillingAddress
+                            ? addressValidation(
+                                setErrors,
+                                selectedCity,
+                                selectedStreet,
+                                selectedPostalCode,
+                                selectedCountry
+                              ) && 
+                              (await addAddresses(
+                                userState.version,
+                                selectedCity,
+                                selectedStreet,
+                                selectedPostalCode,
+                                selectedCountry,
+                                'billing'
+                              ),
+                              setIsEditAddress(false),
+                              setUserState(
+                                JSON.parse(
+                                  localStorage.getItem('customer') || ''
+                                )
+                              ))
+                            : addressValidation(
+                                setErrors,
+                                selectedCity,
+                                selectedStreet,
+                                selectedPostalCode,
+                                selectedCountry
+                              ) && 
+                              (await addAddresses(
+                                userState.version,
+                                selectedCity,
+                                selectedStreet,
+                                selectedPostalCode,
+                                selectedCountry,
+                                'shipping'
+                              ),
+                              setIsEditAddress(false),
+                              setUserState(
+                                JSON.parse(
+                                  localStorage.getItem('customer') || ''
+                                )
+                              ))
                         }}
                       >
                         Save
@@ -572,6 +682,8 @@ export default function UserProfile() {
                         size="small"
                         onClick={() => {
                           setIsEditAddress(false);
+                          setAddNewBillingAddress(false);
+                          setAddNewShippingAddress(false);
                           setSelectedCity('');
                           setSelectedCountry('');
                           setSelectedPostalCode('');
