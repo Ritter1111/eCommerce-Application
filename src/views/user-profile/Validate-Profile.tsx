@@ -34,13 +34,14 @@ export function validateDateOfBirth(
   dateOfBirth: string
 ) {
   const newErrors: Partial<ProfileData> = {};
+  const MIN_AGE: number = 13;
   if (!dateOfBirth) {
     newErrors.bd = 'Date of Birth is required';
   } else {
     const bdDate = new Date(dateOfBirth);
     const currentDate = new Date();
     const minAgeDate = new Date(
-      currentDate.getFullYear() - 13,
+      currentDate.getFullYear() - MIN_AGE,
       currentDate.getMonth(),
       currentDate.getDate()
     );
@@ -72,7 +73,8 @@ export function validateNewPassword(
   newPassword: string
 ) {
   const newErrors: Partial<ProfileData> = {};
-  if (!newPassword || newPassword.length < 8) {
+  const MIN_PASSWORD_LENGTH: number = 8;
+  if (!newPassword || newPassword.length < MIN_PASSWORD_LENGTH) {
     newErrors.password = 'Password should have at least 8 characters';
   } else if (
     !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[ -/:@[-`{-~])/.test(newPassword)
