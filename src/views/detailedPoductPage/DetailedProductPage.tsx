@@ -12,6 +12,7 @@ import { customInputTheme } from '../../utils/custom-input-theme';
 import { useApi } from '../../hooks/useApi';
 import { AccessTokenContext } from '../../context';
 import { ProductsResp } from '../../interfaces/product.interface';
+import { Slider } from './Slider';
 
 function DetailedProductPage() {
   const outerTheme = useTheme();
@@ -29,7 +30,6 @@ function DetailedProductPage() {
     });
     const data = await response.json();
     setProductData(data);
-    console.log(data);
   });
 
   useEffect(() => {
@@ -38,9 +38,14 @@ function DetailedProductPage() {
     }
   }, [token]);
 
+  const slides =
+    productData?.masterData.staged.masterVariant.images.map((image) => ({
+      image: image.url,
+    })) || [];
+
   return (
     <ThemeProvider theme={customInputTheme(outerTheme)}>
-      <Grid container component="main" sx={{ height: '100vh', mt: '30px' }}>
+      <Grid container component="main" sx={{ height: '90vh', mt: '10px' }}>
         <CssBaseline />
         <Grid
           item
@@ -51,48 +56,14 @@ function DetailedProductPage() {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            ml: '10px',
           }}
         >
-          {productData &&
-            productData.masterData.staged.masterVariant.images.length > 0 && (
-              <img
-                src={productData.masterData.staged.masterVariant.images[0].url}
-                alt="Image 0"
-                style={{ width: '70%', height: 'auto' }}
-              />
-            )}
-          <Box
-            sx={{
-              m: 1,
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            {productData &&
-              productData.masterData.staged.masterVariant.images.length > 0 && (
-                <img
-                  src={
-                    productData.masterData.staged.masterVariant.images[1].url
-                  }
-                  alt="Image 1"
-                  style={{ width: '45%', height: 'auto', margin: '5px' }}
-                />
-              )}
-            {productData &&
-              productData.masterData.staged.masterVariant.images.length > 0 && (
-                <img
-                  src={
-                    productData.masterData.staged.masterVariant.images[2].url
-                  }
-                  alt="Image 2"
-                  style={{ width: '45%', height: 'auto', margin: '5px' }}
-                />
-              )}
-          </Box>
+          <Grid item xs={12} sm={12} sx={{ m: '5px' }}>
+            <Slider slides={slides} />
+          </Grid>
         </Grid>
-        <Grid item xs={12} sm={12} md={6}>
+        <Grid item xs={12} sm={12} md={5}>
           <Box
             sx={{
               my: 8,
