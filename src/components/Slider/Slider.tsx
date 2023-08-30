@@ -5,7 +5,8 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
-import { ISliderProps } from '../interfaces/detailedPage.interface';
+import styles from './Slider.module.css';
+import { ISliderProps } from '../../interfaces/detailedPage.interface';
 
 export const Slider: React.FC<ISliderProps> = ({ slides }) => {
   return (
@@ -14,12 +15,16 @@ export const Slider: React.FC<ISliderProps> = ({ slides }) => {
       spaceBetween={10}
       slidesPerView={1}
       navigation
+      loop={true}
       pagination={{ clickable: true }}
       scrollbar={{ draggable: true }}
     >
       {slides.map((slide) => (
-        <SwiperSlide key={slide.image}>
-          <img src={slide.image} style={{ width: '100%', height: 'auto' }} />
+        <SwiperSlide
+          key={slide.image}
+          style={{ display: 'flex', justifyContent: 'center' }}
+        >
+          <img src={slide.image} className={styles.swiper} />
         </SwiperSlide>
       ))}
     </Swiper>

@@ -1,0 +1,10 @@
+ .swiper {
+width: 79%;
+height: auto;
+}
+
+@media (max-width: 1200px) {
+  .swiper {
+    width: 100%;
+  }
+} 

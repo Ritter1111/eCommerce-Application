@@ -17,8 +17,8 @@ import { ProductsResp } from '../../interfaces/product.interface';
 import ProductPrice from '../../components/Price/Price';
 import { formatCentsToCurrency } from '../../utils/format-to-cents';
 import { Currency } from '../../enums/product.enum';
-import { Slider } from '../../utils/Slider';
 import styles from './DetailedProductPage.module.css';
+import { Slider } from '../../components/Slider/Slider';
 
 function DetailedProductPage() {
   const outerTheme = useTheme();
@@ -36,7 +36,6 @@ function DetailedProductPage() {
     });
     const data = await response.json();
     setProductData(data);
-    console.log(data);
   });
 
   useEffect(() => {
@@ -64,7 +63,7 @@ function DetailedProductPage() {
         container
         justifyContent="center"
         component="main"
-        sx={{ height: '90vh', mt: '10px' }}
+        sx={{ mt: '10px' }}
       >
         <CssBaseline />
         <Grid
@@ -107,7 +106,19 @@ function DetailedProductPage() {
                 <Typography variant="body1">DEAL</Typography>
               </Box>
             ) : (
-              <></>
+              <Box
+                sx={{
+                  backgroundColor: 'black',
+                  color: 'white',
+                  width: '60px',
+                  height: '30px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Typography variant="body1">NEW</Typography>
+              </Box>
             )}
             <Typography variant="h5" component="h1">
               {productData && productData.masterData.current.name['en-US']}
@@ -137,14 +148,18 @@ function DetailedProductPage() {
             >
               SIZE:
             </Typography>
-            <Box display="flex" color="text.secondary">
-              <Box sx={{ mr: 4 }}>XXS</Box>
-              <Box sx={{ mr: 4 }}>XS</Box>
-              <Box sx={{ mr: 4 }}>S</Box>
-              <Box sx={{ mr: 4 }}>M</Box>
-              <Box sx={{ mr: 4 }}>L</Box>
-              <Box sx={{ mr: 4 }}>XL</Box>
-              <Box sx={{ mr: 4 }}>XXL</Box>
+            <Box
+              justifyContent="space-evenly"
+              display="flex"
+              color="text.secondary"
+            >
+              <Box>XXS</Box>
+              <Box>XS</Box>
+              <Box>S</Box>
+              <Box>M</Box>
+              <Box>L</Box>
+              <Box>XL</Box>
+              <Box>XXL</Box>
             </Box>
             <Button
               variant="contained"
