@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 import classes from './NotFound.module.css';
 
 const NotFound = () => {
-  console.log('d');
   return (
     <Container maxWidth="sm">
       <Lottie

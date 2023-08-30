@@ -66,12 +66,14 @@ export interface Price {
   channel: Base
   validFrom: string
   validUntil: string
-  discounted? : {
-    value: Value
-    discount: {
-      typeId: string
-      id: string
-    }
+  discounted? : IDiscounted
+}
+
+export interface IDiscounted {
+  value: Value
+  discount: {
+    typeId: string
+    id: string
   }
 }
 
@@ -96,4 +98,10 @@ export interface Variant {
   key: string
   prices: Price[]
   images: Image[]
+}
+
+export interface ProductPriceProps {
+  itemDiscount: IDiscounted; 
+  currencyCode: string;
+  itemPriceInCents: Value 
 }
