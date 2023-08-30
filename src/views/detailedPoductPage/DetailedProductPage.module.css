@@ -20,3 +20,12 @@
 .scroll::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.1);
 }
+
+.link {
+  font-size: 0.8rem;
+  color: rgba(0, 0, 0, 0.633);
+}
+
+.link:hover {
+  text-decoration: underline;
+}

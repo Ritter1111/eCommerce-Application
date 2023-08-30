@@ -4,11 +4,11 @@ import { formatCentsToCurrency } from '../../utils/format-to-cents';
 import { Currency } from '../../enums/product.enum';
 import { ProductPriceProps } from '../../interfaces/product.interface';
 
-const ProductPrice: React.FC<ProductPriceProps> = ({
+function ProductPrice({
   itemDiscount,
   currencyCode,
   itemPriceInCents,
-}) => {
+}: ProductPriceProps) {
   const currencySymbol = currencyCode === Currency.USD ? '$' : '';
 
   return (
@@ -29,6 +29,6 @@ const ProductPrice: React.FC<ProductPriceProps> = ({
       </Typography>
     </>
   );
-};
+}
 
 export default ProductPrice;

@@ -9,16 +9,16 @@ import {
   Button,
   Paper,
 } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { customInputTheme } from '../../utils/custom-input-theme';
+import { formatCentsToCurrency } from '../../utils/format-to-cents';
 import { useApi } from '../../hooks/useApi';
 import { AccessTokenContext } from '../../context';
 import { ProductsResp } from '../../interfaces/product.interface';
-import ProductPrice from '../../components/Price/Price';
-import { formatCentsToCurrency } from '../../utils/format-to-cents';
 import { Currency } from '../../enums/product.enum';
-import styles from './DetailedProductPage.module.css';
 import { Slider } from '../../components/Slider/Slider';
+import ProductPrice from '../../components/Price/Price';
+import styles from './DetailedProductPage.module.css';
 
 function DetailedProductPage() {
   const outerTheme = useTheme();
@@ -36,6 +36,7 @@ function DetailedProductPage() {
     });
     const data = await response.json();
     setProductData(data);
+    console.log(data);
   });
 
   useEffect(() => {
@@ -62,6 +63,7 @@ function DetailedProductPage() {
       <Grid
         container
         justifyContent="center"
+        alignItems="center"
         component="main"
         sx={{ mt: '10px' }}
       >
@@ -91,6 +93,16 @@ function DetailedProductPage() {
               alignItems: 'left',
             }}
           >
+            <Typography
+              color="text.secondary"
+              fontSize="0.8rem"
+              marginBottom="10px"
+            >
+              <Link to="/catalog" className={styles.link}>
+                catalog
+              </Link>
+              {`/${productData?.key}`}
+            </Typography>
             {itemDiscount ? (
               <Box
                 sx={{
@@ -174,7 +186,7 @@ function DetailedProductPage() {
               }}
               className={styles.btn}
             >
-              Add to card
+              Add to cart
             </Button>
             <Typography sx={{ mr: 1, mt: '10px' }}>Description:</Typography>
             <Paper className={styles.scroll} sx={{ boxShadow: 'none' }}>
