@@ -19,6 +19,7 @@ import { Currency } from '../../enums/product.enum';
 import { Slider } from '../../components/Slider/Slider';
 import ProductPrice from '../../components/Price/Price';
 import styles from './DetailedProductPage.module.css';
+// import ModalWindow from '../../components/Modal/Modal';
 
 function DetailedProductPage() {
   const outerTheme = useTheme();

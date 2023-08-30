@@ -5,3 +5,8 @@ export interface ISlide {
 export interface ISliderProps {
   slides: ISlide[];
 }
+
+export interface IModalProps {
+  image: string;
+  handleClose: () => void
+}
