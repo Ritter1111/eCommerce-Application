@@ -4,7 +4,10 @@ import {
   ISignUpState,
 } from '../../../interfaces/signup.interface';
 
-function validatePostalCode(postalCode: string, country: string): boolean {
+export function validatePostalCode(
+  postalCode: string,
+  country: string
+): boolean {
   const postalCodeRegexMap: { [country: string]: RegExp } = {
     'Germany (DE)': /^\d{5}$/,
     'France (FR)': /^\d{5}$/,
