@@ -2,9 +2,9 @@ import React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@material-ui/core/Modal';
 import { styleModalWindow } from '../../utils/consts';
-import styles from './Modal.module.css';
 import { IModalProps } from '../../interfaces/detailedPage.interface';
 import { Slider } from '../Slider/Slider';
+import styles from './Modal.module.css';
 
 export default function ModalWindow({
   slides,

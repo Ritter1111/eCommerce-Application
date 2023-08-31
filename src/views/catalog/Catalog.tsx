@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AccessTokenContext } from '../../context';
 import { CircularProgress, Container, Typography, Grid } from '@mui/material';
-import { ProductsResp } from '../../interfaces/product.interface';
+import { IProductsResp } from '../../interfaces/product.interface';
 import ProductCard from '../../components/ProductCard/ProductCard';
 import { useApi } from '../../hooks/useApi';
 
 function Catalog() {
-  const [carts, setCarts] = useState<ProductsResp[]>([]);
+  const [carts, setCarts] = useState<IProductsResp[]>([]);
   const { token } = useContext(AccessTokenContext);
 
   const [fetchCarts, isLoading, cartsError] = useApi(async () => {

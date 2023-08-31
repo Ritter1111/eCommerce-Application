@@ -2,13 +2,13 @@ import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
 import { ISliderProps } from '../../interfaces/detailedPage.interface';
+import Zoom from 'react-img-zoom';
+import { Close } from '@mui/icons-material';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import styles from './Slider.module.css';
-import Zoom from 'react-img-zoom';
-import { Close } from '@mui/icons-material';
 
 export function Slider({
   slides,

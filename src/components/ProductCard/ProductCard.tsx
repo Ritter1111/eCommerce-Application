@@ -8,7 +8,7 @@ import {
   Box,
 } from '@mui/material';
 import { Currency } from '../../enums/product.enum';
-import { ProductCardProps } from '../../interfaces/product.interface';
+import { IProductCardProps } from '../../interfaces/product.interface';
 import { useNavigate } from 'react-router-dom';
 import { formatCentsToCurrency } from '../../utils/format-to-cents';
 import ProductPrice from '../Price/Price';
@@ -24,7 +24,7 @@ export function truncateStringToSpace(str: string, maxLength: number) {
   }
 }
 
-function ProductCard(props: ProductCardProps) {
+function ProductCard(props: IProductCardProps) {
   const navigate = useNavigate();
   const data = props.data;
   const currencyCode = data.masterVariant.prices[0].value.currencyCode;

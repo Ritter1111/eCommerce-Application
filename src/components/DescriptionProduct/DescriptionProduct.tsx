@@ -3,12 +3,12 @@ import { Typography, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { formatCentsToCurrency } from '../../utils/format-to-cents';
 import ProductPrice from '../Price/Price';
-import { ProductPriceProps } from '../../interfaces/product.interface';
-import styles from './DescriptionProduct.module.css';
+import { IProductPriceProps } from '../../interfaces/product.interface';
 import AddToCart from './AddToCart/AddToCart';
 import Size from './Size/Size';
 import Description from './Description/Description';
 import Banner from './Banner/Banner';
+import styles from './DescriptionProduct.module.css';
 
 export default function DescriptionProduct({
   itemDiscount,
@@ -16,7 +16,7 @@ export default function DescriptionProduct({
   itemPriceInCents,
   productData,
   currencyCode,
-}: ProductPriceProps) {
+}: IProductPriceProps) {
   
   return (
     <>

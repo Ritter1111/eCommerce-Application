@@ -12,3 +12,8 @@ export interface IModalProps {
   handleClick: (img: string) => void
   slides: ISlide[];
 }
+
+export interface IBanner {
+  color: string;
+  label: string;
+}

@@ -1,10 +1,8 @@
 import { Typography, Box } from '@mui/material';
 import React from 'react';
-interface Model {
-  color: string;
-  label: string;
-}
-export default function Banner({ color, label }: Model) {
+import { IBanner } from '../../../interfaces/detailedPage.interface';
+
+export default function Banner({ color, label }: IBanner) {
   return (
     <>
       <Box

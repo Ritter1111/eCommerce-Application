@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { customInputTheme } from '../../utils/custom-input-theme';
 import { useApi } from '../../hooks/useApi';
 import { AccessTokenContext } from '../../context';
-import { ProductsResp } from '../../interfaces/product.interface';
+import { IProductsResp } from '../../interfaces/product.interface';
 import { Currency } from '../../enums/product.enum';
 import { Slider } from '../../components/Slider/Slider';
 import ModalWindow from '../../components/Modal/Modal';
@@ -15,7 +15,7 @@ function DetailedProductPage() {
   const params = useParams();
   const productId = params.id;
   const { token } = useContext(AccessTokenContext);
-  const [productData, setProductData] = useState<ProductsResp | null>(null);
+  const [productData, setProductData] = useState<IProductsResp | null>(null);
   const [open, setOpen] = useState<boolean>(false);
   const [image, setImage] = useState<string>('');
 
