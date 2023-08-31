@@ -17,7 +17,6 @@ export default function DescriptionProduct({
   productData,
   currencyCode,
 }: IProductPriceProps) {
-  
   return (
     <>
       <Box
@@ -45,7 +44,7 @@ export default function DescriptionProduct({
           <Banner color="black" label="NEW" />
         )}
         <Typography variant="h5" component="h1">
-          {productData && productData.masterData.current.name['en-US']}
+          {productData && productData.masterData?.current?.name['en-US']}
         </Typography>
         <Typography color="text.secondary" sx={{ mr: 1, mt: '10px' }}>
           PRICE:

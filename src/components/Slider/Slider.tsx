@@ -14,8 +14,12 @@ export function Slider({
   slides,
   handleClick,
   isModal,
-  handleClose
-}: ISliderProps & { handleClick: (img: string) => void; isModal?: boolean;  handleClose: () => void; }) {
+  handleClose,
+}: ISliderProps & {
+  handleClick: (img: string) => void;
+  isModal?: boolean;
+  handleClose: () => void;
+}) {
   return (
     <Swiper
       modules={[Navigation, Pagination, Scrollbar, A11y]}
@@ -33,9 +37,9 @@ export function Slider({
         >
           {isModal ? (
             <>
-            <Zoom img={slide.image} zoomScale={2} width={620} height={700} />
-            <Close onClick={handleClose} className={styles.close} />
-           </>
+              <Zoom img={slide.image} zoomScale={2} width={620} height={700} />
+              <Close onClick={handleClose} className={styles.close} />
+            </>
           ) : (
             <img
               src={slide.image}

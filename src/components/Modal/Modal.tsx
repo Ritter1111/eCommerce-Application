@@ -19,7 +19,12 @@ export default function ModalWindow({
       onClose={handleClose}
     >
       <Box sx={styleModalWindow}>
-        <Slider handleClose={handleClose} slides={slides} handleClick={handleClick} isModal={true} />
+        <Slider
+          handleClose={handleClose}
+          slides={slides}
+          handleClick={handleClick}
+          isModal={true}
+        />
       </Box>
     </Modal>
   );

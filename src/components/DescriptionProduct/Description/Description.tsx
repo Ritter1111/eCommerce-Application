@@ -9,7 +9,8 @@ export default function Description({ productData }: IProductData) {
       <Typography sx={{ mr: 1, mt: '10px' }}>Description:</Typography>
       <Paper className={styles.scroll} sx={{ boxShadow: 'none' }}>
         <Typography variant="body2" color="text.secondary">
-          {productData && productData.masterData.current.description['en-US']}
+          {productData &&
+            productData?.masterData?.current?.description['en-US']}
         </Typography>
       </Paper>
     </>
