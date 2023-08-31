@@ -80,7 +80,7 @@ function DetailedProductPage() {
           }}
         >
           <Grid item xs={12} sm={12} sx={{ m: '5px' }}>
-            <Slider slides={slides} handleClick={handleClick} />
+            <Slider slides={slides} handleClick={handleClick} handleClose={handleClose}/>
             {open && (
               <ModalWindow
                 slides={slides}

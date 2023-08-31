@@ -8,12 +8,14 @@ import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import styles from './Slider.module.css';
 import Zoom from 'react-img-zoom';
+import { Close } from '@mui/icons-material';
 
 export function Slider({
   slides,
   handleClick,
   isModal,
-}: ISliderProps & { handleClick: (img: string) => void; isModal?: boolean }) {
+  handleClose
+}: ISliderProps & { handleClick: (img: string) => void; isModal?: boolean;  handleClose: () => void; }) {
   return (
     <Swiper
       modules={[Navigation, Pagination, Scrollbar, A11y]}
@@ -30,7 +32,10 @@ export function Slider({
           style={{ display: 'flex', justifyContent: 'center' }}
         >
           {isModal ? (
+            <>
             <Zoom img={slide.image} zoomScale={2} width={620} height={700} />
+            <Close onClick={handleClose} className={styles.close} />
+           </>
           ) : (
             <img
               src={slide.image}

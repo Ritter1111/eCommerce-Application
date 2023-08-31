@@ -3,6 +3,12 @@
   height: auto;
 }
 
+.close {
+  position: absolute;
+  right: 7px;
+  top: 7px;
+}
+
 @media (max-width: 1200px) {
   .swiper {
     width: 100%;
