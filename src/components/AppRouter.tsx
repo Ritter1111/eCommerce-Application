@@ -36,7 +36,7 @@ const AppRouter = () => {
       />
       <Route
         path={USER_PROFILE}
-        element={getIsAuth ? <UserProfile /> : <Navigate to="/" />}
+        element={getIsAuth ? <UserProfile /> : <Navigate to="/login" />}
       />
       <Route path={PRODUCT_ID_ROUTE} element={<DetailedProductPage />} />
       <Route path="*" element={<NotFound />} />
