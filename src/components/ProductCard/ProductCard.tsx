@@ -51,7 +51,7 @@ function ProductCard(props: IProductCardProps) {
           justifyContent: 'space-between',
           height: '100%',
         }}
-        onClick={() => navigate(`/${props.id}`)}
+        onClick={() => navigate(`/catalog/${props.id}`)}
       >
         <CardMedia
           component="img"
