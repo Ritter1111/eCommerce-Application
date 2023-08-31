@@ -16,6 +16,11 @@ import UserProfile from '../views/user-profile/UserProfile';
 
 const AppRouter = () => {
   const { isAuth } = useContext(AuthContext);
+  if(isAuth) {
+    localStorage.setItem('isAuth', 'true')
+  }
+  const getIsAuth = localStorage.getItem('isAuth') === 'true';
+  
   return (
     <Routes>
       {routes.map((route, index) => (
@@ -31,7 +36,7 @@ const AppRouter = () => {
       />
       <Route
         path={USER_PROFILE}
-        element={isAuth ? <UserProfile /> : <Navigate to="/" />}
+        element={getIsAuth ? <UserProfile /> : <Navigate to="/" />}
       />
       <Route path={PRODUCT_ID_ROUTE} element={<DetailedProductPage />} />
       <Route path="*" element={<NotFound />} />

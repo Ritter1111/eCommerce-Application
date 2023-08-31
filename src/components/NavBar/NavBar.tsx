@@ -145,6 +145,7 @@ export default function NavBar() {
               {isAuth ? (
                 <>
                   <NavLink
+                    onClick={() => closeMenu()}
                     to={USER_PROFILE}
                     className="pages__link"
                     title="User Profile"
