@@ -2,13 +2,13 @@ import React from 'react';
 import Typography from '@mui/material/Typography';
 import { formatCentsToCurrency } from '../../utils/format-to-cents';
 import { Currency } from '../../enums/product.enum';
-import { ProductPriceProps } from '../../interfaces/product.interface';
+import { IProductPrice } from '../../interfaces/product.interface';
 
 function ProductPrice({
   itemDiscount,
   currencyCode,
   itemPriceInCents,
-}: ProductPriceProps) {
+}: IProductPrice) {
   const currencySymbol = currencyCode === Currency.USD ? '$' : '';
 
   return (

@@ -8,5 +8,7 @@ export interface ISliderProps {
 
 export interface IModalProps {
   image: string;
-  handleClose: () => void
+  handleClose: () => void;
+  handleClick: (img: string) => void
+  slides: ISlide[];
 }

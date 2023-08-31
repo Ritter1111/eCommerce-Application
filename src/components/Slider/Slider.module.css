@@ -1,6 +1,6 @@
  .swiper {
-width: 79%;
-height: auto;
+  width: 79%;
+  height: auto;
 }
 
 @media (max-width: 1200px) {

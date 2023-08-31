@@ -101,7 +101,19 @@ export interface Variant {
 }
 
 export interface ProductPriceProps {
-  itemDiscount: IDiscounted; 
-  currencyCode: string;
+  itemDiscount: IDiscounted | undefined;
+  currencySymbol: string | undefined;
+  currencyCode: string | undefined
+  itemPriceInCents: Value | undefined;
+  productData: ProductsResp | null;
+}
+
+export interface IProductPrice {
+  itemDiscount: IDiscounted 
+  currencyCode: string
   itemPriceInCents: Value 
+}
+
+export interface IProductData {
+  productData: ProductsResp | null;
 }

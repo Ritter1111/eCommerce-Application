@@ -1,0 +1,73 @@
+import React from 'react';
+import { Typography, Box } from '@mui/material';
+import { Link } from 'react-router-dom';
+import { formatCentsToCurrency } from '../../utils/format-to-cents';
+import ProductPrice from '../Price/Price';
+import { ProductPriceProps } from '../../interfaces/product.interface';
+import styles from './DescriptionProduct.module.css';
+import AddToCart from './AddToCart/AddToCart';
+import Size from './Size/Size';
+import Description from './Description/Description';
+import Banner from './Banner/Banner';
+
+export default function DescriptionProduct({
+  itemDiscount,
+  currencySymbol,
+  itemPriceInCents,
+  productData,
+  currencyCode,
+}: ProductPriceProps) {
+  
+  return (
+    <>
+      <Box
+        sx={{
+          my: 8,
+          mx: 4,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'left',
+        }}
+      >
+        <Typography
+          color="text.secondary"
+          fontSize="0.8rem"
+          marginBottom="10px"
+        >
+          <Link to="/catalog" className={styles.link}>
+            catalog
+          </Link>
+          {`/${productData?.key}`}
+        </Typography>
+        {itemDiscount ? (
+          <Banner color="#da0000" label="DEAL" />
+        ) : (
+          <Banner color="black" label="NEW" />
+        )}
+        <Typography variant="h5" component="h1">
+          {productData && productData.masterData.current.name['en-US']}
+        </Typography>
+        <Typography color="text.secondary" sx={{ mr: 1, mt: '10px' }}>
+          PRICE:
+        </Typography>
+        {itemDiscount && currencyCode && itemPriceInCents ? (
+          <ProductPrice
+            itemDiscount={itemDiscount}
+            currencyCode={currencyCode}
+            itemPriceInCents={itemPriceInCents}
+          />
+        ) : (
+          <Typography sx={{ fontWeight: 'bold' }}>
+            {productData &&
+              itemPriceInCents &&
+              formatCentsToCurrency(itemPriceInCents.centAmount)}
+            {currencySymbol}
+          </Typography>
+        )}
+        <Size />
+        <AddToCart />
+        <Description productData={productData} />
+      </Box>
+    </>
+  );
+}

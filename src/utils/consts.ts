@@ -14,15 +14,15 @@ export const formFieldsDefault: IDataForm = {
   password: '',
 };
 
-export const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 'auto',
+export const styleModalWindow = {
   bgcolor: 'background.paper',
-  border: '2px solid #fff',
   boxShadow: 2,
+  width: '515px',
   display: 'flex',
-  alignItems: 'center'
+  alignItems: 'center',
+  justifyContent: 'center',
+  '@media (max-width: 600px)': {
+    width: '89%', 
+    height: 'auto'
+  },
 };
