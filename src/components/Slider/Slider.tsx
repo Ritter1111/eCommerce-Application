@@ -2,13 +2,20 @@ import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
 import { ISliderProps } from '../../interfaces/detailedPage.interface';
+import Zoom from 'react-img-zoom';
+import { Close } from '@mui/icons-material';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import styles from './Slider.module.css';
 
-export function Slider({ slides }: ISliderProps) {
+export function Slider({
+  slides,
+  handleClick,
+  isModal,
+  handleClose
+}: ISliderProps & { handleClick: (img: string) => void; isModal?: boolean;  handleClose: () => void; }) {
   return (
     <Swiper
       modules={[Navigation, Pagination, Scrollbar, A11y]}
@@ -24,7 +31,18 @@ export function Slider({ slides }: ISliderProps) {
           key={slide.image}
           style={{ display: 'flex', justifyContent: 'center' }}
         >
-          <img src={slide.image} className={styles.swiper} />
+          {isModal ? (
+            <>
+            <Zoom img={slide.image} zoomScale={2} width={620} height={700} />
+            <Close onClick={handleClose} className={styles.close} />
+           </>
+          ) : (
+            <img
+              src={slide.image}
+              className={styles.swiper}
+              onClick={() => handleClick(slide.image)}
+            />
+          )}
         </SwiperSlide>
       ))}
     </Swiper>

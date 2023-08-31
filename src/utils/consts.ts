@@ -14,3 +14,16 @@ export const formFieldsDefault: IDataForm = {
   email: '',
   password: '',
 };
+
+export const styleModalWindow = {
+  bgcolor: 'background.paper',
+  boxShadow: 2,
+  width: '515px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  '@media (max-width: 600px)': {
+    width: '89%', 
+    height: 'auto'
+  },
+};

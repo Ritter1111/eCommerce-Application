@@ -1,90 +1,90 @@
-export interface ProductCardProps {
+export interface IProductCardProps {
   id: string
-  data: Current;
+  data: ICurrent;
 }
-export interface ProductsResp {
+export interface IProductsResp {
   id: string
   version: number
   versionModifiedAt: string
   lastMessageSequenceNumber: number
   createdAt: string
   lastModifiedAt: string
-  lastModifiedBy: Base
-  createdBy: Base
-  productType: Base
-  masterData: MasterData
+  lastModifiedBy: IBase
+  createdBy: IBase
+  productType: IBase
+  masterData: IMasterData
   key: string
-  taxCategory: Base
+  taxCategory: IBase
   priceMode: string
   lastVariantId: number
 }
 
-export interface Base {
+export interface IBase {
   typeId: string
   id: string
 }
 
-export interface MasterData {
-  current: Current
-  staged: Current
+export interface IMasterData {
+  current: ICurrent
+  staged: ICurrent
   published: boolean
   hasStagedChanges: boolean
 }
 
-export interface Current {
-  name: BaseProps
-  description: BaseProps
-  categories: Base[]
-  categoryOrderHints: Empty
-  slug: BaseProps
-  metaTitle: BaseProps
-  metaDescription: BaseProps
-  masterVariant: MasterVariant
-  variants: Variant[]
-  searchKeywords: Empty
+export interface ICurrent {
+  name: IBaseProps
+  description: IBaseProps
+  categories: IBase[]
+  categoryOrderHints: IEmpty
+  slug: IBaseProps
+  metaTitle: IBaseProps
+  metaDescription: IBaseProps
+  masterVariant: IMasterVariant
+  variants: IVariant[]
+  searchKeywords: IEmpty
 }
 
-export interface BaseProps {
+export interface IBaseProps {
   "en-US": string
 }
 
-export interface Empty {}
+export interface IEmpty {}
 
-export interface MasterVariant {
+export interface IMasterVariant {
   id: number
   sku: string
   key: string
-  prices: Price[]
-  images: Image[]
+  prices: IPrice[]
+  images: IImage[]
 }
 
-export interface Price {
+export interface IPrice {
   id: string
-  value: Value
+  value: IValue
   key: string
   country: string
-  channel: Base
+  channel: IBase
   validFrom: string
   validUntil: string
   discounted? : IDiscounted
 }
 
 export interface IDiscounted {
-  value: Value
+  value: IValue
   discount: {
     typeId: string
     id: string
   }
 }
 
-export interface Value {
+export interface IValue {
   type: string
   currencyCode: string
   centAmount: number
   fractionDigits: number
 }
 
-export interface Image {
+export interface IImage {
   url: string
   dimensions: {
     w: number
@@ -92,16 +92,28 @@ export interface Image {
   }
 }
 
-export interface Variant {
+export interface IVariant {
   id: number
   sku: string
   key: string
-  prices: Price[]
-  images: Image[]
+  prices: IPrice[]
+  images: IImage[]
 }
 
-export interface ProductPriceProps {
-  itemDiscount: IDiscounted; 
-  currencyCode: string;
-  itemPriceInCents: Value 
+export interface IProductPriceProps {
+  itemDiscount: IDiscounted | undefined;
+  currencySymbol: string | undefined;
+  currencyCode: string | undefined
+  itemPriceInCents: IValue | undefined;
+  productData: IProductsResp | null;
+}
+
+export interface IProductPrice {
+  itemDiscount: IDiscounted 
+  currencyCode: string
+  itemPriceInCents: IValue 
+}
+
+export interface IProductData {
+  productData: IProductsResp | null;
 }
