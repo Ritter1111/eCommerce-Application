@@ -1,6 +1,6 @@
 import React from 'react';
 import Box from '@mui/material/Box';
-import Modal from '@material-ui/core/Modal';
+import Modal from '@mui/material/Modal';
 import { styleModalWindow } from '../../utils/consts';
 import { IModalProps } from '../../interfaces/detailedPage.interface';
 import { Slider } from '../Slider/Slider';
