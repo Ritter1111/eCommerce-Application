@@ -310,9 +310,9 @@ async function setBillingAddress(
 
 export async function addAddresses(
   version: string,
+  city: string,
   streetName: string,
   postalCode: string,
-  city: string,
   country: string | null,
   type: string
 ) {

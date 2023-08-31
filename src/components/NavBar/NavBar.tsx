@@ -7,6 +7,7 @@ import {
   LOGIN_ROUTE,
   MAIN_ROUTE,
   REGISTRATION_ROUTE,
+  USER_PROFILE,
 } from '../../utils/consts';
 import {
   ShoppingBag,
@@ -15,6 +16,10 @@ import {
   Menu,
   Close,
   Logout,
+  InfoOutlined,
+  LibraryBooksOutlined,
+  HomeOutlined,
+  AccountCircleOutlined,
 } from '@mui/icons-material';
 import { AuthContext } from '../../context';
 import routes from '../../utils/routes';
@@ -125,22 +130,41 @@ export default function NavBar() {
                   className="pages__link"
                   title={route.title}
                 >
+                  {(route.name === 'Home' && (
+                    <HomeOutlined sx={{ mr: 0.5 }} />
+                  )) ||
+                    (route.name === 'About Us' && (
+                      <InfoOutlined sx={{ mr: 0.5 }} />
+                    )) ||
+                    (route.name === 'Catalog' && (
+                      <LibraryBooksOutlined sx={{ mr: 0.5 }} />
+                    ))}
                   {route.name}
                 </NavLink>
               ))}
               {isAuth ? (
-                <NavLink
-                  onClick={() => {
-                    logout();
-                    closeMenu();
-                  }}
-                  to={MAIN_ROUTE}
-                  className={classes.btn}
-                  title="Log In"
-                >
-                  <Logout sx={{ mr: 0.5 }} />
-                  Logout
-                </NavLink>
+                <>
+                  <NavLink
+                    to={USER_PROFILE}
+                    className="pages__link"
+                    title="User Profile"
+                  >
+                    <AccountCircleOutlined sx={{ mr: 0.5 }} />
+                    User Profile
+                  </NavLink>
+                  <NavLink
+                    onClick={() => {
+                      logout();
+                      closeMenu();
+                    }}
+                    to={MAIN_ROUTE}
+                    className={classes.btn}
+                    title="Log In"
+                  >
+                    <Logout sx={{ mr: 0.5 }} />
+                    Logout
+                  </NavLink>
+                </>
               ) : (
                 <>
                   <NavLink

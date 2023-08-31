@@ -430,6 +430,7 @@ export default function UserProfile() {
                       <Grid item xs={1} textAlign="end">
                         <IconButton
                           onClick={() => {
+                            setIsEditAddress(false);
                             setOpenAlert(true);
                             setSelectedAddressId(address.id);
                           }}
@@ -553,6 +554,7 @@ export default function UserProfile() {
                       <Grid item xs={1} textAlign="end">
                         <IconButton
                           onClick={() => {
+                            setIsEditAddress(false);
                             setOpenAlert(true);
                             setSelectedAddressId(address.id);
                           }}

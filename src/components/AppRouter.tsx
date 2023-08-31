@@ -6,11 +6,13 @@ import {
   LOGIN_ROUTE,
   PRODUCT_ID_ROUTE,
   REGISTRATION_ROUTE,
+  USER_PROFILE,
 } from '../utils/consts';
 import LogIn from '../views/authorization/log-in/LogIn';
 import { AuthContext } from '../context';
 import SignUp from '../views/authorization/sign-up/SignUp';
 import DetailedProductPage from '../views/detailedPoductPage/DetailedProductPage';
+import UserProfile from '../views/user-profile/UserProfile';
 
 const AppRouter = () => {
   const { isAuth } = useContext(AuthContext);
@@ -26,6 +28,10 @@ const AppRouter = () => {
       <Route
         path={LOGIN_ROUTE}
         element={isAuth ? <Navigate to="/" /> : <LogIn />}
+      />
+      <Route
+        path={USER_PROFILE}
+        element={isAuth ? <UserProfile /> : <Navigate to="/" />}
       />
       <Route path={PRODUCT_ID_ROUTE} element={<DetailedProductPage />} />
       <Route path="*" element={<NotFound />} />
