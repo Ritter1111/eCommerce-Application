@@ -1,6 +1,8 @@
 export interface IProductCardProps {
   id: string
-  data: ICurrent;
+  data: {
+    masterData: IMasterData;
+  };
 }
 export interface IProductsResp {
   id: string

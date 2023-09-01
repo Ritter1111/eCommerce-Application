@@ -8,7 +8,7 @@ import {
   Box,
 } from '@mui/material';
 import { Currency } from '../../enums/product.enum';
-import { IProductCardProps } from '../../interfaces/product.interface';
+import {IProductCardProps } from '../../interfaces/product.interface';
 import { useNavigate } from 'react-router-dom';
 import { formatCentsToCurrency } from '../../utils/format-to-cents';
 import ProductPrice from '../Price/Price';
@@ -26,12 +26,13 @@ export function truncateStringToSpace(str: string, maxLength: number) {
 
 function ProductCard(props: IProductCardProps) {
   const navigate = useNavigate();
-  const data = props.data;
-  const currencyCode = data.masterVariant.prices[0].value.currencyCode;
-  const itemDiscount = data.masterVariant.prices[0].discounted;
+  const data = props.data.masterData ? props.data.masterData.current : props.data;
+ 
+  const currencyCode = props.data.masterData ? data.masterVariant.prices[0].value.currencyCode : data.variants[0].prices[0].value.currencyCode;
+  const itemDiscount = props.data.masterData ? data.masterVariant.prices[0].discounted : data.variants[0].prices[0].discounted;
+  const iremPriceInCents = props.data.masterData ? data.masterVariant.prices[0].value : data.variants[0].prices[0].value;
   const itemName = data.name['en-US'];
   const itemDeskr = data.description['en-US'];
-  const iremPriceInCents = data.masterVariant.prices[0].value;
   const currencySymbol = currencyCode === Currency.USD ? '$' : '';
 
   return (
@@ -56,7 +57,7 @@ function ProductCard(props: IProductCardProps) {
         <CardMedia
           component="img"
           height="280"
-          image={data.masterVariant.images[0].url}
+          image={props.data.masterData ? data.masterVariant.images[0].url : data.variants[0].images[0].url}
           alt={itemName}
         />
         <CardContent
