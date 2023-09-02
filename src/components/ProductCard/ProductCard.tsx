@@ -27,6 +27,7 @@ export function truncateStringToSpace(str: string, maxLength: number) {
 function ProductCard({ item }: { item: ProductCartItem }) {
   const navigate = useNavigate();
   const currencySymbol = item.currencyCode === Currency.USD ? '$' : '';
+
   return (
     <Card
       sx={{
@@ -44,7 +45,7 @@ function ProductCard({ item }: { item: ProductCartItem }) {
           justifyContent: 'space-between',
           height: '100%',
         }}
-        onClick={() => navigate(`/catalog/${item.id}`)}
+        onClick={() => navigate(`/catalog/all/${item.id}`)}
       >
         <CardMedia
           component="img"

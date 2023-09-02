@@ -13,8 +13,9 @@ export interface IAllCategories {
 }
 
 export interface IProductCategories {
-  data: Array<ICategoryResp>;
+  allCategories: Array<ICategoryResp>;
   setCards: Dispatch<SetStateAction<IProductsResp[] | ICategoryResp[]>>
+  setProductCategoryName: Dispatch<SetStateAction<string>>
 }
 
 export interface ICategoryResp {

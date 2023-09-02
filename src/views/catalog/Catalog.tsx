@@ -38,7 +38,9 @@ function convertProductCartItemCategory(currentElData: ICategoryResp) {
 function Catalog() {
   const [cards, setCards] = useState<IProductsResp[] | ICategoryResp[]>([]);
   const [categories, setCategories] = useState([]);
+  const [productCategoryName, setProductCategoryName] = useState('All products');
   const { token } = useContext(AccessTokenContext);
+
 
   const [fetchcards, isLoading, cardsError] = useApi(async () => {
     const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/products`;
@@ -75,11 +77,11 @@ function Catalog() {
   return (
     <Container maxWidth="lg">
       <Typography
-        variant="h1"
+        variant="h2"
         align="center"
         sx={{ fontSize: '48px', mt: 4, mb: 4 }}
       >
-        Our products
+        {productCategoryName}
       </Typography>
       {(cardsError || categoriesError) && (
         <Typography align="center" variant="h4">
@@ -94,7 +96,7 @@ function Catalog() {
         />
       ) : (
         <>
-          <ProductsCategories data={categories} setCards={setCards} />
+          <ProductsCategories allCategories={categories} setCards={setCards} setProductCategoryName={setProductCategoryName}/>
           {cards.length > 0 ? (
             <Grid container spacing={4} columns={{ xs: 4, sm: 8, md: 12 }}>
               {cards.map((el) => (

@@ -33,8 +33,9 @@ function createCategoryTree(
     }));
 }
 
-function ProductsCategories({ data, setCards }: IProductCategories) {
-  const categories = createCategoryTree(data);
+function ProductsCategories({ allCategories, setCards, setProductCategoryName }: IProductCategories) {
+  const categories = createCategoryTree(allCategories);
+
   const [openCategories, setOpenCategories] = useState<string[]>([]);
   const { token } = useContext(AccessTokenContext);
 
@@ -60,7 +61,16 @@ function ProductsCategories({ data, setCards }: IProductCategories) {
 
   const getCaregory = (id: string) => {
     fetchCategory(id);
+    handleCategoryName(id);
   };
+
+  const handleCategoryName = (id: string) => {
+    allCategories.forEach(el => {
+      if (el.id === id) {
+        setProductCategoryName(el.description["en-US"]);
+      }
+    });
+  }
 
   return (
     <List
