@@ -10,6 +10,7 @@ function ProductPrice({
   itemPriceInCents,
 }: IProductPrice) {
   const currencySymbol = currencyCode === Currency.USD ? '$' : '';
+  // console.log(itemPriceInCents.c);
 
   return (
     <>
@@ -24,7 +25,7 @@ function ProductPrice({
           color: '#bdbdbd',
         }}
       >
-        {formatCentsToCurrency(itemPriceInCents.centAmount)}
+        {formatCentsToCurrency(itemPriceInCents)}
         {currencySymbol}
       </Typography>
     </>

@@ -3,7 +3,11 @@ import { Container, Box } from '@mui/material';
 import classes from './Home.module.css';
 import routes from '../../utils/routes';
 import { Link } from 'react-router-dom';
-import { LOGIN_ROUTE, REGISTRATION_ROUTE, USER_PROFILE } from '../../utils/consts';
+import {
+  LOGIN_ROUTE,
+  REGISTRATION_ROUTE,
+  USER_PROFILE,
+} from '../../utils/consts';
 const Home = () => {
   return (
     <Container maxWidth="xl">

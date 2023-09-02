@@ -1,43 +1,59 @@
-import React, { useContext, useState } from 'react'
-import { IProductCategories } from '../../interfaces/productsCategory.interface';
-import { Collapse, List, ListItemButton, ListItemText, ListSubheader } from '@mui/material';
+import React, { useContext, useState } from 'react';
+import {
+  ICategoryResp,
+  IProductCategories,
+} from '../../interfaces/productsCategory.interface';
+import {
+  Collapse,
+  List,
+  ListItemButton,
+  ListItemText,
+  ListSubheader,
+} from '@mui/material';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { useApi } from '../../hooks/useApi';
 import { AccessTokenContext } from '../../context';
 
-interface ICategory {
+interface ICategories {
   id: string;
   parent?: {
     id: string;
   };
   name: {
-    "en-US": string;
+    'en-US': string;
   };
-  children?: ICategory[];
+  children?: ICategories[];
 }
 
-function createCategoryTree(categories:ICategory[], parentId: string | null = null): ICategory[] {
+function createCategoryTree(
+  categories: ICategories[],
+  parentId: string | null = null
+): ICategories[] {
   return categories
-    .filter(category => (category.parent && category.parent.id === parentId) || (!category.parent && !parentId))
-    .map(category => ({
+    .filter(
+      (category) =>
+        (category.parent && category.parent.id === parentId) ||
+        (!category.parent && !parentId)
+    )
+    .map((category) => ({
       id: category.id,
-      name: { "en-US": category.name["en-US"] },
+      name: { 'en-US': category.name['en-US'] },
       children: createCategoryTree(categories, category.id),
     }));
 }
 
-function ProductsCategories({ data, setCarts }:IProductCategories) {
+function ProductsCategories({ data, setCards }: IProductCategories) {
   const categories = createCategoryTree(data);
   const [openCategories, setOpenCategories] = useState<string[]>([]);
   const { token } = useContext(AccessTokenContext);
 
   const handleClick = (categoryId: string) => {
     if (openCategories.includes(categoryId)) {
-      setOpenCategories(openCategories.filter(id => id !== categoryId));
+      setOpenCategories(openCategories.filter((id) => id !== categoryId));
     } else {
       setOpenCategories([...openCategories, categoryId]);
     }
-  }
+  };
 
   const [fetchCategory] = useApi(async (id) => {
     const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?filter.query=categories.id:"${id}"`;
@@ -47,12 +63,13 @@ function ProductsCategories({ data, setCarts }:IProductCategories) {
       },
     });
     const data = await response.json();
-    setCarts(data.results);
+    const res: ICategoryResp[] = data.results;
+    setCards(res);
   });
 
   const getCaregory = (id: string) => {
     fetchCategory(id);
-  }
+  };
 
   return (
     <List
@@ -67,26 +84,37 @@ function ProductsCategories({ data, setCarts }:IProductCategories) {
     >
       {categories.map((el) => (
         <>
-          <ListItemButton key={el.id} onClick={() => {
-            handleClick(el.id);
-            getCaregory(el.id);
-          }}>
-            <ListItemText primary={el.name["en-US"]} />
+          <ListItemButton
+            key={el.id}
+            onClick={() => {
+              handleClick(el.id);
+              getCaregory(el.id);
+            }}
+          >
+            <ListItemText primary={el.name['en-US']} />
             {openCategories.includes(el.id) ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
-          {el.children?.map(child => (
-            <Collapse key={child.id} in={openCategories.includes(el.id)} timeout="auto" unmountOnExit>
+          {el.children?.map((child) => (
+            <Collapse
+              key={child.id}
+              in={openCategories.includes(el.id)}
+              timeout="auto"
+              unmountOnExit
+            >
               <List component="div" disablePadding>
-                <ListItemButton sx={{ pl: 4 }} onClick={() =>getCaregory(child.id)}>
-                  <ListItemText primary={child.name["en-US"]} />
+                <ListItemButton
+                  sx={{ pl: 4 }}
+                  onClick={() => getCaregory(child.id)}
+                >
+                  <ListItemText primary={child.name['en-US']} />
                 </ListItemButton>
               </List>
-          </Collapse>
+            </Collapse>
           ))}
         </>
       ))}
     </List>
-  )
+  );
 }
 
 export default ProductsCategories;

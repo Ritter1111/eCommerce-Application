@@ -5,13 +5,42 @@ import { IProductsResp } from '../../interfaces/product.interface';
 import ProductCard from '../../components/ProductCard/ProductCard';
 import { useApi } from '../../hooks/useApi';
 import ProductsCategories from '../../components/ProdutsCategories/ProductsCategories';
+import { ICategoryResp } from '../../interfaces/productsCategory.interface';
+
+function convertProductCartItemAll(currentElData: IProductsResp) {
+  return {
+    id: currentElData.id,
+    currencyCode:
+      currentElData.masterData.current.masterVariant.prices[0].value
+        .currencyCode,
+    itemDiscounted:
+      currentElData.masterData.current.masterVariant.prices[0].discounted,
+    itemPriceInCents:
+      currentElData.masterData.current.masterVariant.prices[0].value.centAmount,
+    itemName: currentElData.masterData.current.name['en-US'],
+    itemDeskr: currentElData.masterData.current.description['en-US'],
+    imageUrl: currentElData.masterData.current.masterVariant.images[0].url,
+  };
+}
+
+function convertProductCartItemCategory(currentElData: ICategoryResp) {
+  return {
+    id: currentElData.id,
+    currencyCode: currentElData.variants[0].prices[0].value.currencyCode,
+    itemDiscounted: currentElData.variants[0].prices[0].discounted,
+    itemPriceInCents: currentElData.variants[0].prices[0].value.centAmount,
+    itemName: currentElData.name['en-US'],
+    itemDeskr: currentElData.description['en-US'],
+    imageUrl: currentElData.variants[0].images[0].url,
+  };
+}
 
 function Catalog() {
-  const [carts, setCarts] = useState<IProductsResp[]>([]);
+  const [cards, setCards] = useState<IProductsResp[] | ICategoryResp[]>([]);
   const [categories, setCategories] = useState([]);
   const { token } = useContext(AccessTokenContext);
 
-  const [fetchCarts, isLoading, cartsError] = useApi(async () => {
+  const [fetchcards, isLoading, cardsError] = useApi(async () => {
     const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/products`;
     const response = await fetch(apiUrl, {
       headers: {
@@ -19,23 +48,26 @@ function Catalog() {
       },
     });
     const data = await response.json();
-    setCarts(data.results);
+    const res: IProductsResp[] = data.results;
+    setCards(res);
   });
 
-  const [fetchCategories, isLoadingCategories, categoriesError] = useApi(async () => {
-    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/categories`;
-    const response = await fetch(apiUrl, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    setCategories(data.results);
-  });
+  const [fetchCategories, isLoadingCategories, categoriesError] = useApi(
+    async () => {
+      const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/categories`;
+      const response = await fetch(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      setCategories(data.results);
+    }
+  );
 
   useEffect(() => {
     if (token) {
-      fetchCarts();
+      fetchcards();
       fetchCategories();
     }
   }, [token]);
@@ -49,12 +81,12 @@ function Catalog() {
       >
         Our products
       </Typography>
-      {(cartsError || categoriesError) && (
+      {(cardsError || categoriesError) && (
         <Typography align="center" variant="h4">
           Oops, something went wrong. Please try again later.
         </Typography>
       )}
-      {isLoading ? (
+      {isLoading || isLoadingCategories ? (
         <CircularProgress
           style={{ width: '70px', height: '70px' }}
           color="inherit"
@@ -62,16 +94,28 @@ function Catalog() {
         />
       ) : (
         <>
-          <ProductsCategories data={categories} carts={carts} setCarts={setCarts}/>
-          {carts.length > 0 && (
-          <Grid container spacing={4} columns={{ xs: 4, sm: 8, md: 12 }}>
-            {carts.map((el) => (
-              <Grid item key={el.id} sx={{ maxWidth: 300, margin: '0 auto' }}>
-                {<ProductCard id={el.id} data={el} />}
-              </Grid>
-            ))}
-          </Grid>)}
-          {(carts.length <= 0 && !isLoading) && (<Typography variant="h4" align="center">Sorry, but there are currently no products in this category</Typography>) }
+          <ProductsCategories data={categories} setCards={setCards} />
+          {cards.length > 0 ? (
+            <Grid container spacing={4} columns={{ xs: 4, sm: 8, md: 12 }}>
+              {cards.map((el) => (
+                <Grid item key={el.id} sx={{ maxWidth: 300, margin: '0 auto' }}>
+                  {
+                    <ProductCard
+                      item={
+                        el.variants
+                          ? convertProductCartItemCategory(el as ICategoryResp)
+                          : convertProductCartItemAll(el as IProductsResp)
+                      }
+                    />
+                  }
+                </Grid>
+              ))}
+            </Grid>
+          ) : (
+            <Typography variant="h4" align="center">
+              Sorry, but there are currently no products in this category
+            </Typography>
+          )}
         </>
       )}
     </Container>

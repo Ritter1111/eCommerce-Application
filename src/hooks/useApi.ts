@@ -3,7 +3,7 @@ import {useState} from "react";
 type FetchingFunction = <T>(args?: T) => Promise<void>;
 
 export const useApi = (callback: FetchingFunction): [FetchingFunction, boolean, string] => {
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState('');
 
     const fetching: FetchingFunction = async (...args: Parameters<FetchingFunction>) => {

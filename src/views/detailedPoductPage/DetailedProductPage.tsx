@@ -66,7 +66,8 @@ function DetailedProductPage() {
       ?.currencyCode;
   const currencySymbol = currencyCode === Currency.USD ? '$' : '';
   const itemPriceInCents =
-    productData?.masterData?.staged?.masterVariant?.prices[0]?.value;
+    productData?.masterData?.staged?.masterVariant?.prices[0]?.value
+      ?.centAmount;
 
   return (
     <ThemeProvider theme={customInputTheme(outerTheme)}>
@@ -110,7 +111,7 @@ function DetailedProductPage() {
             itemDiscount={itemDiscount}
             currencyCode={currencyCode}
             currencySymbol={currencySymbol}
-            itemPriceInCents={itemPriceInCents}
+            itemPriceInCents={itemPriceInCents ? itemPriceInCents : 0}
             productData={productData}
           />
         </Grid>

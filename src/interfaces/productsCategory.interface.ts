@@ -1,13 +1,12 @@
 import { Dispatch, SetStateAction } from "react";
-import { IBase, IBaseProps, IProductsResp } from "./product.interface"
+import { IBase, IBaseProps, IProductsResp, IVariant } from "./product.interface"
 
 export interface IProductCategories {
-  data: Array<ICategory>;
-  carts: IProductsResp[]
-  setCarts: Dispatch<SetStateAction<IProductsResp[]>>
+  data: Array<ICategoryResp>;
+  setCards: Dispatch<SetStateAction<IProductsResp[] | ICategoryResp[]>>
 }
 
-export interface ICategory {
+export interface ICategoryResp {
   id: string
   version: number
   versionModifiedAt: string
@@ -25,5 +24,13 @@ export interface ICategory {
   orderHint: string
   metaTitle: IBaseProps
   metaDescription: IBaseProps
-  assets: []
+  variants: IVariant[]
 }
+
+// export interface IVariant {
+//   id: number
+//   sku: string
+//   key: string
+//   prices: IPrice[]
+//   images: IImage[]
+// }
