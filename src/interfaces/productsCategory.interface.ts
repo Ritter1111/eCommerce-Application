@@ -1,6 +1,17 @@
 import { Dispatch, SetStateAction } from "react";
 import { IBase, IBaseProps, IProductsResp, IVariant } from "./product.interface"
 
+export interface IAllCategories {
+  id: string;
+  parent?: {
+    id: string;
+  };
+  name: {
+    'en-US': string;
+  };
+  children?: IAllCategories[];
+}
+
 export interface IProductCategories {
   data: Array<ICategoryResp>;
   setCards: Dispatch<SetStateAction<IProductsResp[] | ICategoryResp[]>>

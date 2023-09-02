@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import {
+  IAllCategories,
   ICategoryResp,
   IProductCategories,
 } from '../../interfaces/productsCategory.interface';
@@ -14,21 +15,11 @@ import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { useApi } from '../../hooks/useApi';
 import { AccessTokenContext } from '../../context';
 
-interface ICategories {
-  id: string;
-  parent?: {
-    id: string;
-  };
-  name: {
-    'en-US': string;
-  };
-  children?: ICategories[];
-}
 
 function createCategoryTree(
-  categories: ICategories[],
+  categories: IAllCategories[],
   parentId: string | null = null
-): ICategories[] {
+): IAllCategories[] {
   return categories
     .filter(
       (category) =>

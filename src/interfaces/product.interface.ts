@@ -4,6 +4,17 @@ export interface IProductCardProps {
     masterData: IMasterData;
   };
 }
+
+export interface ProductCartItem {
+  id: string
+  currencyCode: string
+  itemDiscounted?: IDiscounted
+  itemPriceInCents: number;
+  itemName: string
+  itemDeskr: string
+  imageUrl: string
+};
+
 export interface IProductsResp {
   id: string
   version: number
@@ -112,9 +123,9 @@ export interface IProductPriceProps {
 }
 
 export interface IProductPrice {
-  itemDiscount: IDiscounted 
+  itemDiscount: IDiscounted
   currencyCode: string
-  itemPriceInCents: number 
+  itemPriceInCents: number
 }
 
 export interface IProductData {
