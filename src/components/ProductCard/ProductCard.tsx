@@ -45,7 +45,7 @@ function ProductCard({ item }: { item: ProductCartItem }) {
           justifyContent: 'space-between',
           height: '100%',
         }}
-        onClick={() => navigate(`/catalog/all/${item.id}`)}
+        onClick={() => navigate(`/catalog/${item.id}`)}
       >
         <CardMedia
           component="img"

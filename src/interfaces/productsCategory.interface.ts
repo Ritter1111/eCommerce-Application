@@ -12,6 +12,12 @@ export interface IAllCategories {
   children?: IAllCategories[];
 }
 
+export interface IAllCategoriesPlusDeskr extends IAllCategories {
+  description: {
+    'en-US': string;
+  };
+}
+
 export interface IProductCategories {
   allCategories: Array<ICategoryResp>;
   setCards: Dispatch<SetStateAction<IProductsResp[] | ICategoryResp[]>>

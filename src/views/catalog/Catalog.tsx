@@ -38,7 +38,7 @@ function convertProductCartItemCategory(currentElData: ICategoryResp) {
 function Catalog() {
   const [cards, setCards] = useState<IProductsResp[] | ICategoryResp[]>([]);
   const [categories, setCategories] = useState([]);
-  const [productCategoryName, setProductCategoryName] = useState('All products');
+  const [productCategoryName, setProductCategoryName] = useState('');
   const { token } = useContext(AccessTokenContext);
 
 
@@ -52,6 +52,7 @@ function Catalog() {
     const data = await response.json();
     const res: IProductsResp[] = data.results;
     setCards(res);
+    setProductCategoryName('All products');
   });
 
   const [fetchCategories, isLoadingCategories, categoriesError] = useApi(

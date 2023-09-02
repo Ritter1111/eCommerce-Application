@@ -1,10 +1,12 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   IAllCategories,
+  IAllCategoriesPlusDeskr,
   ICategoryResp,
   IProductCategories,
 } from '../../interfaces/productsCategory.interface';
 import {
+  Breadcrumbs,
   Collapse,
   List,
   ListItemButton,
@@ -14,7 +16,6 @@ import {
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { useApi } from '../../hooks/useApi';
 import { AccessTokenContext } from '../../context';
-
 
 function createCategoryTree(
   categories: IAllCategories[],
@@ -33,9 +34,27 @@ function createCategoryTree(
     }));
 }
 
-function ProductsCategories({ allCategories, setCards, setProductCategoryName }: IProductCategories) {
-  const categories = createCategoryTree(allCategories);
+function transformIntoAllActegoryObj(categories: IAllCategoriesPlusDeskr[]) {
+  return categories.reduce<{ [key: string]: [string, string] }>((result, el) => {
+    result[el.id] = [el.name['en-US'], el.description["en-US"]];
+    return result;
+  }, {});
+}
 
+function getAMainCategoriesObj(categories: IAllCategories[]) {
+  return categories.reduce((arr: string[], el) => {
+    if (!el.parent) {
+      arr.push(el.name['en-US']);
+    }
+    return arr;
+  }, []);
+}
+
+function ProductsCategories({ allCategories, setCards, setProductCategoryName }: IProductCategories) {
+  const categoriesTree = createCategoryTree(allCategories);
+  const categories = transformIntoAllActegoryObj(allCategories);
+  const mainCategories = getAMainCategoriesObj(allCategories);
+  const [breadcrumb, setBreadcramb] = useState<string[]>([]);
   const [openCategories, setOpenCategories] = useState<string[]>([]);
   const { token } = useContext(AccessTokenContext);
 
@@ -59,22 +78,32 @@ function ProductsCategories({ allCategories, setCards, setProductCategoryName }:
     setCards(res);
   });
 
-  const getCaregory = (id: string) => {
+  const handleCaregory = (id: string) => {
     fetchCategory(id);
     handleCategoryName(id);
+
+    if (breadcrumb.length > 0 && mainCategories.includes(categories[id][0])) {
+      setBreadcramb((prev) => [...prev.slice(breadcrumb.length), categories[id][0]]);
+    } else {
+      setBreadcramb((prev) => [...prev, categories[id][0]]);
+    }
+    // если главные категории до удалять все до них
+    // если содержит удалять все до него
+    // не содеожит пушить
   };
 
   const handleCategoryName = (id: string) => {
-    allCategories.forEach(el => {
-      if (el.id === id) {
-        setProductCategoryName(el.description["en-US"]);
-      }
-    });
+    setProductCategoryName(categories[id][1]);
   }
 
+  useEffect(() => {
+    console.log(breadcrumb);
+  }, [breadcrumb]);
+
   return (
+    <>
     <List
-      sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
+      sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper', mb: 3 }}
       component="nav"
       aria-labelledby="nested-list-subheader"
       subheader={
@@ -83,38 +112,44 @@ function ProductsCategories({ allCategories, setCards, setProductCategoryName }:
         </ListSubheader>
       }
     >
-      {categories.map((el) => (
-        <>
+      {categoriesTree.map((el) => (
+        <React.Fragment key={el.id}>
           <ListItemButton
-            key={el.id}
             onClick={() => {
               handleClick(el.id);
-              getCaregory(el.id);
+              handleCaregory(el.id);
             }}
           >
             <ListItemText primary={el.name['en-US']} />
             {openCategories.includes(el.id) ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
-          {el.children?.map((child) => (
-            <Collapse
-              key={child.id}
-              in={openCategories.includes(el.id)}
-              timeout="auto"
-              unmountOnExit
-            >
-              <List component="div" disablePadding>
+          <Collapse
+            in={openCategories.includes(el.id)}
+            timeout="auto"
+            unmountOnExit
+          >
+            <List component="div" disablePadding>
+              {el.children?.map((child) => (
                 <ListItemButton
+                  key={child.id}
                   sx={{ pl: 4 }}
-                  onClick={() => getCaregory(child.id)}
+                  onClick={() => {
+                    handleCaregory(child.id)
+                  }}
                 >
                   <ListItemText primary={child.name['en-US']} />
                 </ListItemButton>
-              </List>
-            </Collapse>
-          ))}
-        </>
+              ))}
+            </List>
+          </Collapse>
+        </React.Fragment>
       ))}
     </List>
+    <Breadcrumbs aria-label="breadcrumb" sx={{mb: 3}} onClick={(e) => e.preventDefault()}>
+      {/* <Button onClick={() => navigate("/catalog")}> All</Button> */}
+      {/* <Link href="/catalog">All</Link> */}
+    </Breadcrumbs>
+  </>
   );
 }
 
