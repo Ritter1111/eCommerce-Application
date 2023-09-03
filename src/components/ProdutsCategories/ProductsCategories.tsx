@@ -56,6 +56,7 @@ function ProductsCategories({
       // If it does, then remove it from the array.
       setOpenCategories((prev) => prev.filter((item) => item !== categoryId));
     } else {
+      openCategories.length = 0;
       // If it doesn't, then add it to the array.
       setOpenCategories((prev) => [...prev, categoryId]);
     }
