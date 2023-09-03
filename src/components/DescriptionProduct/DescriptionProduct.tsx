@@ -59,7 +59,7 @@ export default function DescriptionProduct({
           <Typography sx={{ fontWeight: 'bold' }}>
             {productData &&
               itemPriceInCents &&
-              formatCentsToCurrency(itemPriceInCents.centAmount)}
+              formatCentsToCurrency(itemPriceInCents)}
             {currencySymbol}
           </Typography>
         )}

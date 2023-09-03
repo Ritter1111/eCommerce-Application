@@ -23,7 +23,7 @@ export const styleModalWindow = {
   alignItems: 'center',
   justifyContent: 'center',
   '@media (max-width: 600px)': {
-    width: '89%', 
+    width: '89%',
     height: 'auto'
   },
 };

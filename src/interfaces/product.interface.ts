@@ -1,7 +1,20 @@
 export interface IProductCardProps {
   id: string
-  data: ICurrent;
+  data: {
+    masterData: IMasterData;
+  };
 }
+
+export interface IProductCartItem {
+  id: string
+  currencyCode: string
+  itemDiscounted?: IDiscounted
+  itemPriceInCents: number;
+  itemName: string
+  itemDeskr: string
+  imageUrl: string
+};
+
 export interface IProductsResp {
   id: string
   version: number
@@ -17,6 +30,7 @@ export interface IProductsResp {
   taxCategory: IBase
   priceMode: string
   lastVariantId: number
+  variants?: IVariant
 }
 
 export interface IBase {
@@ -104,14 +118,14 @@ export interface IProductPriceProps {
   itemDiscount: IDiscounted | undefined;
   currencySymbol: string | undefined;
   currencyCode: string | undefined
-  itemPriceInCents: IValue | undefined;
+  itemPriceInCents: number;
   productData: IProductsResp | null;
 }
 
 export interface IProductPrice {
-  itemDiscount: IDiscounted 
+  itemDiscount: IDiscounted
   currencyCode: string
-  itemPriceInCents: IValue 
+  itemPriceInCents: number
 }
 
 export interface IProductData {

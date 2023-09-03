@@ -8,7 +8,7 @@ import {
   Box,
 } from '@mui/material';
 import { Currency } from '../../enums/product.enum';
-import { IProductCardProps } from '../../interfaces/product.interface';
+import { IProductCartItem } from '../../interfaces/product.interface';
 import { useNavigate } from 'react-router-dom';
 import { formatCentsToCurrency } from '../../utils/format-to-cents';
 import ProductPrice from '../Price/Price';
@@ -24,15 +24,9 @@ export function truncateStringToSpace(str: string, maxLength: number) {
   }
 }
 
-function ProductCard(props: IProductCardProps) {
+function ProductCard({ item }: { item: IProductCartItem }) {
   const navigate = useNavigate();
-  const data = props.data;
-  const currencyCode = data.masterVariant.prices[0].value.currencyCode;
-  const itemDiscount = data.masterVariant.prices[0].discounted;
-  const itemName = data.name['en-US'];
-  const itemDeskr = data.description['en-US'];
-  const iremPriceInCents = data.masterVariant.prices[0].value;
-  const currencySymbol = currencyCode === Currency.USD ? '$' : '';
+  const currencySymbol = item.currencyCode === Currency.USD ? '$' : '';
 
   return (
     <Card
@@ -51,13 +45,13 @@ function ProductCard(props: IProductCardProps) {
           justifyContent: 'space-between',
           height: '100%',
         }}
-        onClick={() => navigate(`/catalog/${props.id}`)}
+        onClick={() => navigate(`/catalog/${item.id}`)}
       >
         <CardMedia
           component="img"
           height="280"
-          image={data.masterVariant.images[0].url}
-          alt={itemName}
+          image={item.imageUrl}
+          alt={item.itemName}
         />
         <CardContent
           sx={{
@@ -72,24 +66,24 @@ function ProductCard(props: IProductCardProps) {
             variant="h5"
             sx={{ fontSize: '1.1rem', lineHeight: '1.1', mb: 1 }}
           >
-            {itemName}
+            {item.itemName}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-            {truncateStringToSpace(itemDeskr, 70)}
+            {truncateStringToSpace(item.itemDeskr, 70)}
           </Typography>
           <Box sx={{ display: 'flex' }}>
             <Typography color="text.secondary" sx={{ mr: 1 }}>
               PRICE:
             </Typography>
-            {itemDiscount ? (
+            {item.itemDiscounted ? (
               <ProductPrice
-                itemDiscount={itemDiscount}
-                currencyCode={currencyCode}
-                itemPriceInCents={iremPriceInCents}
+                itemDiscount={item.itemDiscounted}
+                currencyCode={item.currencyCode}
+                itemPriceInCents={item.itemPriceInCents}
               />
             ) : (
               <Typography sx={{ fontWeight: 'bold' }}>
-                {formatCentsToCurrency(iremPriceInCents.centAmount)}
+                {formatCentsToCurrency(item.itemPriceInCents)}
                 {currencySymbol}
               </Typography>
             )}

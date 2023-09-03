@@ -24,7 +24,7 @@ function ProductPrice({
           color: '#bdbdbd',
         }}
       >
-        {formatCentsToCurrency(itemPriceInCents.centAmount)}
+        {formatCentsToCurrency(itemPriceInCents)}
         {currencySymbol}
       </Typography>
     </>

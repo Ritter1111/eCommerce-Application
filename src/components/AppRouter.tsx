@@ -16,11 +16,11 @@ import UserProfile from '../views/user-profile/UserProfile';
 
 const AppRouter = () => {
   const { isAuth } = useContext(AuthContext);
-  if(isAuth) {
-    localStorage.setItem('isAuth', 'true')
+  if (isAuth) {
+    localStorage.setItem('isAuth', 'true');
   }
   const getIsAuth = localStorage.getItem('isAuth') === 'true';
-  
+
   return (
     <Routes>
       {routes.map((route, index) => (
