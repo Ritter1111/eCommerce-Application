@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
 import { ISliderProps } from '../../interfaces/detailedPage.interface';
@@ -10,6 +10,12 @@ import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import styles from './Slider.module.css';
 
+type CustomCSSProperties = CSSProperties & {
+  '--swiper-navigation-color': string;
+  '--swiper-pagination-color': string;
+};
+
+
 export function Slider({
   slides,
   handleClick,
@@ -20,6 +26,11 @@ export function Slider({
   isModal?: boolean;
   handleClose: () => void;
 }) {
+  const swiperStyles: CustomCSSProperties = {
+    '--swiper-navigation-color': 'black',
+    '--swiper-pagination-color': 'black',
+  };
+
   return (
     <Swiper
       modules={[Navigation, Pagination, Scrollbar, A11y]}
@@ -29,6 +40,7 @@ export function Slider({
       loop={true}
       pagination={{ clickable: true }}
       scrollbar={{ draggable: true }}
+      style={swiperStyles}
     >
       {slides.map((slide) => (
         <SwiperSlide
