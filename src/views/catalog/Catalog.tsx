@@ -81,19 +81,22 @@ function Catalog() {
           />
           {cards.length > 0 ? (
             <Grid container spacing={4} columns={{ xs: 4, sm: 8, md: 12 }}>
-              {cards.map((el) => (
-                <Grid item key={el.id} sx={{ maxWidth: 300, margin: '0 auto' }}>
-                  {
-                    <ProductCard
-                      item={
-                        el.variants
-                          ? convertProductCartItemCategory(el as ICategoryResp)
-                          : convertProductCartItemAll(el as IProductsResp)
-                      }
-                    />
-                  }
-                </Grid>
-              ))}
+              {cards.map((card) => {
+                const isCategoriesCards = card.variants;
+                return (
+                  <Grid item key={card.id} sx={{ maxWidth: 300, margin: '0 auto' }}>
+                    {
+                      <ProductCard
+                        item={
+                          isCategoriesCards
+                            ? convertProductCartItemCategory(card as ICategoryResp)
+                            : convertProductCartItemAll(card as IProductsResp)
+                        }
+                      />
+                    }
+                  </Grid>
+                )
+              })}
             </Grid>
           ) : (
             <Typography variant="h4" align="center">
