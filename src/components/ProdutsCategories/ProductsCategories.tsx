@@ -17,7 +17,7 @@ import {
   createCategoryTree,
   getAMainCategoriesArray,
   transformCategoriesIntoObj,
-} from './productCategoriesUtils';
+} from '../../utils/productCategoriesUtils';
 import Breadcrumb from '../Breadcrumb/Breadcrumb';
 import { BreadcrumbType } from '../../types/breadcrumb.type';
 
@@ -51,19 +51,15 @@ function ProductsCategories({
   });
 
   const handleMainCategoryClick = (categoryId: string) => {
-    // Check if the openCategories array contains the given categoryId
     if (openCategories.includes(categoryId)) {
-      // If it does, then remove it from the array.
       setOpenCategories((prev) => prev.filter((item) => item !== categoryId));
     } else {
       openCategories.length = 0;
-      // If it doesn't, then add it to the array.
       setOpenCategories((prev) => [...prev, categoryId]);
     }
   };
 
   const handleCaregory = (categoryId: string) => {
-    // if we click on 'All' link fetch all products, else fetch specific category
     if (categoryId === 'All') {
       fetchcards();
       return;
@@ -80,13 +76,11 @@ function ProductsCategories({
     const maxBreadcrumbLength = mainCategories.length + 1;
 
     if (breadcrumb.length > 1 && mainCategories.includes(currentCategoryName)) {
-      // - Keep the first element from the previous breadcrumb
       setBreadcramb((prev) => [
         ...prev.slice(0, 1),
         [currentCategoryName, currentCategoryId],
       ]);
     } else if (breadcrumb.length >= maxBreadcrumbLength) {
-      // - Keep all elements except the last one from the previous breadcrumb
       setBreadcramb((prev) => [
         ...prev.slice(0, breadcrumb.length - 1),
         [currentCategoryName, currentCategoryId],

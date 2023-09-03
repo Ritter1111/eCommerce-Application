@@ -6,8 +6,6 @@ export const LOGIN_ROUTE = '/login';
 export const REGISTRATION_ROUTE = '/registration';
 export const ABOUTUS_ROUTE = '/about-us';
 export const CATALOG_ROUTE = '/catalog';
-// export const CATEGORIES_ROUTE = '/catalog';
-// export const CATALOG_ROUTE = '/catalog/all';
 export const PRODUCT_ID_ROUTE = 'catalog/:id';
 export const USER_PROFILE = '/user-profile';
 

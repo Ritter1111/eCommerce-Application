@@ -1,4 +1,4 @@
-import { IAllCategories, IAllCategoriesPlusDeskr } from "../../interfaces/productsCategory.interface";
+import { IAllCategories, IAllCategoriesPlusDeskr } from "../interfaces/productsCategory.interface";
 
 export function createCategoryTree(
   categories: IAllCategories[],

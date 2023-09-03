@@ -5,7 +5,7 @@ export interface IProductCardProps {
   };
 }
 
-export interface ProductCartItem {
+export interface IProductCartItem {
   id: string
   currencyCode: string
   itemDiscounted?: IDiscounted
