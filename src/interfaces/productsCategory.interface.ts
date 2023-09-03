@@ -1,5 +1,11 @@
 import { Dispatch, SetStateAction } from "react";
 import { IBase, IBaseProps, IProductsResp, IVariant } from "./product.interface"
+import { BreadcrumbType } from "../types/breadcrumb.type";
+
+export interface IBreadcrumbProps {
+  breadcrumb: BreadcrumbType;
+  handleCaregory: (categoryId: string) => void;
+}
 
 export interface IAllCategories {
   id: string;
@@ -19,7 +25,8 @@ export interface IAllCategoriesPlusDeskr extends IAllCategories {
 }
 
 export interface IProductCategories {
-  allCategories: Array<ICategoryResp>;
+  fetchcards: () => void;
+  categoriesData: Array<ICategoryResp>;
   setCards: Dispatch<SetStateAction<IProductsResp[] | ICategoryResp[]>>
   setProductCategoryName: Dispatch<SetStateAction<string>>
 }
@@ -44,11 +51,3 @@ export interface ICategoryResp {
   metaDescription: IBaseProps
   variants: IVariant[]
 }
-
-// export interface IVariant {
-//   id: number
-//   sku: string
-//   key: string
-//   prices: IPrice[]
-//   images: IImage[]
-// }
