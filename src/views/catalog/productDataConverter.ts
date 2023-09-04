@@ -20,11 +20,11 @@ export function convertProductCartItemAll(currentElData: IProductsResp) {
 export function convertProductCartItemCategory(currentElData: ICategoryResp) {
   return {
     id: currentElData.id,
-    currencyCode: currentElData.variants[0].prices[0].value.currencyCode,
-    itemDiscounted: currentElData.variants[0].prices[0].discounted,
-    itemPriceInCents: currentElData.variants[0].prices[0].value.centAmount,
+    currencyCode: currentElData.masterVariant.prices[0].value.currencyCode,
+    itemDiscounted: currentElData.masterVariant.prices[0].discounted,
+    itemPriceInCents: currentElData.masterVariant.prices[0].value.centAmount,
     itemName: currentElData.name['en-US'],
     itemDeskr: currentElData.description['en-US'],
-    imageUrl: currentElData.variants[0].images[0].url,
+    imageUrl: currentElData.masterVariant.images[0].url,
   };
 }

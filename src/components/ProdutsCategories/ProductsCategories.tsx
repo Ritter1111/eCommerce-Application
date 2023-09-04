@@ -1,14 +1,18 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   ICategoryResp,
   IProductCategories,
 } from '../../interfaces/productsCategory.interface';
 import {
   Collapse,
+  FormControl,
+  InputLabel,
   List,
   ListItemButton,
   ListItemText,
   ListSubheader,
+  MenuItem,
+  Select,
 } from '@mui/material';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { useApi } from '../../hooks/useApi';
@@ -49,6 +53,7 @@ function ProductsCategories({
     const carts: ICategoryResp[] = data.results;
     setCards(carts);
   });
+
 
   const handleMainCategoryClick = (categoryId: string) => {
     if (openCategories.includes(categoryId)) {
@@ -98,8 +103,25 @@ function ProductsCategories({
     setProductCategoryName(categories[id][1]);
   };
 
+  // const [sortFilter, setSortFilter] = React.useState('');
+  // const [sortStr, setSortStr] = useState<string>('');
+
+  // const handleChange = (event: SelectChangeEvent) => {
+  //   // console.log(event.target.value);
+  //   setSortFilter(event.target.value as string);
+  //   console.log(sortFilter);
+    
+  //   setSortStr(`&sort=${sortFilter}`);
+  //   // console.log(sortStr);
+  // };
+
+  // useEffect(() => {
+  //   console.log(sortStr);
+  // }, [sortStr]);
+
   return (
     <>
+
       <List
         sx={{
           width: '100%',
