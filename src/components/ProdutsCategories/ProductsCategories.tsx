@@ -13,6 +13,7 @@ import {
   ListSubheader,
   MenuItem,
   Select,
+  SelectChangeEvent,
 } from '@mui/material';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { useApi } from '../../hooks/useApi';
@@ -36,11 +37,16 @@ function ProductsCategories({
   ]);
   const [openCategories, setOpenCategories] = useState<string[]>([]);
 
+  const [sortFilter, setSortFilter] = React.useState('');
+
   const categoriesTree = createCategoryTree(categoriesData);
   const categories = transformCategoriesIntoObj(categoriesData);
   const mainCategories = getAMainCategoriesArray(categoriesData);
+  const [categoryId, setCtegoryId] = useState('');
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
 
   const { token } = useContext(AccessTokenContext);
+
 
   const [fetchCategory] = useApi(async (id) => {
     const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?filter.query=categories.id:"${id}"`;
@@ -67,12 +73,16 @@ function ProductsCategories({
   const handleCaregory = (categoryId: string) => {
     if (categoryId === 'All') {
       fetchcards();
+      setIsCategoryOpen(false);
       return;
     }
 
+    setIsCategoryOpen(true);
     fetchCategory(categoryId);
     handleCategoryName(categoryId);
     updateBreadcrumbArray(categoryId);
+    setCtegoryId(categoryId);
+    setSortFilter('default');
   };
 
   const updateBreadcrumbArray = (id: string) => {
@@ -103,25 +113,39 @@ function ProductsCategories({
     setProductCategoryName(categories[id][1]);
   };
 
-  // const [sortFilter, setSortFilter] = React.useState('');
-  // const [sortStr, setSortStr] = useState<string>('');
+  const [fetchcardsBySort] = useApi(async (id) => {
+    const categoryQuery = id ? `filter.query=categories.id:"${id}"&` : '';
+    const sortQuery = sortFilter !== 'default' ? sortFilter : '';
+    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${
+      categoryQuery}${sortQuery}`;
+    const response = await fetch(apiUrl, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await response.json();
+    const res = data.results;
+    setCards(res);
+  });
 
-  // const handleChange = (event: SelectChangeEvent) => {
-  //   // console.log(event.target.value);
-  //   setSortFilter(event.target.value as string);
-  //   console.log(sortFilter);
-    
-  //   setSortStr(`&sort=${sortFilter}`);
-  //   // console.log(sortStr);
-  // };
+  const handleChange = (event: SelectChangeEvent<string>) => {
+    const selectedValue = event.target.value;
+    setSortFilter(selectedValue);
+  };
 
-  // useEffect(() => {
-  //   console.log(sortStr);
-  // }, [sortStr]);
+  useEffect(() => {
+    if (!sortFilter) return;
+    if (sortFilter === 'default' && !isCategoryOpen) {
+      fetchcards();
+    } else if ((sortFilter === 'default' && isCategoryOpen) || isCategoryOpen) {
+      fetchcardsBySort(categoryId);
+    } else {
+      fetchcardsBySort();
+    }
+  }, [sortFilter]);
 
   return (
     <>
-
       <List
         sx={{
           width: '100%',
@@ -179,6 +203,22 @@ function ProductsCategories({
         ))}
       </List>
       <Breadcrumb breadcrumb={breadcrumb} handleCaregory={handleCaregory} />
+      <FormControl sx={{ m: 1, minWidth: 180}}>
+        <InputLabel id="demo-simple-select-label">Sort by</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={sortFilter}
+          label="Sort by"
+          onChange={handleChange}
+        >
+          <MenuItem value={'default'}>Default</MenuItem>
+          <MenuItem value={'sort=price asc'}>Price low</MenuItem>
+          <MenuItem value={'sort=price desc'}>Price high</MenuItem>
+          <MenuItem value={'sort=name.en-us asc'}>Name asc</MenuItem>
+          <MenuItem value={'sort=name.en-us desc'}>Name desc</MenuItem>
+        </Select>
+      </FormControl>
     </>
   );
 }
