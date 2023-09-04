@@ -185,30 +185,42 @@ export default function UserProfile() {
                     </Grid>
                   )}
                   {changeName && (
-                    <Grid item xs={1.5} textAlign="end">
-                      <IconButton
-                        onClick={() => {
-                          if (firstName !== userState.firstName) {
-                            validateName(setErrors, firstName) &&
-                              (setNewFirstName(userState.version, firstName),
-                              setChangeName(false));
-                          } else {
+                    <>
+                      <Grid item xs={0.75} textAlign="end">
+                        <IconButton
+                          onClick={async () => {
+                            if (firstName !== userState.firstName) {
+                              validateName(setErrors, firstName) &&
+                                (await setNewFirstName(
+                                  userState.version,
+                                  firstName
+                                ),
+                                setChangeName(false)),
+                                setUserState(
+                                  JSON.parse(
+                                    localStorage.getItem('customer') || ''
+                                  )
+                                );
+                            } else {
+                              setChangeName(false);
+                            }
+                          }}
+                        >
+                          <CheckOutlinedIcon />
+                        </IconButton>
+                      </Grid>
+                      <Grid item xs={0.75} textAlign="end">
+                        <IconButton
+                          onClick={() => {
                             setChangeName(false);
-                          }
-                        }}
-                      >
-                        <CheckOutlinedIcon />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => {
-                          setChangeName(false);
-                          setFirstName(userState.firstName);
-                          errors.firstName = '';
-                        }}
-                      >
-                        <CancelOutlinedIcon />
-                      </IconButton>
-                    </Grid>
+                            setFirstName(userState.firstName);
+                            errors.firstName = '';
+                          }}
+                        >
+                          <CancelOutlinedIcon />
+                        </IconButton>
+                      </Grid>
+                    </>
                   )}
                   <Grid item sm={6} xs={10}>
                     <TextField
@@ -237,30 +249,42 @@ export default function UserProfile() {
                     </Grid>
                   )}
                   {changeLastName && (
-                    <Grid item xs={1.5} textAlign="end">
-                      <IconButton
-                        onClick={() => {
-                          if (lastName !== userState.lastName) {
-                            validateLastName(setErrors, lastName) &&
-                              (setNewLastName(userState.version, lastName),
-                              setChangeLastName(false));
-                          } else {
+                    <>
+                      <Grid item xs={0.75} textAlign="end">
+                        <IconButton
+                          onClick={async () => {
+                            if (lastName !== userState.lastName) {
+                              validateLastName(setErrors, lastName) &&
+                                (await setNewLastName(
+                                  userState.version,
+                                  lastName
+                                ),
+                                setChangeLastName(false)),
+                                setUserState(
+                                  JSON.parse(
+                                    localStorage.getItem('customer') || ''
+                                  )
+                                );
+                            } else {
+                              setChangeLastName(false);
+                            }
+                          }}
+                        >
+                          <CheckOutlinedIcon />
+                        </IconButton>
+                      </Grid>
+                      <Grid item xs={0.75} textAlign="end">
+                        <IconButton
+                          onClick={() => {
                             setChangeLastName(false);
-                          }
-                        }}
-                      >
-                        <CheckOutlinedIcon />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => {
-                          setChangeLastName(false);
-                          setLastName(userState.lastName);
-                          errors.lastName = '';
-                        }}
-                      >
-                        <CancelOutlinedIcon />
-                      </IconButton>
-                    </Grid>
+                            setLastName(userState.lastName);
+                            errors.lastName = '';
+                          }}
+                        >
+                          <CancelOutlinedIcon />
+                        </IconButton>
+                      </Grid>
+                    </>
                   )}
                   <Grid item sm={6} xs={10}>
                     <TextField
@@ -291,39 +315,48 @@ export default function UserProfile() {
                     </Grid>
                   )}
                   {changeBd && (
-                    <Grid item xs={1.5} textAlign="end">
-                      <IconButton
-                        onClick={() => {
-                          if (dateOfBirth !== userState.dateOfBirth) {
-                            validateDateOfBirth(setErrors, dateOfBirth) &&
-                              (setNewDateOfBirth(
-                                userState.version,
-                                dateOfBirth
-                              ),
-                              setChangeBd(false));
-                          } else {
+                    <>
+                      <Grid item xs={0.75} textAlign="end">
+                        <IconButton
+                          onClick={async () => {
+                            if (dateOfBirth !== userState.dateOfBirth) {
+                              validateDateOfBirth(setErrors, dateOfBirth) &&
+                                (await setNewDateOfBirth(
+                                  userState.version,
+                                  dateOfBirth
+                                ),
+                                setUserState(
+                                  JSON.parse(
+                                    localStorage.getItem('customer') || ''
+                                  )
+                                ),
+                                setChangeBd(false));
+                            } else {
+                              setChangeBd(false);
+                            }
+                          }}
+                        >
+                          <CheckOutlinedIcon />
+                        </IconButton>
+                      </Grid>
+                      <Grid item xs={0.75} textAlign="end">
+                        <IconButton
+                          onClick={() => {
                             setChangeBd(false);
-                          }
-                        }}
-                      >
-                        <CheckOutlinedIcon />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => {
-                          setChangeBd(false);
-                          setdateOfBirth(userState.dateOfBirth);
-                          errors.bd = '';
-                        }}
-                      >
-                        <CancelOutlinedIcon />
-                      </IconButton>
-                    </Grid>
+                            setdateOfBirth(userState.dateOfBirth);
+                            errors.bd = '';
+                          }}
+                        >
+                          <CancelOutlinedIcon />
+                        </IconButton>
+                      </Grid>
+                    </>
                   )}
                 </Grid>
               </TabPanel>
               <TabPanel value="2">
                 <Grid container alignItems="flex-end" justifyContent="center">
-                  <Grid item xs={10.5} sm={6.5}>
+                  <Grid item xs={11} sm={7}>
                     <Typography
                       sx={{ fontWeight: 'bold' }}
                       variant="h6"
@@ -358,7 +391,7 @@ export default function UserProfile() {
                       justifyContent="center"
                       key={i}
                     >
-                      <Grid item xs={0.5} textAlign="start">
+                      <Grid item xs={1.5} sm={1} textAlign="start">
                         <Radio
                           name="default-billing"
                           size="small"
@@ -381,7 +414,7 @@ export default function UserProfile() {
                           }}
                         />
                       </Grid>
-                      <Grid item xs={9} sm={5}>
+                      <Grid item xs={8.5} sm={5}>
                         {address.id === defaultBillingAddressId && (
                           <Typography
                             variant="caption"
@@ -447,7 +480,7 @@ export default function UserProfile() {
                   justifyContent="center"
                   mt={4}
                 >
-                  <Grid item xs={10.5} sm={6.5}>
+                  <Grid item xs={11} sm={7}>
                     <Typography
                       sx={{ fontWeight: 'bold' }}
                       variant="h6"
@@ -482,7 +515,7 @@ export default function UserProfile() {
                       justifyContent="center"
                       key={i}
                     >
-                      <Grid item xs={0.5} textAlign="start">
+                      <Grid item xs={1.5} sm={1} textAlign="start">
                         <Radio
                           name="default-shipping"
                           size="small"
@@ -505,7 +538,7 @@ export default function UserProfile() {
                           }}
                         />
                       </Grid>
-                      <Grid item xs={9} sm={5}>
+                      <Grid item xs={8.5} sm={5}>
                         {address.id === defaultShippingAddressId && (
                           <Typography
                             variant="caption"
@@ -813,30 +846,39 @@ export default function UserProfile() {
                     </Grid>
                   )}
                   {changeEmail && (
-                    <Grid item xs={1.5} textAlign="end">
-                      <IconButton
-                        onClick={() => {
-                          if (email !== userState.email) {
-                            validateEmail(setErrors, email) &&
-                              (setNewEmail(userState.version, email),
-                              setChangeEmail(false));
-                          } else {
+                    <>
+                      <Grid item xs={0.75} textAlign="end">
+                        <IconButton
+                          onClick={async () => {
+                            if (email !== userState.email) {
+                              validateEmail(setErrors, email) &&
+                                (await setNewEmail(userState.version, email),
+                                setUserState(
+                                  JSON.parse(
+                                    localStorage.getItem('customer') || ''
+                                  )
+                                ),
+                                setChangeEmail(false));
+                            } else {
+                              setChangeEmail(false);
+                            }
+                          }}
+                        >
+                          <CheckOutlinedIcon />
+                        </IconButton>
+                      </Grid>
+                      <Grid item xs={0.75} textAlign="end">
+                        <IconButton
+                          onClick={() => {
                             setChangeEmail(false);
-                          }
-                        }}
-                      >
-                        <CheckOutlinedIcon />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => {
-                          setChangeEmail(false);
-                          setEmail(userState.email);
-                          errors.email = '';
-                        }}
-                      >
-                        <CancelOutlinedIcon />
-                      </IconButton>
-                    </Grid>
+                            setEmail(userState.email);
+                            errors.email = '';
+                          }}
+                        >
+                          <CancelOutlinedIcon />
+                        </IconButton>
+                      </Grid>
+                    </>
                   )}
                   <Grid item xs={11} sm={7} mt={4}>
                     <Typography
@@ -916,12 +958,15 @@ export default function UserProfile() {
                   {changePassword && (
                     <Grid item sm={7} xs={11} textAlign="start">
                       <IconButton
-                        onClick={() => {
+                        onClick={async () => {
                           validateNewPassword(setErrors, newPassword) &&
-                            (resetPassword(
+                            (await resetPassword(
                               userState.version,
                               newPassword,
                               currentPassword
+                            ),
+                            setUserState(
+                              JSON.parse(localStorage.getItem('customer') || '')
                             ),
                             setChangePassword(false)),
                             setCurrentPassword('');

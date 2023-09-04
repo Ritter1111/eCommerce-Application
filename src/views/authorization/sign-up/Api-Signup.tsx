@@ -334,14 +334,11 @@ async function addAddresses(
 }
 
 export async function handleSubmit(
-  event: React.FormEvent,
   signUpState: ISignUpState,
   setErrors: Dispatch<SetStateAction<Partial<ISignUpData>>>,
   navigate: NavigateFunction,
   setIsAuth: (newState: boolean) => void
 ): Promise<number | void> {
-  event.preventDefault();
-
   if (validateForm(setErrors, signUpState)) {
     try {
       const customerSinUpInfo = {
