@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { IBase, IBaseProps, IProductsResp, IVariant } from "./product.interface"
+import { IBase, IBaseProps, IMasterVariant, IProductsResp, IVariant } from "./product.interface"
 import { BreadcrumbType } from "../types/breadcrumb.type";
 
 export interface IBreadcrumbProps {
@@ -49,5 +49,6 @@ export interface ICategoryResp {
   orderHint: string
   metaTitle: IBaseProps
   metaDescription: IBaseProps
+  masterVariant: IMasterVariant
   variants: IVariant[]
 }

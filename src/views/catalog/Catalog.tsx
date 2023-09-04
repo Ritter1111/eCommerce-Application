@@ -40,6 +40,7 @@ function Catalog() {
         },
       });
       const data = await response.json();
+
       setCategories(data.results);
     }
   );
@@ -84,18 +85,24 @@ function Catalog() {
               {cards.map((card) => {
                 const isCategoriesCards = card.variants;
                 return (
-                  <Grid item key={card.id} sx={{ maxWidth: 300, margin: '0 auto' }}>
+                  <Grid
+                    item
+                    key={card.id}
+                    sx={{ maxWidth: 300, margin: '0 auto' }}
+                  >
                     {
                       <ProductCard
                         item={
                           isCategoriesCards
-                            ? convertProductCartItemCategory(card as ICategoryResp)
+                            ? convertProductCartItemCategory(
+                                card as ICategoryResp
+                              )
                             : convertProductCartItemAll(card as IProductsResp)
                         }
                       />
                     }
                   </Grid>
-                )
+                );
               })}
             </Grid>
           ) : (

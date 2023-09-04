@@ -3,6 +3,7 @@ import {
   IDataForm,
   ITokenData,
 } from '../../../interfaces/auth.interface';
+import { scheduleTokenRefresh } from '../../../utils/refreshToken';
 
 const clientId = process.env.REACT_APP_CTP_CLIENT_ID;
 const clientSecret = process.env.REACT_APP_CTP_CLIENT_SECRET;
@@ -89,30 +90,3 @@ export const refreshToken = async ({
     throw error;
   }
 };
-
-async function scheduleTokenRefresh() {
-  const time = localStorage.getItem('expiredIn');
-
-  if (time !== null) {
-    const timeNumeric = parseInt(time);
-    const currTime = Date.now();
-    const timeUntilExpiration = timeNumeric - currTime;
-
-    const refreshTenMinutes = 600;
-
-    if (timeUntilExpiration <= refreshTenMinutes) {
-      const refreshTokenSaved = localStorage.getItem('refreshToken');
-      if (refreshTokenSaved !== null) {
-        const refToken = await refreshToken({
-          refreshToken: refreshTokenSaved,
-        });
-        localStorage.setItem('authToken', refToken);
-        return refToken;
-      } else {
-        console.log('No refreshToken saved');
-      }
-    }
-  } else {
-    console.log('No expired in');
-  }
-}

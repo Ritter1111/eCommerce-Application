@@ -15,7 +15,6 @@ type CustomCSSProperties = CSSProperties & {
   '--swiper-pagination-color': string;
 };
 
-
 export function Slider({
   slides,
   handleClick,
