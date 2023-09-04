@@ -7,7 +7,7 @@ export const successNotify = (message: string) =>
     hideProgressBar: true,
     closeOnClick: false,
     pauseOnHover: false,
-    draggable: true,
+    draggable: false,
     progress: undefined,
     theme: 'colored',
   });
