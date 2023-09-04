@@ -4,7 +4,9 @@ import {
   IProductCategories,
 } from '../../interfaces/productsCategory.interface';
 import {
+  Box,
   Collapse,
+  Container,
   FormControl,
   InputLabel,
   List,
@@ -14,6 +16,7 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  TextField,
 } from '@mui/material';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { useApi } from '../../hooks/useApi';
@@ -37,7 +40,8 @@ function ProductsCategories({
   ]);
   const [openCategories, setOpenCategories] = useState<string[]>([]);
 
-  const [sortFilter, setSortFilter] = React.useState('');
+  const [sortFilter, setSortFilter] = useState('');
+  const [textSeachFilter, setTextSeachFilter] = useState<undefined | string>(undefined);
 
   const categoriesTree = createCategoryTree(categoriesData);
   const categories = transformCategoriesIntoObj(categoriesData);
@@ -83,6 +87,7 @@ function ProductsCategories({
     updateBreadcrumbArray(categoryId);
     setCtegoryId(categoryId);
     setSortFilter('default');
+    setTextSeachFilter('');
   };
 
   const updateBreadcrumbArray = (id: string) => {
@@ -115,9 +120,13 @@ function ProductsCategories({
 
   const [fetchcardsBySort] = useApi(async (id) => {
     const categoryQuery = id ? `filter.query=categories.id:"${id}"&` : '';
-    const sortQuery = sortFilter !== 'default' ? sortFilter : '';
+    const sortQuery = sortFilter !== 'default' ? `&${sortFilter}` : '';
+    const textQuery = textSeachFilter ? `&text.en-US=${textSeachFilter}` : '';
+    const fuzzy = textSeachFilter ? `&fuzzy=true` : '';
+
     const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${
-      categoryQuery}${sortQuery}`;
+      categoryQuery}${fuzzy}${textQuery}${sortQuery}`;
+      console.log(apiUrl);
     const response = await fetch(apiUrl, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -144,9 +153,23 @@ function ProductsCategories({
     }
   }, [sortFilter]);
 
+  const handleTextInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTextSeachFilter(event.target.value);
+  }
+
+  useEffect(() => {
+    if (textSeachFilter === undefined) return;
+    if (isCategoryOpen) {
+      fetchcardsBySort(categoryId);
+    } else {
+      fetchcardsBySort();
+    }
+  }, [textSeachFilter]);
+
   return (
     <>
-      <List
+    <Container maxWidth="lg">
+    <List
         sx={{
           width: '100%',
           maxWidth: 360,
@@ -203,22 +226,34 @@ function ProductsCategories({
         ))}
       </List>
       <Breadcrumb breadcrumb={breadcrumb} handleCaregory={handleCaregory} />
-      <FormControl sx={{ m: 1, minWidth: 180}}>
-        <InputLabel id="demo-simple-select-label">Sort by</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={sortFilter}
-          label="Sort by"
-          onChange={handleChange}
-        >
-          <MenuItem value={'default'}>Default</MenuItem>
-          <MenuItem value={'sort=price asc'}>Price low</MenuItem>
-          <MenuItem value={'sort=price desc'}>Price high</MenuItem>
-          <MenuItem value={'sort=name.en-us asc'}>Name asc</MenuItem>
-          <MenuItem value={'sort=name.en-us desc'}>Name desc</MenuItem>
-        </Select>
-      </FormControl>
+      <Box sx={{display:'flex', justifyContent: 'space-between', mb: 3, flexWrap: 'wrap', columnGap: '20px', ml: 2}}>
+        <FormControl sx={{ m: 1, minWidth: 120, maxHeight: 40}}>
+          <InputLabel id="demo-simple-select-label">Sort by</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={sortFilter}
+            label="Sort by"
+            onChange={handleChange}
+          >
+            <MenuItem value={'default'}>Default</MenuItem>
+            <MenuItem value={'sort=price asc'}>Price low</MenuItem>
+            <MenuItem value={'sort=price desc'}>Price high</MenuItem>
+            <MenuItem value={'sort=name.en-us asc'}>Name asc</MenuItem>
+            <MenuItem value={'sort=name.en-us desc'}>Name desc</MenuItem>
+          </Select>
+        </FormControl>
+        <TextField
+          id="standard-basic"
+          label="Search"
+          variant="standard"
+          margin="normal"
+          value={textSeachFilter}
+          onChange={handleTextInput}
+          sx={{ml: 1.5}}
+          />
+      </Box>
+    </Container>
     </>
   );
 }
