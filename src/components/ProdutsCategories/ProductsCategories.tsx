@@ -1,14 +1,22 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   ICategoryResp,
   IProductCategories,
 } from '../../interfaces/productsCategory.interface';
 import {
+  Box,
   Collapse,
+  Container,
+  FormControl,
+  InputLabel,
   List,
   ListItemButton,
   ListItemText,
   ListSubheader,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextField,
 } from '@mui/material';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { useApi } from '../../hooks/useApi';
@@ -32,11 +40,17 @@ function ProductsCategories({
   ]);
   const [openCategories, setOpenCategories] = useState<string[]>([]);
 
+  const [sortFilter, setSortFilter] = useState('');
+  const [textSeachFilter, setTextSeachFilter] = useState<undefined | string>(undefined);
+
   const categoriesTree = createCategoryTree(categoriesData);
   const categories = transformCategoriesIntoObj(categoriesData);
   const mainCategories = getAMainCategoriesArray(categoriesData);
+  const [categoryId, setCtegoryId] = useState('');
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
 
   const { token } = useContext(AccessTokenContext);
+
 
   const [fetchCategory] = useApi(async (id) => {
     const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?filter.query=categories.id:"${id}"`;
@@ -50,6 +64,7 @@ function ProductsCategories({
     setCards(carts);
   });
 
+
   const handleMainCategoryClick = (categoryId: string) => {
     if (openCategories.includes(categoryId)) {
       setOpenCategories((prev) => prev.filter((item) => item !== categoryId));
@@ -62,12 +77,17 @@ function ProductsCategories({
   const handleCaregory = (categoryId: string) => {
     if (categoryId === 'All') {
       fetchcards();
+      setIsCategoryOpen(false);
       return;
     }
 
+    setIsCategoryOpen(true);
     fetchCategory(categoryId);
     handleCategoryName(categoryId);
     updateBreadcrumbArray(categoryId);
+    setCtegoryId(categoryId);
+    setSortFilter('default');
+    setTextSeachFilter('');
   };
 
   const updateBreadcrumbArray = (id: string) => {
@@ -98,9 +118,58 @@ function ProductsCategories({
     setProductCategoryName(categories[id][1]);
   };
 
+  const [fetchcardsBySort] = useApi(async (id) => {
+    const categoryQuery = id ? `filter.query=categories.id:"${id}"&` : '';
+    const sortQuery = sortFilter !== 'default' ? `&${sortFilter}` : '';
+    const textQuery = textSeachFilter ? `&text.en-US=${textSeachFilter}` : '';
+    const fuzzy = textSeachFilter ? `&fuzzy=true` : '';
+
+    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${
+      categoryQuery}${fuzzy}${textQuery}${sortQuery}`;
+      console.log(apiUrl);
+    const response = await fetch(apiUrl, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await response.json();
+    const res = data.results;
+    setCards(res);
+  });
+
+  const handleChange = (event: SelectChangeEvent<string>) => {
+    const selectedValue = event.target.value;
+    setSortFilter(selectedValue);
+  };
+
+  useEffect(() => {
+    if (!sortFilter) return;
+    if (sortFilter === 'default' && !isCategoryOpen) {
+      fetchcards();
+    } else if ((sortFilter === 'default' && isCategoryOpen) || isCategoryOpen) {
+      fetchcardsBySort(categoryId);
+    } else {
+      fetchcardsBySort();
+    }
+  }, [sortFilter]);
+
+  const handleTextInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTextSeachFilter(event.target.value);
+  }
+
+  useEffect(() => {
+    if (textSeachFilter === undefined) return;
+    if (isCategoryOpen) {
+      fetchcardsBySort(categoryId);
+    } else {
+      fetchcardsBySort();
+    }
+  }, [textSeachFilter]);
+
   return (
     <>
-      <List
+    <Container maxWidth="lg">
+    <List
         sx={{
           width: '100%',
           maxWidth: 360,
@@ -157,6 +226,34 @@ function ProductsCategories({
         ))}
       </List>
       <Breadcrumb breadcrumb={breadcrumb} handleCaregory={handleCaregory} />
+      <Box sx={{display:'flex', justifyContent: 'space-between', mb: 3, flexWrap: 'wrap', columnGap: '20px', ml: 2}}>
+        <FormControl sx={{ m: 1, minWidth: 120, maxHeight: 40}}>
+          <InputLabel id="demo-simple-select-label">Sort by</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={sortFilter}
+            label="Sort by"
+            onChange={handleChange}
+          >
+            <MenuItem value={'default'}>Default</MenuItem>
+            <MenuItem value={'sort=price asc'}>Price low</MenuItem>
+            <MenuItem value={'sort=price desc'}>Price high</MenuItem>
+            <MenuItem value={'sort=name.en-us asc'}>Name asc</MenuItem>
+            <MenuItem value={'sort=name.en-us desc'}>Name desc</MenuItem>
+          </Select>
+        </FormControl>
+        <TextField
+          id="standard-basic"
+          label="Search"
+          variant="standard"
+          margin="normal"
+          value={textSeachFilter}
+          onChange={handleTextInput}
+          sx={{ml: 1.5}}
+          />
+      </Box>
+    </Container>
     </>
   );
 }

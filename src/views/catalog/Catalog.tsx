@@ -53,6 +53,7 @@ function Catalog() {
   }, [token]);
 
   return (
+    <>
     <Container maxWidth="lg">
       <Typography
         variant="h2"
@@ -80,7 +81,7 @@ function Catalog() {
             setCards={setCards}
             setProductCategoryName={setProductCategoryName}
           />
-          {cards.length > 0 ? (
+          {cards && cards.length > 0 ? (
             <Grid container spacing={4} columns={{ xs: 4, sm: 8, md: 12 }}>
               {cards.map((card) => {
                 const isCategoriesCards = card.variants;
@@ -113,6 +114,7 @@ function Catalog() {
         </>
       )}
     </Container>
+    </>
   );
 }
 
