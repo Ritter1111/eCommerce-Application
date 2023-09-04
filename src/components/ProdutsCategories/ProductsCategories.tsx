@@ -126,7 +126,6 @@ function ProductsCategories({
 
     const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${
       categoryQuery}${fuzzy}${textQuery}${sortQuery}`;
-      console.log(apiUrl);
     const response = await fetch(apiUrl, {
       headers: {
         Authorization: `Bearer ${token}`,
