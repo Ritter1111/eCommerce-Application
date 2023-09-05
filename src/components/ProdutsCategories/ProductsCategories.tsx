@@ -35,11 +35,10 @@ import {
 } from '../../utils/productCategoriesUtils';
 import Breadcrumb from '../Breadcrumb/Breadcrumb';
 import { BreadcrumbType } from '../../types/breadcrumb.type';
-import { formatCentsToCurrency } from '../../utils/format-to-cents';
-
-function dollarsToCents(dollars: number) {
-  return Math.round(dollars * 100);
-}
+import {
+  currencyToCents,
+  formatCentsToCurrency,
+} from '../../utils/format-to-cents';
 
 function ProductsCategories({
   fetchcards,
@@ -51,7 +50,6 @@ function ProductsCategories({
     ['All', 'All'],
   ]);
   const [openCategories, setOpenCategories] = useState<string[]>([]);
-
   const [sortFilter, setSortFilter] = useState('');
   const [textSeachFilter, setTextSeachFilter] = useState<undefined | string>(
     undefined
@@ -62,10 +60,11 @@ function ProductsCategories({
   const mainCategories = getAMainCategoriesArray(categoriesData);
   const [categoryId, setCtegoryId] = useState('');
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
-
   const { token } = useContext(AccessTokenContext);
-  const [value, setValue] = React.useState<string>('');
-  const [colorsArray, setColors] = useState<IColorsArray[]>([]);
+  const [filterColorValue, setFilterColorValue] = useState<string>('');
+  const [colorsAttributesArray, setColorsAttributesArray] = useState<
+    IColorsArray[]
+  >([]);
 
   const [highestPriceProduct, setHighestPriceProduct] = useState<number | null>(
     null
@@ -73,7 +72,9 @@ function ProductsCategories({
   const [lowestPriceProduct, setLowestPriceProduct] = useState<number | null>(
     null
   );
-  const [value1, setValue1] = useState<number[]>([0, 1]);
+  const [priceRangeSliderValues, setPriceRangeSliderValues] = useState<
+    number[]
+  >([0, 1]);
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
 
   const [fetchCategory] = useApi(async (id) => {
@@ -97,6 +98,12 @@ function ProductsCategories({
     }
   };
 
+  const resetFilters = () => {
+    setSortFilter('default');
+    setTextSeachFilter('');
+    setFilterColorValue('');
+  };
+
   const handleCaregory = (categoryId: string) => {
     if (categoryId === 'All') {
       fetchcards();
@@ -109,12 +116,10 @@ function ProductsCategories({
     handleCategoryName(categoryId);
     updateBreadcrumbArray(categoryId);
     setCtegoryId(categoryId);
-    setSortFilter('default');
-    setTextSeachFilter('');
     fetchAttribites(categoryId);
-    setValue('');
     fetchMinMaxCentAmount(categoryId);
     setIsFilterMenuOpen(false);
+    resetFilters;
   };
 
   const updateBreadcrumbArray = (id: string) => {
@@ -145,20 +150,26 @@ function ProductsCategories({
     setProductCategoryName(categories[id][1]);
   };
 
-  const [fetchcardsBySort] = useApi(async (id) => {
-    const categoryQuery = id ? `&filter.query=categories.id:"${id}"&` : '';
+  const getQueryString = () => {
+    const categoryQuery = isCategoryOpen
+      ? `&filter.query=categories.id:"${categoryId}"&`
+      : '';
     const sortQuery = sortFilter !== 'default' ? `&${sortFilter}&` : '';
     const textQuery = textSeachFilter ? `&text.en-US=${textSeachFilter}&` : '';
     const fuzzy = textSeachFilter ? `&fuzzy=true&` : '';
-    const colorValue = value
-      ? `&filter.query=variants.attributes.color:"${value}"&`
+    const colorValue = filterColorValue
+      ? `&filter.query=variants.attributes.color:"${filterColorValue}"`
       : '';
-    const priceRange = `&filter.query=variants.price.centAmount:range(${dollarsToCents(
-      value1[0]
-    )} to ${dollarsToCents(value1[1])})&`;
+    const priceRange = `&filter.query=variants.price.centAmount:range(${currencyToCents(
+      priceRangeSliderValues[0]
+    )} to ${currencyToCents(priceRangeSliderValues[1])})&`;
 
-    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${categoryQuery}${fuzzy}${textQuery}${sortQuery}${colorValue}${priceRange}`;
-    console.log(apiUrl);
+    return `${categoryQuery}${fuzzy}${textQuery}${sortQuery}${colorValue}${priceRange}`;
+  };
+  const [fetchcardsBySort] = useApi(async () => {
+    const query = getQueryString();
+
+    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${query}`;
     const response = await fetch(apiUrl, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -179,101 +190,98 @@ function ProductsCategories({
     });
     const data = await response.json();
     const res = data.facets['variants.attributes.color'].terms;
-    setColors(res);
+    setColorsAttributesArray(res);
   });
 
-  const [fetchMinMaxCentAmount, load] = useApi(async (id) => {
+  const [fetchMinMaxCentAmount] = useApi(async (id) => {
     const categoryQuery = id ? `filter.query=categories.id:"${id}"&` : '';
-    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${categoryQuery}&sort=price desc`;
-    const response = await fetch(apiUrl, {
+    const limit = `&limit=1&`;
+    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${categoryQuery}`;
+
+    const response = await fetch(`${apiUrl}${limit}&sort=price desc`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
+
+    const responseLow = await fetch(`${apiUrl}${limit}&sort=price asc`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
     const higthPriceData = await response.json();
+    const lowPriceData = await responseLow.json();
     const highPrice = Number(
       formatCentsToCurrency(
         higthPriceData.results[0].masterVariant.prices[0].value.centAmount
       )
     );
-    setHighestPriceProduct(highPrice);
-    const apiUrlLow = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${categoryQuery}&sort=price asc`;
-    const responseLow = await fetch(apiUrlLow, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const lowPriceData = await responseLow.json();
     const lowPrice = Number(
       formatCentsToCurrency(
         Number(lowPriceData.results[0].masterVariant.prices[0].value.centAmount)
       )
     );
+    setHighestPriceProduct(highPrice);
     setLowestPriceProduct(lowPrice);
-    setValue1([lowPrice, highPrice]);
+    setPriceRangeSliderValues([lowPrice, highPrice]);
   });
 
-
   useEffect(() => {
-    if (isCategoryOpen) {
-      fetchMinMaxCentAmount(categoryId);
-    } else {
-      fetchMinMaxCentAmount();
-    }
+    fetchMinMaxCentAmount();
     fetchAttribites();
   }, []);
 
   useEffect(() => {
     if (textSeachFilter === undefined) return;
-    if (isCategoryOpen) {
-      fetchcardsBySort(categoryId);
-    } else {
-      fetchcardsBySort();
-    }
+    fetchcardsBySort();
   }, [textSeachFilter]);
 
-  function valuetext(value: number) {
-    return `${value}`;
-  }
-
-  const minDistance = 20;
-
-  const handleChange1 = (
+  const handlePriceRangeSlider = (
     event: Event,
     newValue: number | number[],
     activeThumb: number
   ) => {
-    if (!Array.isArray(newValue)) {
-      return;
-    }
+    if (!Array.isArray(newValue)) return;
+    const minDistance = 20;
+
     if (activeThumb === 0) {
-      setValue1([Math.min(newValue[0], value1[1] - minDistance), value1[1]]);
+      const min = Math.min(
+        newValue[0],
+        priceRangeSliderValues[1] - minDistance
+      );
+      const max = priceRangeSliderValues[1];
+      setPriceRangeSliderValues([min, max]);
     } else {
-      setValue1([value1[0], Math.max(newValue[1], value1[0] + minDistance)]);
+      const min = priceRangeSliderValues[0];
+      const max = Math.max(
+        newValue[1],
+        priceRangeSliderValues[0] + minDistance
+      );
+      setPriceRangeSliderValues([min, max]);
     }
   };
 
   const applyFilters = () => {
     if (sortFilter === 'default' && !isCategoryOpen) {
       fetchcards();
-    } else if ((sortFilter === 'default' && isCategoryOpen) || isCategoryOpen) {
-      fetchcardsBySort(categoryId);
     } else {
       fetchcardsBySort();
     }
   };
 
-  const resetFilters = () => {
-    setSortFilter('default');
-    setTextSeachFilter('');
-    setValue('');
-    lowestPriceProduct && highestPriceProduct && setValue1([lowestPriceProduct, highestPriceProduct]);
+  const handleresetFilters = () => {
+    resetFilters();
+    lowestPriceProduct &&
+      highestPriceProduct &&
+      setPriceRangeSliderValues([lowestPriceProduct, highestPriceProduct]);
+
     if (isCategoryOpen) {
-      fetchcardsBySort(categoryId);
+      fetchcardsBySort();
     } else {
       fetchcards();
     }
-  }
+  };
 
   return (
     <>
@@ -343,12 +351,18 @@ function ProductsCategories({
             flexWrap: 'wrap',
             columnGap: '20px',
             ml: 2,
-            alignItems: 'flex-end'
+            alignItems: 'flex-end',
           }}
         >
           <Box>
-            <Tune onClick={() => setIsFilterMenuOpen(!isFilterMenuOpen)}/>
-            <Typography display="block" variant="caption" color="text.secondary">To filter and organize</Typography>
+            <Tune onClick={() => setIsFilterMenuOpen(!isFilterMenuOpen)} />
+            <Typography
+              display="block"
+              variant="caption"
+              color="text.secondary"
+            >
+              To filter and organize
+            </Typography>
           </Box>
           <TextField
             id="standard-basic"
@@ -357,80 +371,116 @@ function ProductsCategories({
             margin="normal"
             value={textSeachFilter}
             onChange={(event) => setTextSeachFilter(event.target.value)}
-            sx={{ m: 0}}
+            sx={{ m: 0 }}
           />
         </Box>
-        <Box sx={{ display: isFilterMenuOpen ? 'block' : 'none', backgroundColor: '#FFFCF7', p: 2 }}>
-          <Box sx={{display: 'flex', columnGap: '40px', rowGap: '20px',  alignItems: 'flex-start', mb: 2, flexWrap: 'wrap'}}>
+        <Box
+          sx={{
+            display: isFilterMenuOpen ? 'block' : 'none',
+            backgroundColor: '#FFFCF7',
+            p: 2,
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              columnGap: '40px',
+              rowGap: '20px',
+              alignItems: 'flex-start',
+              mb: 2,
+              flexWrap: 'wrap',
+            }}
+          >
             <Box onClick={() => setIsFilterMenuOpen(!isFilterMenuOpen)}>
-              <ArrowUpward  sx={{ color: 'text.secondary', width: '20px', height: '20px'}}/>
-              <Typography display="block" variant="caption" color="text.secondary">Collapse</Typography>
-            </Box>
-          <FormControl variant="standard" sx={{ m: 0, minWidth: 120, maxHeight: 40 }}>
-            <InputLabel id="demo-simple-select-label">Sort by</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={sortFilter}
-              label="Sort by"
-              onChange={(event) => setSortFilter(event.target.value)}
-            >
-              <MenuItem value={'default'}>Default</MenuItem>
-              <MenuItem value={'sort=price asc'}>Price low</MenuItem>
-              <MenuItem value={'sort=price desc'}>Price high</MenuItem>
-              <MenuItem value={'sort=name.en-us asc'}>Name asc</MenuItem>
-              <MenuItem value={'sort=name.en-us desc'}>Name desc</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl>
-          {colorsArray.length > 0 && (
-            <>
-              <FormLabel id="demo-controlled-radio-buttons-group">
-                Color
-              </FormLabel>
-              <RadioGroup
-                aria-labelledby="demo-controlled-radio-buttons-group"
-                name="controlled-radio-buttons-group"
-                value={value}
-                onChange={(event) => setValue(event.target.value)}
+              <ArrowUpward
+                sx={{ color: 'text.secondary', width: '20px', height: '20px' }}
+              />
+              <Typography
+                display="block"
+                variant="caption"
+                color="text.secondary"
               >
-                {colorsArray.map((item) => (
-                  <FormControlLabel
-                    key={item.term}
-                    value={item.term}
-                    control={<Radio />}
-                    label={item.term}
-                  />
-                ))}
-              </RadioGroup>
-            </>
-          )}
-        </FormControl>
+                Collapse
+              </Typography>
+            </Box>
+            <FormControl
+              variant="standard"
+              sx={{ m: 0, minWidth: 120, maxHeight: 40 }}
+            >
+              <InputLabel id="demo-simple-select-label">Sort by</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={sortFilter}
+                label="Sort by"
+                onChange={(event) => setSortFilter(event.target.value)}
+              >
+                <MenuItem value={'default'}>Default</MenuItem>
+                <MenuItem value={'sort=price asc'}>Price low</MenuItem>
+                <MenuItem value={'sort=price desc'}>Price high</MenuItem>
+                <MenuItem value={'sort=name.en-us asc'}>Name A-Z</MenuItem>
+                <MenuItem value={'sort=name.en-us desc'}>Name Z-A</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl>
+              {colorsAttributesArray.length > 0 && (
+                <>
+                  <FormLabel id="demo-controlled-radio-buttons-group">
+                    Color
+                  </FormLabel>
+                  <RadioGroup
+                    aria-labelledby="demo-controlled-radio-buttons-group"
+                    name="controlled-radio-buttons-group"
+                    value={filterColorValue}
+                    onChange={(event) =>
+                      setFilterColorValue(event.target.value)
+                    }
+                  >
+                    {colorsAttributesArray.map((item) => (
+                      <FormControlLabel
+                        key={item.term}
+                        value={item.term}
+                        control={<Radio />}
+                        label={item.term}
+                      />
+                    ))}
+                  </RadioGroup>
+                </>
+              )}
+            </FormControl>
           </Box>
-        <Box >
-        {!load && lowestPriceProduct && highestPriceProduct ? (
-          <Box sx={{ maxWidth: '300px' }}>
-            <InputLabel sx={{ mb: 4 }}>Price range: </InputLabel>
-            <Slider
-              min={lowestPriceProduct}
-              max={highestPriceProduct}
-              getAriaLabel={() => 'Minimum distance'}
-              value={value1}
-              onChange={handleChange1}
-              valueLabelDisplay="on"
-              getAriaValueText={valuetext}
-              disableSwap
-              sx={{color: 'black'}}
-            />
+          <Box>
+            {lowestPriceProduct && highestPriceProduct ? (
+              <Box sx={{ maxWidth: '300px' }}>
+                <InputLabel sx={{ mb: 4 }}>Price range: </InputLabel>
+                <Slider
+                  min={lowestPriceProduct}
+                  max={highestPriceProduct}
+                  getAriaLabel={() => 'Minimum distance'}
+                  value={priceRangeSliderValues}
+                  onChange={handlePriceRangeSlider}
+                  valueLabelDisplay="on"
+                  getAriaValueText={(value: number) => `${value}`}
+                  disableSwap
+                  sx={{ color: 'black' }}
+                />
+              </Box>
+            ) : null}
+            <Button
+              onClick={applyFilters}
+              variant="outlined"
+              sx={{ color: 'black', borderColor: 'black', mr: 3, mb: 1 }}
+            >
+              Apply filters
+            </Button>
+            <Button
+              onClick={handleresetFilters}
+              variant="outlined"
+              sx={{ color: 'black', borderColor: 'black', mb: 1 }}
+            >
+              Reset filters
+            </Button>
           </Box>
-        ) : null}
-        <Button onClick={applyFilters} variant="outlined" sx={{ color: 'black', borderColor: 'black', mr: 3, mb: 1 }}>
-          Apply filters
-        </Button>
-        <Button onClick={resetFilters} variant="outlined" sx={{ color: 'black', borderColor: 'black', mb: 1}}>
-          Reset filters
-        </Button>
-        </Box>
         </Box>
       </Container>
     </>

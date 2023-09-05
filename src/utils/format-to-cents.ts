@@ -4,3 +4,7 @@ export function formatCentsToCurrency(cents: number) {
   const formattedCents = centsPart < 10 ? `0${centsPart}` : centsPart;
   return `${dollars}.${formattedCents}`;
 }
+
+export function currencyToCents(dollars: number) {
+  return Math.round(dollars * 100);
+}
