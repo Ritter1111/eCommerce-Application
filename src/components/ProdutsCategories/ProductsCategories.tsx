@@ -34,10 +34,15 @@ import {
 } from '../../utils/productCategoriesUtils';
 import Breadcrumb from '../Breadcrumb/Breadcrumb';
 import { BreadcrumbType } from '../../types/breadcrumb.type';
+import { formatCentsToCurrency } from '../../utils/format-to-cents';
 
 interface A {
   term: string
   count: number
+}
+
+function dollarsToCents(dollars: number) {
+  return Math.round(dollars * 100);
 }
 
 function ProductsCategories({
@@ -64,8 +69,8 @@ function ProductsCategories({
   const [value, setValue] = React.useState<string>('');
   const [colorsArray, setColors] = useState<A[]>([]);
 
-  const [highestPriceProduct, setHighestPriceProduct] = useState(null);
-  const [lowestPriceProduct, setLowestPriceProduct] = useState(null);
+  const [highestPriceProduct, setHighestPriceProduct] = useState<number | null>(null);
+  const [lowestPriceProduct, setLowestPriceProduct] = useState<number | null>(null);
   const [value1, setValue1] = useState<number[]>([0, 1]);
 
   const [fetchCategory] = useApi(async (id) => {
@@ -107,7 +112,6 @@ function ProductsCategories({
     fetchAttribites(categoryId);
     setValue('');
     fetchMinMaxCentAmount(categoryId)
-
   };
 
   const updateBreadcrumbArray = (id: string) => {
@@ -144,7 +148,7 @@ function ProductsCategories({
     const textQuery = textSeachFilter ? `&text.en-US=${textSeachFilter}` : '';
     const fuzzy = textSeachFilter ? `&fuzzy=true` : '';
     const colorValue = value ? `filter.query=variants.attributes.color:"${value}"&` : '';
-    const priceRange = `&filter.query=variants.price.centAmount:range(${value1[0]} to ${value1[1]})&`
+    const priceRange = `&filter.query=variants.price.centAmount:range(${dollarsToCents(value1[0])} to ${dollarsToCents(value1[1])})&`
 
     const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${
       categoryQuery}${fuzzy}${textQuery}${sortQuery}${colorValue}${priceRange}`;
@@ -184,7 +188,9 @@ function ProductsCategories({
       },
     });
     const higthPriceData = await response.json();
-    setHighestPriceProduct(higthPriceData.results[0].masterVariant.prices[0].value.centAmount);
+    const highPrice = Number(formatCentsToCurrency(higthPriceData.results[0].masterVariant.prices[0].value.centAmount));
+    console.log(typeof Number(highPrice));
+    setHighestPriceProduct(highPrice);
     // console.log(higthPriceData.results[0].masterVariant.prices[0].value.centAmount);
     const apiUrlLow = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${
       categoryQuery}&sort=price asc`;
@@ -194,9 +200,10 @@ function ProductsCategories({
       },
     });
     const lowPriceData = await responseLow.json();
-    setLowestPriceProduct(lowPriceData.results[0].masterVariant.prices[0].value.centAmount);
-    // console.log(lowPriceData.results[0].masterVariant.prices[0].value.centAmount);
-    setValue1([ lowPriceData.results[0].masterVariant.prices[0].value.centAmount, higthPriceData.results[0].masterVariant.prices[0].value.centAmount])
+    const lowPrice = Number(formatCentsToCurrency(Number(lowPriceData.results[0].masterVariant.prices[0].value.centAmount)));
+    console.log(lowPrice);
+    setLowestPriceProduct(lowPrice);
+    setValue1([ lowPrice, highPrice])
   });
 
   const handleChange = (event: SelectChangeEvent<string>) => {
@@ -221,7 +228,6 @@ function ProductsCategories({
 
   const handleChangeRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue((event.target as HTMLInputElement).value);
-    fetchcardsBySort();
   };
 
   useEffect(() => {
@@ -232,15 +238,6 @@ function ProductsCategories({
     }
     fetchAttribites();
   }, []);
-
-  useEffect(() => {
-    if (!value) return;
-    if (isCategoryOpen) {
-      fetchcardsBySort(categoryId);
-    } else {
-      fetchcardsBySort();
-    }
-  }, [value]);
 
   useEffect(() => {
     if (textSeachFilter === undefined) return;
@@ -255,7 +252,7 @@ function ProductsCategories({
     return `${value}`;
   }
 
-  const minDistance = 10;
+  const minDistance = 20;
 
   const handleChange1 = (
     event: Event,
@@ -282,7 +279,7 @@ function ProductsCategories({
 
   return (
     <>
-    <Container maxWidth="lg">
+    <Container maxWidth="lg" sx={{mb: 3}}>
     <List
         sx={{
           width: '100%',
@@ -382,7 +379,9 @@ function ProductsCategories({
           </RadioGroup></>)}
     </FormControl>
       {
-        !load && lowestPriceProduct && highestPriceProduct ? (<><Slider
+        !load && lowestPriceProduct && highestPriceProduct ? (<Box sx={{maxWidth: '300px'}}>
+        <InputLabel sx={{mb: 3}}>Price range: </InputLabel>
+        <Slider
           min={lowestPriceProduct}
           max={highestPriceProduct}
           getAriaLabel={() => 'Minimum distance'}
@@ -392,9 +391,9 @@ function ProductsCategories({
           getAriaValueText={valuetext}
           disableSwap
         />
-      </>) : null
+      </Box>) : null
       }
-      <Button onClick={applyMoney}>Apply</Button>
+      <Button onClick={applyMoney}  variant="outlined" sx={{color: 'black'}}>Apply filters</Button>
     </Container>
     </>
   );
