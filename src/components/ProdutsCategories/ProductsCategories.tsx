@@ -24,8 +24,9 @@ import {
   SelectChangeEvent,
   Slider,
   TextField,
+  Typography,
 } from '@mui/material';
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import { ExpandLess, ExpandMore, Tune } from '@mui/icons-material';
 import { useApi } from '../../hooks/useApi';
 import { AccessTokenContext } from '../../context';
 import {
@@ -74,6 +75,7 @@ function ProductsCategories({
     null
   );
   const [value1, setValue1] = useState<number[]>([0, 1]);
+  const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
 
   const [fetchCategory] = useApi(async (id) => {
     const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?filter.query=categories.id:"${id}"`;
@@ -113,6 +115,7 @@ function ProductsCategories({
     fetchAttribites(categoryId);
     setValue('');
     fetchMinMaxCentAmount(categoryId);
+    setIsFilterMenuOpen(false);
   };
 
   const updateBreadcrumbArray = (id: string) => {
@@ -274,7 +277,7 @@ function ProductsCategories({
     }
   };
 
-  const applyMoney = () => {
+  const applyFilters = () => {
     if (isCategoryOpen) {
       fetchcardsBySort(categoryId);
     } else {
@@ -362,9 +365,26 @@ function ProductsCategories({
             flexWrap: 'wrap',
             columnGap: '20px',
             ml: 2,
+            alignItems: 'flex-end'
           }}
         >
-          <FormControl sx={{ m: 1, minWidth: 120, maxHeight: 40 }}>
+          <Box>
+            <Tune onClick={() => setIsFilterMenuOpen(!isFilterMenuOpen)}/>
+            <Typography display="block" variant="caption" color="text.secondary">To filter and organize</Typography>
+          </Box>
+          <TextField
+            id="standard-basic"
+            label="Search"
+            variant="standard"
+            margin="normal"
+            value={textSeachFilter}
+            onChange={handleTextInput}
+            sx={{ ml: 1.5, mt: 0, mb: 0 }}
+          />
+        </Box>
+        <Box sx={{ display: isFilterMenuOpen ? 'block' : 'none', backgroundColor: '#FFFCF7', p: 2 }}>
+          <Box sx={{display: 'flex', columnGap: '40px', alignItems: 'flex-start', mb: 2}}>
+          <FormControl variant="standard" sx={{ m: 0, minWidth: 120, maxHeight: 40 }}>
             <InputLabel id="demo-simple-select-label">Sort by</InputLabel>
             <Select
               labelId="demo-simple-select-label"
@@ -380,17 +400,7 @@ function ProductsCategories({
               <MenuItem value={'sort=name.en-us desc'}>Name desc</MenuItem>
             </Select>
           </FormControl>
-          <TextField
-            id="standard-basic"
-            label="Search"
-            variant="standard"
-            margin="normal"
-            value={textSeachFilter}
-            onChange={handleTextInput}
-            sx={{ ml: 1.5 }}
-          />
-        </Box>
-        <FormControl>
+          <FormControl>
           {colorsArray.length > 0 && (
             <>
               <FormLabel id="demo-controlled-radio-buttons-group">
@@ -414,9 +424,11 @@ function ProductsCategories({
             </>
           )}
         </FormControl>
+          </Box>
+        <Box>
         {!load && lowestPriceProduct && highestPriceProduct ? (
           <Box sx={{ maxWidth: '300px' }}>
-            <InputLabel sx={{ mb: 3 }}>Price range: </InputLabel>
+            <InputLabel sx={{ mb: 4 }}>Price range: </InputLabel>
             <Slider
               min={lowestPriceProduct}
               max={highestPriceProduct}
@@ -426,15 +438,18 @@ function ProductsCategories({
               valueLabelDisplay="on"
               getAriaValueText={valuetext}
               disableSwap
+              sx={{color: 'black'}}
             />
           </Box>
         ) : null}
-        <Button onClick={applyMoney} variant="outlined" sx={{ color: 'black' }}>
+        <Button onClick={applyFilters} variant="outlined" sx={{ color: 'black', borderColor: 'black' }}>
           Apply filters
         </Button>
-        <Button onClick={resetFilters} variant="outlined" sx={{ color: 'black', ml: 3}}>
+        <Button onClick={resetFilters} variant="outlined" sx={{ color: 'black', ml: 3, borderColor: 'black'}}>
           Reset filters
         </Button>
+        </Box>
+        </Box>
       </Container>
     </>
   );
