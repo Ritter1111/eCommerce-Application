@@ -156,7 +156,6 @@ function ProductsCategories({
     )} to ${dollarsToCents(value1[1])})&`;
 
     const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${categoryQuery}${fuzzy}${textQuery}${sortQuery}${colorValue}${priceRange}`;
-    console.log(apiUrl);
     const response = await fetch(apiUrl, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -170,7 +169,6 @@ function ProductsCategories({
   const [fetchAttribites] = useApi(async (id) => {
     const categoryQuery = id ? `filter.query=categories.id:"${id}"&` : '';
     const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${categoryQuery}&facet=variants.attributes.color`;
-    console.log(apiUrl);
     const response = await fetch(apiUrl, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -208,7 +206,6 @@ function ProductsCategories({
         Number(lowPriceData.results[0].masterVariant.prices[0].value.centAmount)
       )
     );
-    console.log(lowPrice);
     setLowestPriceProduct(lowPrice);
     setValue1([lowPrice, highPrice]);
   });
