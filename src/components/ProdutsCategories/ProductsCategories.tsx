@@ -5,17 +5,23 @@ import {
 } from '../../interfaces/productsCategory.interface';
 import {
   Box,
+  Button,
   Collapse,
   Container,
   FormControl,
+  FormControlLabel,
+  FormLabel,
   InputLabel,
   List,
   ListItemButton,
   ListItemText,
   ListSubheader,
   MenuItem,
+  Radio,
+  RadioGroup,
   Select,
   SelectChangeEvent,
+  Slider,
   TextField,
 } from '@mui/material';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
@@ -28,6 +34,11 @@ import {
 } from '../../utils/productCategoriesUtils';
 import Breadcrumb from '../Breadcrumb/Breadcrumb';
 import { BreadcrumbType } from '../../types/breadcrumb.type';
+
+interface A {
+  term: string
+  count: number
+}
 
 function ProductsCategories({
   fetchcards,
@@ -50,7 +61,12 @@ function ProductsCategories({
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
 
   const { token } = useContext(AccessTokenContext);
+  const [value, setValue] = React.useState<string>('');
+  const [colorsArray, setColors] = useState<A[]>([]);
 
+  const [highestPriceProduct, setHighestPriceProduct] = useState(null);
+  const [lowestPriceProduct, setLowestPriceProduct] = useState(null);
+  const [value1, setValue1] = useState<number[]>([0, 1]);
 
   const [fetchCategory] = useApi(async (id) => {
     const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?filter.query=categories.id:"${id}"`;
@@ -88,6 +104,10 @@ function ProductsCategories({
     setCtegoryId(categoryId);
     setSortFilter('default');
     setTextSeachFilter('');
+    fetchAttribites(categoryId);
+    setValue('');
+    fetchMinMaxCentAmount(categoryId)
+
   };
 
   const updateBreadcrumbArray = (id: string) => {
@@ -120,12 +140,14 @@ function ProductsCategories({
 
   const [fetchcardsBySort] = useApi(async (id) => {
     const categoryQuery = id ? `filter.query=categories.id:"${id}"&` : '';
-    const sortQuery = sortFilter !== 'default' ? `&${sortFilter}` : '';
+    const sortQuery = sortFilter !== 'default' ? `&${sortFilter}&` : '';
     const textQuery = textSeachFilter ? `&text.en-US=${textSeachFilter}` : '';
     const fuzzy = textSeachFilter ? `&fuzzy=true` : '';
+    const colorValue = value ? `filter.query=variants.attributes.color:"${value}"&` : '';
+    const priceRange = `&filter.query=variants.price.centAmount:range(${value1[0]} to ${value1[1]})&`
 
     const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${
-      categoryQuery}${fuzzy}${textQuery}${sortQuery}`;
+      categoryQuery}${fuzzy}${textQuery}${sortQuery}${colorValue}${priceRange}`;
       console.log(apiUrl);
     const response = await fetch(apiUrl, {
       headers: {
@@ -135,6 +157,46 @@ function ProductsCategories({
     const data = await response.json();
     const res = data.results;
     setCards(res);
+  });
+
+  const [fetchAttribites] = useApi(async (id) => {
+    const categoryQuery = id ? `filter.query=categories.id:"${id}"&` : '';
+    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${
+      categoryQuery}&facet=variants.attributes.color`;
+      console.log(apiUrl);
+    const response = await fetch(apiUrl, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await response.json();
+    const res = data.facets["variants.attributes.color"].terms;
+    setColors(res);
+  });
+
+  const [fetchMinMaxCentAmount, load] = useApi(async (id) => {
+    const categoryQuery = id ? `filter.query=categories.id:"${id}"&` : '';
+    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${
+      categoryQuery}&sort=price desc`;
+    const response = await fetch(apiUrl, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const higthPriceData = await response.json();
+    setHighestPriceProduct(higthPriceData.results[0].masterVariant.prices[0].value.centAmount);
+    // console.log(higthPriceData.results[0].masterVariant.prices[0].value.centAmount);
+    const apiUrlLow = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${
+      categoryQuery}&sort=price asc`;
+    const responseLow = await fetch(apiUrlLow, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const lowPriceData = await responseLow.json();
+    setLowestPriceProduct(lowPriceData.results[0].masterVariant.prices[0].value.centAmount);
+    // console.log(lowPriceData.results[0].masterVariant.prices[0].value.centAmount);
+    setValue1([ lowPriceData.results[0].masterVariant.prices[0].value.centAmount, higthPriceData.results[0].masterVariant.prices[0].value.centAmount])
   });
 
   const handleChange = (event: SelectChangeEvent<string>) => {
@@ -157,6 +219,29 @@ function ProductsCategories({
     setTextSeachFilter(event.target.value);
   }
 
+  const handleChangeRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue((event.target as HTMLInputElement).value);
+    fetchcardsBySort();
+  };
+
+  useEffect(() => {
+    if (isCategoryOpen) {
+      fetchMinMaxCentAmount(categoryId)
+    } else {
+      fetchMinMaxCentAmount()
+    }
+    fetchAttribites();
+  }, []);
+
+  useEffect(() => {
+    if (!value) return;
+    if (isCategoryOpen) {
+      fetchcardsBySort(categoryId);
+    } else {
+      fetchcardsBySort();
+    }
+  }, [value]);
+
   useEffect(() => {
     if (textSeachFilter === undefined) return;
     if (isCategoryOpen) {
@@ -165,6 +250,35 @@ function ProductsCategories({
       fetchcardsBySort();
     }
   }, [textSeachFilter]);
+
+  function valuetext(value: number) {
+    return `${value}`;
+  }
+
+  const minDistance = 10;
+
+  const handleChange1 = (
+    event: Event,
+    newValue: number | number[],
+    activeThumb: number,
+  ) => {
+    if (!Array.isArray(newValue)) {
+      return;
+    }
+    if (activeThumb === 0) {
+      setValue1([Math.min(newValue[0], value1[1] - minDistance), value1[1]]);
+    } else {
+      setValue1([value1[0], Math.max(newValue[1], value1[0] + minDistance)]);
+    }
+  };
+
+  const applyMoney = () => {
+    if (isCategoryOpen) {
+      fetchcardsBySort(categoryId);
+    } else {
+      fetchcardsBySort();
+    }
+  }
 
   return (
     <>
@@ -253,6 +367,34 @@ function ProductsCategories({
           sx={{ml: 1.5}}
           />
       </Box>
+      <FormControl>
+          {colorsArray.length > 0 && (
+          <><FormLabel id="demo-controlled-radio-buttons-group">Color</FormLabel>
+          <RadioGroup
+            aria-labelledby="demo-controlled-radio-buttons-group"
+            name="controlled-radio-buttons-group"
+            value={value}
+            onChange={handleChangeRadio}
+          >
+            {colorsArray.map((item) => (
+              <FormControlLabel key={item.term} value={item.term} control={<Radio />} label={item.term} />
+            ))}
+          </RadioGroup></>)}
+    </FormControl>
+      {
+        !load && lowestPriceProduct && highestPriceProduct ? (<><Slider
+          min={lowestPriceProduct}
+          max={highestPriceProduct}
+          getAriaLabel={() => 'Minimum distance'}
+          value={value1}
+          onChange={handleChange1}
+          valueLabelDisplay="on"
+          getAriaValueText={valuetext}
+          disableSwap
+        />
+      </>) : null
+      }
+      <Button onClick={applyMoney}>Apply</Button>
     </Container>
     </>
   );
