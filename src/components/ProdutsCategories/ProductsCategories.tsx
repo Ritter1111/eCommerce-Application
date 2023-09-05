@@ -195,9 +195,7 @@ function ProductsCategories({
         higthPriceData.results[0].masterVariant.prices[0].value.centAmount
       )
     );
-    console.log(typeof Number(highPrice));
     setHighestPriceProduct(highPrice);
-    // console.log(higthPriceData.results[0].masterVariant.prices[0].value.centAmount);
     const apiUrlLow = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${categoryQuery}&sort=price asc`;
     const responseLow = await fetch(apiUrlLow, {
       headers: {
@@ -285,6 +283,18 @@ function ProductsCategories({
       fetchcardsBySort();
     }
   };
+
+  const resetFilters = () => {
+    setSortFilter('default');
+    setTextSeachFilter('');
+    setValue('');
+    lowestPriceProduct && highestPriceProduct && setValue1([lowestPriceProduct, highestPriceProduct]);
+    if (isCategoryOpen) {
+      fetchcardsBySort(categoryId);
+    } else {
+      fetchcards();
+    }
+  }
 
   return (
     <>
@@ -423,6 +433,9 @@ function ProductsCategories({
         ) : null}
         <Button onClick={applyMoney} variant="outlined" sx={{ color: 'black' }}>
           Apply filters
+        </Button>
+        <Button onClick={resetFilters} variant="outlined" sx={{ color: 'black', ml: 3}}>
+          Reset filters
         </Button>
       </Container>
     </>
