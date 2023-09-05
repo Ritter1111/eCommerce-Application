@@ -21,12 +21,11 @@ import {
   Radio,
   RadioGroup,
   Select,
-  SelectChangeEvent,
   Slider,
   TextField,
   Typography,
 } from '@mui/material';
-import { ExpandLess, ExpandMore, Tune } from '@mui/icons-material';
+import { ArrowUpward, ExpandLess, ExpandMore, Tune } from '@mui/icons-material';
 import { useApi } from '../../hooks/useApi';
 import { AccessTokenContext } from '../../context';
 import {
@@ -214,29 +213,6 @@ function ProductsCategories({
     setValue1([lowPrice, highPrice]);
   });
 
-  const handleChange = (event: SelectChangeEvent<string>) => {
-    const selectedValue = event.target.value;
-    setSortFilter(selectedValue);
-  };
-
-  useEffect(() => {
-    if (!sortFilter) return;
-    if (sortFilter === 'default' && !isCategoryOpen) {
-      fetchcards();
-    } else if ((sortFilter === 'default' && isCategoryOpen) || isCategoryOpen) {
-      fetchcardsBySort(categoryId);
-    } else {
-      fetchcardsBySort();
-    }
-  }, [sortFilter]);
-
-  const handleTextInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTextSeachFilter(event.target.value);
-  };
-
-  const handleChangeRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue((event.target as HTMLInputElement).value);
-  };
 
   useEffect(() => {
     if (isCategoryOpen) {
@@ -278,7 +254,9 @@ function ProductsCategories({
   };
 
   const applyFilters = () => {
-    if (isCategoryOpen) {
+    if (sortFilter === 'default' && !isCategoryOpen) {
+      fetchcards();
+    } else if ((sortFilter === 'default' && isCategoryOpen) || isCategoryOpen) {
       fetchcardsBySort(categoryId);
     } else {
       fetchcardsBySort();
@@ -378,12 +356,16 @@ function ProductsCategories({
             variant="standard"
             margin="normal"
             value={textSeachFilter}
-            onChange={handleTextInput}
-            sx={{ ml: 1.5, mt: 0, mb: 0 }}
+            onChange={(event) => setTextSeachFilter(event.target.value)}
+            sx={{ m: 0}}
           />
         </Box>
         <Box sx={{ display: isFilterMenuOpen ? 'block' : 'none', backgroundColor: '#FFFCF7', p: 2 }}>
-          <Box sx={{display: 'flex', columnGap: '40px', alignItems: 'flex-start', mb: 2}}>
+          <Box sx={{display: 'flex', columnGap: '40px', rowGap: '20px',  alignItems: 'flex-start', mb: 2, flexWrap: 'wrap'}}>
+            <Box onClick={() => setIsFilterMenuOpen(!isFilterMenuOpen)}>
+              <ArrowUpward  sx={{ color: 'text.secondary', width: '20px', height: '20px'}}/>
+              <Typography display="block" variant="caption" color="text.secondary">Collapse</Typography>
+            </Box>
           <FormControl variant="standard" sx={{ m: 0, minWidth: 120, maxHeight: 40 }}>
             <InputLabel id="demo-simple-select-label">Sort by</InputLabel>
             <Select
@@ -391,7 +373,7 @@ function ProductsCategories({
               id="demo-simple-select"
               value={sortFilter}
               label="Sort by"
-              onChange={handleChange}
+              onChange={(event) => setSortFilter(event.target.value)}
             >
               <MenuItem value={'default'}>Default</MenuItem>
               <MenuItem value={'sort=price asc'}>Price low</MenuItem>
@@ -410,7 +392,7 @@ function ProductsCategories({
                 aria-labelledby="demo-controlled-radio-buttons-group"
                 name="controlled-radio-buttons-group"
                 value={value}
-                onChange={handleChangeRadio}
+                onChange={(event) => setValue(event.target.value)}
               >
                 {colorsArray.map((item) => (
                   <FormControlLabel
@@ -425,7 +407,7 @@ function ProductsCategories({
           )}
         </FormControl>
           </Box>
-        <Box>
+        <Box >
         {!load && lowestPriceProduct && highestPriceProduct ? (
           <Box sx={{ maxWidth: '300px' }}>
             <InputLabel sx={{ mb: 4 }}>Price range: </InputLabel>
@@ -442,10 +424,10 @@ function ProductsCategories({
             />
           </Box>
         ) : null}
-        <Button onClick={applyFilters} variant="outlined" sx={{ color: 'black', borderColor: 'black' }}>
+        <Button onClick={applyFilters} variant="outlined" sx={{ color: 'black', borderColor: 'black', mr: 3, mb: 1 }}>
           Apply filters
         </Button>
-        <Button onClick={resetFilters} variant="outlined" sx={{ color: 'black', ml: 3, borderColor: 'black'}}>
+        <Button onClick={resetFilters} variant="outlined" sx={{ color: 'black', borderColor: 'black', mb: 1}}>
           Reset filters
         </Button>
         </Box>

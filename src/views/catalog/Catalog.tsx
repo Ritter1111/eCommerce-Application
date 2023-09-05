@@ -108,7 +108,7 @@ function Catalog() {
               </Grid>
             ) : (
               <Typography variant="h5" align="center">
-                Sorry, but there are currently no products in this category
+                Nothing found. Sorry, but there are currently no products.
               </Typography>
             )}
           </>
