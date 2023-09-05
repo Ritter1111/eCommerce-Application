@@ -144,18 +144,19 @@ function ProductsCategories({
   };
 
   const [fetchcardsBySort] = useApi(async (id) => {
-    const categoryQuery = id ? `filter.query=categories.id:"${id}"&` : '';
+    const categoryQuery = id ? `&filter.query=categories.id:"${id}"&` : '';
     const sortQuery = sortFilter !== 'default' ? `&${sortFilter}&` : '';
-    const textQuery = textSeachFilter ? `&text.en-US=${textSeachFilter}` : '';
-    const fuzzy = textSeachFilter ? `&fuzzy=true` : '';
+    const textQuery = textSeachFilter ? `&text.en-US=${textSeachFilter}&` : '';
+    const fuzzy = textSeachFilter ? `&fuzzy=true&` : '';
     const colorValue = value
-      ? `filter.query=variants.attributes.color:"${value}"&`
+      ? `&filter.query=variants.attributes.color:"${value}"&`
       : '';
     const priceRange = `&filter.query=variants.price.centAmount:range(${dollarsToCents(
       value1[0]
     )} to ${dollarsToCents(value1[1])})&`;
 
     const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${categoryQuery}${fuzzy}${textQuery}${sortQuery}${colorValue}${priceRange}`;
+    console.log(apiUrl);
     const response = await fetch(apiUrl, {
       headers: {
         Authorization: `Bearer ${token}`,
