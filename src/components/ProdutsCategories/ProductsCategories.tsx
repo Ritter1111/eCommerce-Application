@@ -75,7 +75,25 @@ function ProductsCategories({
   const [priceRangeSliderValues, setPriceRangeSliderValues] = useState<
     number[]
   >([0, 1]);
+
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
+
+  const getQueryString = () => {
+    const categoryQuery = isCategoryOpen
+      ? `&filter.query=categories.id:"${categoryId}"&`
+      : '';
+    const sortQuery = sortFilter !== 'default' ? `&${sortFilter}&` : '';
+    const textQuery = textSeachFilter ? `&text.en-US=${textSeachFilter}&` : '';
+    const fuzzy = textSeachFilter ? `&fuzzy=true&` : '';
+    const colorValue = filterColorValue
+      ? `&filter.query=variants.attributes.color:"${filterColorValue}"`
+      : '';
+    const priceRange = `&filter.query=variants.price.centAmount:range(${currencyToCents(
+      priceRangeSliderValues[0]
+    )} to ${currencyToCents(priceRangeSliderValues[1])})&`;
+
+    return `${categoryQuery}${fuzzy}${textQuery}${sortQuery}${colorValue}${priceRange}`;
+  };
 
   const [fetchCategory] = useApi(async (id) => {
     const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?filter.query=categories.id:"${id}"`;
@@ -87,6 +105,67 @@ function ProductsCategories({
     const data = await response.json();
     const carts: ICategoryResp[] = data.results;
     setCards(carts);
+  });
+
+  const [fetchcardsBySort] = useApi(async () => {
+    const query = getQueryString();
+
+    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${query}`;
+    const response = await fetch(apiUrl, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await response.json();
+    const res = data.results;
+    setCards(res);
+  });
+
+  const [fetchAttribites] = useApi(async (id) => {
+    const categoryQuery = id ? `filter.query=categories.id:"${id}"&` : '';
+    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${categoryQuery}&facet=variants.attributes.color`;
+    const response = await fetch(apiUrl, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await response.json();
+    const res = data.facets['variants.attributes.color'].terms;
+    setColorsAttributesArray(res);
+  });
+
+  const [fetchMinMaxCentAmount] = useApi(async (id) => {
+    const categoryQuery = id ? `filter.query=categories.id:"${id}"&` : '';
+    const limit = `&limit=1&`;
+    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${categoryQuery}`;
+
+    const response = await fetch(`${apiUrl}${limit}&sort=price desc`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const responseLow = await fetch(`${apiUrl}${limit}&sort=price asc`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const higthPriceData = await response.json();
+    const lowPriceData = await responseLow.json();
+    const highPrice = Number(
+      formatCentsToCurrency(
+        higthPriceData.results[0].masterVariant.prices[0].value.centAmount
+      )
+    );
+    const lowPrice = Number(
+      formatCentsToCurrency(
+        Number(lowPriceData.results[0].masterVariant.prices[0].value.centAmount)
+      )
+    );
+    setHighestPriceProduct(highPrice);
+    setLowestPriceProduct(lowPrice);
+    setPriceRangeSliderValues([lowPrice, highPrice]);
   });
 
   const handleMainCategoryClick = (categoryId: string) => {
@@ -149,83 +228,6 @@ function ProductsCategories({
     if (id === 'All') return;
     setProductCategoryName(categories[id][1]);
   };
-
-  const getQueryString = () => {
-    const categoryQuery = isCategoryOpen
-      ? `&filter.query=categories.id:"${categoryId}"&`
-      : '';
-    const sortQuery = sortFilter !== 'default' ? `&${sortFilter}&` : '';
-    const textQuery = textSeachFilter ? `&text.en-US=${textSeachFilter}&` : '';
-    const fuzzy = textSeachFilter ? `&fuzzy=true&` : '';
-    const colorValue = filterColorValue
-      ? `&filter.query=variants.attributes.color:"${filterColorValue}"`
-      : '';
-    const priceRange = `&filter.query=variants.price.centAmount:range(${currencyToCents(
-      priceRangeSliderValues[0]
-    )} to ${currencyToCents(priceRangeSliderValues[1])})&`;
-
-    return `${categoryQuery}${fuzzy}${textQuery}${sortQuery}${colorValue}${priceRange}`;
-  };
-  const [fetchcardsBySort] = useApi(async () => {
-    const query = getQueryString();
-
-    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${query}`;
-    const response = await fetch(apiUrl, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    const res = data.results;
-    setCards(res);
-  });
-
-  const [fetchAttribites] = useApi(async (id) => {
-    const categoryQuery = id ? `filter.query=categories.id:"${id}"&` : '';
-    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${categoryQuery}&facet=variants.attributes.color`;
-    const response = await fetch(apiUrl, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    const res = data.facets['variants.attributes.color'].terms;
-    setColorsAttributesArray(res);
-  });
-
-  const [fetchMinMaxCentAmount] = useApi(async (id) => {
-    const categoryQuery = id ? `filter.query=categories.id:"${id}"&` : '';
-    const limit = `&limit=1&`;
-    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${categoryQuery}`;
-
-    const response = await fetch(`${apiUrl}${limit}&sort=price desc`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const responseLow = await fetch(`${apiUrl}${limit}&sort=price asc`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const higthPriceData = await response.json();
-    const lowPriceData = await responseLow.json();
-    const highPrice = Number(
-      formatCentsToCurrency(
-        higthPriceData.results[0].masterVariant.prices[0].value.centAmount
-      )
-    );
-    const lowPrice = Number(
-      formatCentsToCurrency(
-        Number(lowPriceData.results[0].masterVariant.prices[0].value.centAmount)
-      )
-    );
-    setHighestPriceProduct(highPrice);
-    setLowestPriceProduct(lowPrice);
-    setPriceRangeSliderValues([lowPrice, highPrice]);
-  });
 
   useEffect(() => {
     fetchMinMaxCentAmount();
