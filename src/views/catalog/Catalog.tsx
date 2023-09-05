@@ -54,66 +54,66 @@ function Catalog() {
 
   return (
     <>
-    <Container maxWidth="lg">
-      <Typography
-        variant="h2"
-        align="center"
-        sx={{ fontSize: '48px', mt: 4, mb: 4 }}
-      >
-        {productCategoryName}
-      </Typography>
-      {(cardsError || categoriesError) && (
-        <Typography align="center" variant="h4">
-          Oops, something went wrong. Please try again later.
+      <Container maxWidth="lg">
+        <Typography
+          variant="h2"
+          align="center"
+          sx={{ fontSize: '48px', mt: 4, mb: 4 }}
+        >
+          {productCategoryName}
         </Typography>
-      )}
-      {isLoading || isLoadingCategories ? (
-        <CircularProgress
-          style={{ width: '70px', height: '70px' }}
-          color="inherit"
-          sx={{ margin: '0 auto', display: 'block' }}
-        />
-      ) : (
-        <>
-          <ProductsCategories
-            fetchcards={fetchcards}
-            categoriesData={categories}
-            setCards={setCards}
-            setProductCategoryName={setProductCategoryName}
+        {(cardsError || categoriesError) && (
+          <Typography align="center" variant="h4">
+            Oops, something went wrong. Please try again later.
+          </Typography>
+        )}
+        {isLoading || isLoadingCategories ? (
+          <CircularProgress
+            style={{ width: '70px', height: '70px' }}
+            color="inherit"
+            sx={{ margin: '0 auto', display: 'block' }}
           />
-          {cards && cards.length > 0 ? (
-            <Grid container spacing={4} columns={{ xs: 4, sm: 8, md: 12 }}>
-              {cards.map((card) => {
-                const isCategoriesCards = card.variants;
-                return (
-                  <Grid
-                    item
-                    key={card.id}
-                    sx={{ maxWidth: 300, margin: '0 auto' }}
-                  >
-                    {
-                      <ProductCard
-                        item={
-                          isCategoriesCards
-                            ? convertProductCartItemCategory(
-                                card as ICategoryResp
-                              )
-                            : convertProductCartItemAll(card as IProductsResp)
-                        }
-                      />
-                    }
-                  </Grid>
-                );
-              })}
-            </Grid>
-          ) : (
-            <Typography variant="h4" align="center">
-              Sorry, but there are currently no products in this category
-            </Typography>
-          )}
-        </>
-      )}
-    </Container>
+        ) : (
+          <>
+            <ProductsCategories
+              fetchcards={fetchcards}
+              categoriesData={categories}
+              setCards={setCards}
+              setProductCategoryName={setProductCategoryName}
+            />
+            {cards && cards.length > 0 ? (
+              <Grid container spacing={4} columns={{ xs: 4, sm: 8, md: 12 }}>
+                {cards.map((card) => {
+                  const isCategoriesCards = card.variants;
+                  return (
+                    <Grid
+                      item
+                      key={card.id}
+                      sx={{ maxWidth: 300, margin: '0 auto' }}
+                    >
+                      {
+                        <ProductCard
+                          item={
+                            isCategoriesCards
+                              ? convertProductCartItemCategory(
+                                  card as ICategoryResp
+                                )
+                              : convertProductCartItemAll(card as IProductsResp)
+                          }
+                        />
+                      }
+                    </Grid>
+                  );
+                })}
+              </Grid>
+            ) : (
+              <Typography variant="h5" align="center">
+                Sorry, but there are currently no products in this category
+              </Typography>
+            )}
+          </>
+        )}
+      </Container>
     </>
   );
 }
