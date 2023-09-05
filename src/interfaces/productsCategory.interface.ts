@@ -7,6 +7,11 @@ export interface IBreadcrumbProps {
   handleCaregory: (categoryId: string) => void;
 }
 
+export interface IColorsArray {
+  term: string
+  count: number
+}
+
 export interface IAllCategories {
   id: string;
   parent?: {
