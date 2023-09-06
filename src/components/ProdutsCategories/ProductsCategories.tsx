@@ -21,11 +21,11 @@ import {
   Radio,
   RadioGroup,
   Select,
-  SelectChangeEvent,
   Slider,
   TextField,
+  Typography,
 } from '@mui/material';
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import { ArrowUpward, ExpandLess, ExpandMore, Tune } from '@mui/icons-material';
 import { useApi } from '../../hooks/useApi';
 import { AccessTokenContext } from '../../context';
 import {
@@ -35,11 +35,10 @@ import {
 } from '../../utils/productCategoriesUtils';
 import Breadcrumb from '../Breadcrumb/Breadcrumb';
 import { BreadcrumbType } from '../../types/breadcrumb.type';
-import { formatCentsToCurrency } from '../../utils/format-to-cents';
-
-function dollarsToCents(dollars: number) {
-  return Math.round(dollars * 100);
-}
+import {
+  currencyToCents,
+  formatCentsToCurrency,
+} from '../../utils/format-to-cents';
 
 function ProductsCategories({
   fetchcards,
@@ -51,7 +50,6 @@ function ProductsCategories({
     ['All', 'All'],
   ]);
   const [openCategories, setOpenCategories] = useState<string[]>([]);
-
   const [sortFilter, setSortFilter] = useState('');
   const [textSeachFilter, setTextSeachFilter] = useState<undefined | string>(
     undefined
@@ -62,10 +60,11 @@ function ProductsCategories({
   const mainCategories = getAMainCategoriesArray(categoriesData);
   const [categoryId, setCtegoryId] = useState('');
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
-
   const { token } = useContext(AccessTokenContext);
-  const [value, setValue] = React.useState<string>('');
-  const [colorsArray, setColors] = useState<IColorsArray[]>([]);
+  const [filterColorValue, setFilterColorValue] = useState<string>('');
+  const [colorsAttributesArray, setColorsAttributesArray] = useState<
+    IColorsArray[]
+  >([]);
 
   const [highestPriceProduct, setHighestPriceProduct] = useState<number | null>(
     null
@@ -73,7 +72,28 @@ function ProductsCategories({
   const [lowestPriceProduct, setLowestPriceProduct] = useState<number | null>(
     null
   );
-  const [value1, setValue1] = useState<number[]>([0, 1]);
+  const [priceRangeSliderValues, setPriceRangeSliderValues] = useState<
+    number[]
+  >([0, 1]);
+
+  const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
+
+  const getQueryString = () => {
+    const categoryQuery = isCategoryOpen
+      ? `&filter.query=categories.id:"${categoryId}"&`
+      : '';
+    const sortQuery = sortFilter !== 'default' ? `&${sortFilter}&` : '';
+    const textQuery = textSeachFilter ? `&text.en-US=${textSeachFilter}&` : '';
+    const fuzzy = textSeachFilter ? `&fuzzy=true&` : '';
+    const colorValue = filterColorValue
+      ? `&filter.query=variants.attributes.color:"${filterColorValue}"`
+      : '';
+    const priceRange = `&filter.query=variants.price.centAmount:range(${currencyToCents(
+      priceRangeSliderValues[0]
+    )} to ${currencyToCents(priceRangeSliderValues[1])})&`;
+
+    return `${categoryQuery}${fuzzy}${textQuery}${sortQuery}${colorValue}${priceRange}`;
+  };
 
   const [fetchCategory] = useApi(async (id) => {
     const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?filter.query=categories.id:"${id}"`;
@@ -87,6 +107,67 @@ function ProductsCategories({
     setCards(carts);
   });
 
+  const [fetchcardsBySort] = useApi(async () => {
+    const query = getQueryString();
+
+    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${query}`;
+    const response = await fetch(apiUrl, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await response.json();
+    const res = data.results;
+    setCards(res);
+  });
+
+  const [fetchAttribites] = useApi(async (id) => {
+    const categoryQuery = id ? `filter.query=categories.id:"${id}"&` : '';
+    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${categoryQuery}&facet=variants.attributes.color`;
+    const response = await fetch(apiUrl, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await response.json();
+    const res = data.facets['variants.attributes.color'].terms;
+    setColorsAttributesArray(res);
+  });
+
+  const [fetchMinMaxCentAmount] = useApi(async (id) => {
+    const categoryQuery = id ? `filter.query=categories.id:"${id}"&` : '';
+    const limit = `&limit=1&`;
+    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${categoryQuery}`;
+
+    const response = await fetch(`${apiUrl}${limit}&sort=price desc`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const responseLow = await fetch(`${apiUrl}${limit}&sort=price asc`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const higthPriceData = await response.json();
+    const lowPriceData = await responseLow.json();
+    const highPrice = Number(
+      formatCentsToCurrency(
+        higthPriceData.results[0].masterVariant.prices[0].value.centAmount
+      )
+    );
+    const lowPrice = Number(
+      formatCentsToCurrency(
+        Number(lowPriceData.results[0].masterVariant.prices[0].value.centAmount)
+      )
+    );
+    setHighestPriceProduct(highPrice);
+    setLowestPriceProduct(lowPrice);
+    setPriceRangeSliderValues([lowPrice, highPrice]);
+  });
+
   const handleMainCategoryClick = (categoryId: string) => {
     if (openCategories.includes(categoryId)) {
       setOpenCategories((prev) => prev.filter((item) => item !== categoryId));
@@ -94,6 +175,12 @@ function ProductsCategories({
       openCategories.length = 0;
       setOpenCategories((prev) => [...prev, categoryId]);
     }
+  };
+
+  const resetFilters = () => {
+    setSortFilter('default');
+    setTextSeachFilter('');
+    setFilterColorValue('');
   };
 
   const handleCaregory = (categoryId: string) => {
@@ -108,11 +195,10 @@ function ProductsCategories({
     handleCategoryName(categoryId);
     updateBreadcrumbArray(categoryId);
     setCtegoryId(categoryId);
-    setSortFilter('default');
-    setTextSeachFilter('');
     fetchAttribites(categoryId);
-    setValue('');
     fetchMinMaxCentAmount(categoryId);
+    setIsFilterMenuOpen(false);
+    resetFilters;
   };
 
   const updateBreadcrumbArray = (id: string) => {
@@ -143,155 +229,61 @@ function ProductsCategories({
     setProductCategoryName(categories[id][1]);
   };
 
-  const [fetchcardsBySort] = useApi(async (id) => {
-    const categoryQuery = id ? `filter.query=categories.id:"${id}"&` : '';
-    const sortQuery = sortFilter !== 'default' ? `&${sortFilter}&` : '';
-    const textQuery = textSeachFilter ? `&text.en-US=${textSeachFilter}` : '';
-    const fuzzy = textSeachFilter ? `&fuzzy=true` : '';
-    const colorValue = value
-      ? `filter.query=variants.attributes.color:"${value}"&`
-      : '';
-    const priceRange = `&filter.query=variants.price.centAmount:range(${dollarsToCents(
-      value1[0]
-    )} to ${dollarsToCents(value1[1])})&`;
-
-    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${categoryQuery}${fuzzy}${textQuery}${sortQuery}${colorValue}${priceRange}`;
-    const response = await fetch(apiUrl, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    const res = data.results;
-    setCards(res);
-  });
-
-  const [fetchAttribites] = useApi(async (id) => {
-    const categoryQuery = id ? `filter.query=categories.id:"${id}"&` : '';
-    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${categoryQuery}&facet=variants.attributes.color`;
-    const response = await fetch(apiUrl, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    const res = data.facets['variants.attributes.color'].terms;
-    setColors(res);
-  });
-
-  const [fetchMinMaxCentAmount, load] = useApi(async (id) => {
-    const categoryQuery = id ? `filter.query=categories.id:"${id}"&` : '';
-    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${categoryQuery}&sort=price desc`;
-    const response = await fetch(apiUrl, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const higthPriceData = await response.json();
-    const highPrice = Number(
-      formatCentsToCurrency(
-        higthPriceData.results[0].masterVariant.prices[0].value.centAmount
-      )
-    );
-    setHighestPriceProduct(highPrice);
-    const apiUrlLow = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${categoryQuery}&sort=price asc`;
-    const responseLow = await fetch(apiUrlLow, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const lowPriceData = await responseLow.json();
-    const lowPrice = Number(
-      formatCentsToCurrency(
-        Number(lowPriceData.results[0].masterVariant.prices[0].value.centAmount)
-      )
-    );
-    setLowestPriceProduct(lowPrice);
-    setValue1([lowPrice, highPrice]);
-  });
-
-  const handleChange = (event: SelectChangeEvent<string>) => {
-    const selectedValue = event.target.value;
-    setSortFilter(selectedValue);
-  };
-
   useEffect(() => {
-    if (!sortFilter) return;
-    if (sortFilter === 'default' && !isCategoryOpen) {
-      fetchcards();
-    } else if ((sortFilter === 'default' && isCategoryOpen) || isCategoryOpen) {
-      fetchcardsBySort(categoryId);
-    } else {
-      fetchcardsBySort();
-    }
-  }, [sortFilter]);
-
-  const handleTextInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTextSeachFilter(event.target.value);
-  };
-
-  const handleChangeRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue((event.target as HTMLInputElement).value);
-  };
-
-  useEffect(() => {
-    if (isCategoryOpen) {
-      fetchMinMaxCentAmount(categoryId);
-    } else {
-      fetchMinMaxCentAmount();
-    }
+    fetchMinMaxCentAmount();
     fetchAttribites();
   }, []);
 
   useEffect(() => {
     if (textSeachFilter === undefined) return;
-    if (isCategoryOpen) {
-      fetchcardsBySort(categoryId);
-    } else {
-      fetchcardsBySort();
-    }
+    fetchcardsBySort();
   }, [textSeachFilter]);
 
-  function valuetext(value: number) {
-    return `${value}`;
-  }
-
-  const minDistance = 20;
-
-  const handleChange1 = (
+  const handlePriceRangeSlider = (
     event: Event,
     newValue: number | number[],
     activeThumb: number
   ) => {
-    if (!Array.isArray(newValue)) {
-      return;
-    }
+    if (!Array.isArray(newValue)) return;
+    const minDistance = 20;
+
     if (activeThumb === 0) {
-      setValue1([Math.min(newValue[0], value1[1] - minDistance), value1[1]]);
+      const min = Math.min(
+        newValue[0],
+        priceRangeSliderValues[1] - minDistance
+      );
+      const max = priceRangeSliderValues[1];
+      setPriceRangeSliderValues([min, max]);
     } else {
-      setValue1([value1[0], Math.max(newValue[1], value1[0] + minDistance)]);
+      const min = priceRangeSliderValues[0];
+      const max = Math.max(
+        newValue[1],
+        priceRangeSliderValues[0] + minDistance
+      );
+      setPriceRangeSliderValues([min, max]);
     }
   };
 
-  const applyMoney = () => {
-    if (isCategoryOpen) {
-      fetchcardsBySort(categoryId);
+  const applyFilters = () => {
+    if (sortFilter === 'default' && !isCategoryOpen) {
+      fetchcards();
     } else {
       fetchcardsBySort();
     }
   };
 
-  const resetFilters = () => {
-    setSortFilter('default');
-    setTextSeachFilter('');
-    setValue('');
-    lowestPriceProduct && highestPriceProduct && setValue1([lowestPriceProduct, highestPriceProduct]);
+  const handleresetFilters = () => {
+    resetFilters();
+    lowestPriceProduct &&
+      highestPriceProduct &&
+      setPriceRangeSliderValues([lowestPriceProduct, highestPriceProduct]);
+
     if (isCategoryOpen) {
-      fetchcardsBySort(categoryId);
+      fetchcardsBySort();
     } else {
       fetchcards();
     }
-  }
+  };
 
   return (
     <>
@@ -361,79 +353,137 @@ function ProductsCategories({
             flexWrap: 'wrap',
             columnGap: '20px',
             ml: 2,
+            alignItems: 'flex-end',
           }}
         >
-          <FormControl sx={{ m: 1, minWidth: 120, maxHeight: 40 }}>
-            <InputLabel id="demo-simple-select-label">Sort by</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={sortFilter}
-              label="Sort by"
-              onChange={handleChange}
+          <Box>
+            <Tune onClick={() => setIsFilterMenuOpen(!isFilterMenuOpen)} />
+            <Typography
+              display="block"
+              variant="caption"
+              color="text.secondary"
             >
-              <MenuItem value={'default'}>Default</MenuItem>
-              <MenuItem value={'sort=price asc'}>Price low</MenuItem>
-              <MenuItem value={'sort=price desc'}>Price high</MenuItem>
-              <MenuItem value={'sort=name.en-us asc'}>Name asc</MenuItem>
-              <MenuItem value={'sort=name.en-us desc'}>Name desc</MenuItem>
-            </Select>
-          </FormControl>
+              To filter and organize
+            </Typography>
+          </Box>
           <TextField
             id="standard-basic"
             label="Search"
             variant="standard"
             margin="normal"
             value={textSeachFilter}
-            onChange={handleTextInput}
-            sx={{ ml: 1.5 }}
+            onChange={(event) => setTextSeachFilter(event.target.value)}
+            sx={{ m: 0 }}
           />
         </Box>
-        <FormControl>
-          {colorsArray.length > 0 && (
-            <>
-              <FormLabel id="demo-controlled-radio-buttons-group">
-                Color
-              </FormLabel>
-              <RadioGroup
-                aria-labelledby="demo-controlled-radio-buttons-group"
-                name="controlled-radio-buttons-group"
-                value={value}
-                onChange={handleChangeRadio}
+        <Box
+          sx={{
+            display: isFilterMenuOpen ? 'block' : 'none',
+            backgroundColor: '#FFFCF7',
+            p: 2,
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              columnGap: '40px',
+              rowGap: '20px',
+              alignItems: 'flex-start',
+              mb: 2,
+              flexWrap: 'wrap',
+            }}
+          >
+            <Box onClick={() => setIsFilterMenuOpen(!isFilterMenuOpen)}>
+              <ArrowUpward
+                sx={{ color: 'text.secondary', width: '20px', height: '20px' }}
+              />
+              <Typography
+                display="block"
+                variant="caption"
+                color="text.secondary"
               >
-                {colorsArray.map((item) => (
-                  <FormControlLabel
-                    key={item.term}
-                    value={item.term}
-                    control={<Radio />}
-                    label={item.term}
-                  />
-                ))}
-              </RadioGroup>
-            </>
-          )}
-        </FormControl>
-        {!load && lowestPriceProduct && highestPriceProduct ? (
-          <Box sx={{ maxWidth: '300px' }}>
-            <InputLabel sx={{ mb: 3 }}>Price range: </InputLabel>
-            <Slider
-              min={lowestPriceProduct}
-              max={highestPriceProduct}
-              getAriaLabel={() => 'Minimum distance'}
-              value={value1}
-              onChange={handleChange1}
-              valueLabelDisplay="on"
-              getAriaValueText={valuetext}
-              disableSwap
-            />
+                Collapse
+              </Typography>
+            </Box>
+            <FormControl
+              variant="standard"
+              sx={{ m: 0, minWidth: 120, maxHeight: 40 }}
+            >
+              <InputLabel id="demo-simple-select-label">Sort by</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={sortFilter}
+                label="Sort by"
+                onChange={(event) => setSortFilter(event.target.value)}
+              >
+                <MenuItem value={'default'}>Default</MenuItem>
+                <MenuItem value={'sort=price asc'}>Price low</MenuItem>
+                <MenuItem value={'sort=price desc'}>Price high</MenuItem>
+                <MenuItem value={'sort=name.en-us asc'}>Name A-Z</MenuItem>
+                <MenuItem value={'sort=name.en-us desc'}>Name Z-A</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl>
+              {colorsAttributesArray.length > 0 && (
+                <>
+                  <FormLabel id="demo-controlled-radio-buttons-group">
+                    Color
+                  </FormLabel>
+                  <RadioGroup
+                    aria-labelledby="demo-controlled-radio-buttons-group"
+                    name="controlled-radio-buttons-group"
+                    value={filterColorValue}
+                    onChange={(event) =>
+                      setFilterColorValue(event.target.value)
+                    }
+                  >
+                    {colorsAttributesArray.map((item) => (
+                      <FormControlLabel
+                        key={item.term}
+                        value={item.term}
+                        control={<Radio />}
+                        label={item.term}
+                      />
+                    ))}
+                  </RadioGroup>
+                </>
+              )}
+            </FormControl>
           </Box>
-        ) : null}
-        <Button onClick={applyMoney} variant="outlined" sx={{ color: 'black' }}>
-          Apply filters
-        </Button>
-        <Button onClick={resetFilters} variant="outlined" sx={{ color: 'black', ml: 3}}>
-          Reset filters
-        </Button>
+          <Box>
+            {lowestPriceProduct && highestPriceProduct ? (
+              <Box sx={{ maxWidth: '300px' }}>
+                <InputLabel sx={{ mb: 4 }}>Price range: </InputLabel>
+                <Slider
+                  min={lowestPriceProduct}
+                  max={highestPriceProduct}
+                  getAriaLabel={() => 'Minimum distance'}
+                  value={priceRangeSliderValues}
+                  onChange={handlePriceRangeSlider}
+                  valueLabelDisplay="on"
+                  getAriaValueText={(value: number) => `${value}`}
+                  disableSwap
+                  sx={{ color: 'black' }}
+                />
+              </Box>
+            ) : null}
+            <Button
+              onClick={applyFilters}
+              variant="outlined"
+              sx={{ color: 'black', borderColor: 'black', mr: 3, mb: 1 }}
+            >
+              Apply filters
+            </Button>
+            <Button
+              onClick={handleresetFilters}
+              variant="outlined"
+              sx={{ color: 'black', borderColor: 'black', mb: 1 }}
+            >
+              Reset filters
+            </Button>
+          </Box>
+        </Box>
       </Container>
     </>
   );
