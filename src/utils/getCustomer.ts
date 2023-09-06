@@ -4,11 +4,13 @@ import { IData, IDataForm, ITokenData } from '../interfaces/auth.interface';
 import { getCustomer, getToken } from '../views/authorization/log-in/Api-Login';
 import { errorNotify } from './ErrorPupUp';
 import { statusCodes } from '../enums/auth.enum';
+import { expiredInSeconds } from './consts';
+
 
 async function saveToken(token: ITokenData) {
   localStorage.setItem('authToken', token.access_token);
   localStorage.setItem('refreshToken', token.refresh_token);
-  localStorage.setItem('expiredIn', `${Date.now() + 172800}`);
+  localStorage.setItem('expiredIn', `${Date.now() + expiredInSeconds}`);
 }
 
 export async function getCustometWithToken(

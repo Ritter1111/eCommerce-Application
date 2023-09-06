@@ -15,6 +15,8 @@ export const formFieldsDefault: IDataForm = {
   password: '',
 };
 
+export const expiredInSeconds = 172800;
+
 export const styleModalWindow = {
   bgcolor: 'background.paper',
   boxShadow: 2,
