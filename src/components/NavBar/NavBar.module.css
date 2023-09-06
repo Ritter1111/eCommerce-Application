@@ -36,19 +36,36 @@
     row-gap: 10px;
     width: 100%;
     position: absolute;
-    top: 62px;
+    top: 0;
     right: 100%;
     opacity: 0;
-    transition: all 0.5s ease;
+    transition: all 0.4s ease;
     padding: 20px 0;
-    z-index: 1;
-    background-color: var(--secondary-color);
+    z-index: 3;
+    background-color: var(--primary-color);
     text-align: center;
   }
 
   .menu.active {
     right: 0;
     opacity: 1;
+  }
+
+  .overlay {
+    position: absolute;
+    opacity: 0;
+    top: 62px;
+    right: 100%;
+    background-color: rgba(0, 0, 0, 0.432);
+    transition: right 0.4s ease;
+    z-index: 2;
+  }
+
+  .overlay.active {
+    right: 0;
+    opacity: 1;
+    width: 100%;
+    height: 100%;
   }
 
   .menu a,

@@ -5,7 +5,7 @@ export interface IDataCustomer {
   password: string
 }
 
-export interface PasswordInputProps {
+export interface IPasswordInputProps {
   showPassword: boolean;
   handleClickShowPassword: () => void;
 }
@@ -59,19 +59,19 @@ export interface ICustomerData {
 }
   
 export interface IClientRoot {
-  customer: Customer
-  cart: Cart
+  customer: ICustomer
+  cart: ICart
 }
 
-export interface Customer {
+export interface ICustomer {
   id: string
   version: number
   versionModifiedAt: string
   lastMessageSequenceNumber: number
   createdAt: string
   lastModifiedAt: string
-  lastModifiedBy: LastModifiedBy
-  createdBy: LastModifiedBy
+  lastModifiedBy: ILastModifiedBy
+  createdBy: ILastModifiedBy
   email: string
   firstName: string
   lastName: string
@@ -79,7 +79,7 @@ export interface Customer {
   title: string
   salutation: string
   password: string
-  addresses: Address[]
+  addresses: IAddress[]
   shippingAddressIds: string[]
   billingAddressIds: string[]
   isEmailVerified: boolean
@@ -87,17 +87,17 @@ export interface Customer {
   authenticationMode: string
 }
 
-export interface LastModifiedBy {
+export interface ILastModifiedBy {
   isPlatformClient: boolean
-  user: User
+  user: IUser
 }
 
-export interface User {
+export interface IUser {
   typeId: string
   id: string
 }
 
-export interface Address {
+export interface IAddress {
   id: string
   postalCode: string
   city: string
@@ -106,7 +106,7 @@ export interface Address {
   apartment: string
 }
 
-export interface Cart {
+export interface ICart {
   type: string
   id: string
   version: number
@@ -114,12 +114,12 @@ export interface Cart {
   lastMessageSequenceNumber: number
   createdAt: string
   lastModifiedAt: string
-  lastModifiedBy: LastModifiedBy2
-  createdBy: LastModifiedBy2
+  lastModifiedBy: ILastModifiedBy2
+  createdBy: ILastModifiedBy2
   customerId: string
   lineItems: string[]
   cartState: string
-  totalPrice: TotalPrice
+  totalPrice: ITotalPrice
   shippingMode: string
   shipping: string[]
   customLineItems: string[]
@@ -135,13 +135,13 @@ export interface Cart {
   itemShippingAddresses: string[]
 }
 
-export interface LastModifiedBy2 {
+export interface ILastModifiedBy2 {
   clientId: string
   isPlatformClient: boolean
-  customer: User
+  customer: IUser
 }
 
-export interface TotalPrice {
+export interface ITotalPrice {
   type: string
   currencyCode: string
   centAmount: number

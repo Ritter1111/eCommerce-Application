@@ -4,10 +4,12 @@
   border-radius: 4px;
   color: var(--secondary-color);
   background-color: #ffffff;
-
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .pages__link.active,
 .pages__link:hover {
-  background-color: #ffffff7f;
+  background-color: #95959530;
 }
