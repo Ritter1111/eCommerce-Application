@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { AppBar, Container, Typography, Box } from '@mui/material';
 import { Link, NavLink } from 'react-router-dom';
 import classes from './NavBar.module.css';
@@ -30,18 +30,16 @@ export default function NavBar() {
 
   document.body.style.overflowY = isMenuOpen ? 'hidden' : 'auto';
 
-  const closeMenu = () => {
+  const closeMenu = useCallback(() => {
     setMenuOpen(false);
-  };
+  }, []);
 
-  const toggleMenu = () => {
-    setMenuOpen(!isMenuOpen);
-  };
+  const toggleMenu = () => setMenuOpen((prev) => !prev);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setIsAuth(false);
     localStorage.clear();
-  };
+  }, [setIsAuth]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -108,7 +106,7 @@ export default function NavBar() {
           </Link>
           <Box
             data-testid="menu-btn"
-            onClick={() => toggleMenu()}
+            onClick={toggleMenu}
             sx={{ color: '#212121', display: { xs: 'block', md: 'none' } }}
           >
             {isMenuOpen ? <Close /> : <Menu />}
@@ -125,7 +123,7 @@ export default function NavBar() {
               {routes.map((route, index) => (
                 <NavLink
                   key={index}
-                  onClick={() => closeMenu()}
+                  onClick={closeMenu}
                   to={route.path}
                   className="pages__link"
                   title={route.title}
@@ -145,7 +143,7 @@ export default function NavBar() {
               {isAuth ? (
                 <>
                   <NavLink
-                    onClick={() => closeMenu()}
+                    onClick={closeMenu}
                     to={USER_PROFILE}
                     className="pages__link"
                     title="User Profile"
@@ -169,7 +167,7 @@ export default function NavBar() {
               ) : (
                 <>
                   <NavLink
-                    onClick={() => closeMenu()}
+                    onClick={closeMenu}
                     to={LOGIN_ROUTE}
                     className={classes.btn}
                     title="Log In"
@@ -178,7 +176,7 @@ export default function NavBar() {
                     Log In
                   </NavLink>
                   <NavLink
-                    onClick={() => closeMenu()}
+                    onClick={closeMenu}
                     to={REGISTRATION_ROUTE}
                     className={classes.btn}
                     title="Sign Up"
