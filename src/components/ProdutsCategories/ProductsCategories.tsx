@@ -94,17 +94,6 @@ function ProductsCategories({
     return `${categoryQuery}${fuzzy}${textQuery}${sortQuery}${colorValue}${priceRange}`;
   };
 
-  const [fetchCategory] = useApi(async (id) => {
-    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?filter.query=categories.id:"${id}"`;
-    const response = await fetch(apiUrl, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    const carts = data.results;
-    setCards(carts);
-  });
 
   const [fetchCardsBySort] = useApi(async () => {
     const query = getQueryString();
@@ -176,6 +165,10 @@ function ProductsCategories({
     }
   };
 
+  useEffect(() => {
+    console.log(breadcrumb);
+  }, [breadcrumb]);
+
   const resetFilters = () => {
     setSortFilter('default');
     setTextSeachFilter('');
@@ -186,25 +179,27 @@ function ProductsCategories({
     if (categoryId === 'All') {
       fetchCards();
       setIsCategoryOpen(false);
+      setBreadcramb((prev) => [prev[0]]);
+      // handleMainCategoryClick(categoryId);
+      openCategories.length = 0;
       return;
     }
 
     setIsCategoryOpen(true);
-    fetchCategory(categoryId);
+    fetchCards(categoryId);
     handleCategoryName(categoryId);
     updateBreadcrumbArray(categoryId);
     setCtegoryId(categoryId);
     fetchAttribites(categoryId);
     fetchMinMaxCentAmount(categoryId);
     setIsFilterMenuOpen(false);
-    resetFilters;
+    resetFilters();
   };
 
   const updateBreadcrumbArray = (id: string) => {
     const currentCategoryName = categories[id][0];
     const currentCategoryId = categories[id][2];
     const maxBreadcrumbLength = mainCategories.length + 1;
-
     if (breadcrumb.length > 1 && mainCategories.includes(currentCategoryName)) {
       setBreadcramb((prev) => [
         ...prev.slice(0, 1),
@@ -278,7 +273,7 @@ function ProductsCategories({
       setPriceRangeSliderValues([lowestPriceProduct, highestPriceProduct]);
 
     if (isCategoryOpen) {
-      fetchCardsBySort();
+      fetchCards(categoryId);
     } else {
       fetchCards();
     }

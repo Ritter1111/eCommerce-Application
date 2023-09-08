@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { AccessTokenContext } from '../../context';
 import { CircularProgress, Container, Typography } from '@mui/material';
 import { useApi } from '../../hooks/useApi';
@@ -13,8 +13,8 @@ function Catalog() {
 
   const { token } = useContext(AccessTokenContext);
 
-  const [fetchCards, isLoading, cardsError] = useApi(async () => {
-    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?`;
+  const fetchCardsCallback = useCallback(async (categoryId = '') => {
+    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${categoryId ? `filter.query=categories.id:"${categoryId}"` : ''}`;
     const response = await fetch(apiUrl, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -23,8 +23,10 @@ function Catalog() {
     const data = await response.json();
     const res = data.results;
     setCards(res);
-    setProductCategoryName('All products');
-  });
+    if (!categoryId) setProductCategoryName('All products');
+  }, [token, setCards, setProductCategoryName]);
+
+  const [fetchCards, isLoading, cardsError] = useApi(fetchCardsCallback);
 
   const [fetchCategories, isLoadingCategories, categoriesError] = useApi(
     async () => {
@@ -62,7 +64,13 @@ function Catalog() {
             Oops, something went wrong. Please try again later.
           </Typography>
         )}
-        {isLoading || isLoadingCategories ? (
+        {!isLoadingCategories && (<ProductsCategories
+            fetchCards={fetchCards}
+            categoriesData={categories}
+            setCards={setCards}
+            setProductCategoryName={setProductCategoryName}
+          />)}
+        {isLoading ? (
           <CircularProgress
             style={{ width: '70px', height: '70px' }}
             color="inherit"
@@ -70,12 +78,6 @@ function Catalog() {
           />
         ) : (
           <>
-            <ProductsCategories
-              fetchCards={fetchCards}
-              categoriesData={categories}
-              setCards={setCards}
-              setProductCategoryName={setProductCategoryName}
-            />
             <ProductsList productCards={cards}/>
           </>
         )}
