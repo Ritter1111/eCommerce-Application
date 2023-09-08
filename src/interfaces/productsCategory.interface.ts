@@ -7,6 +7,13 @@ export interface IBreadcrumbProps {
   handleCaregory: (categoryId: string) => void;
 }
 
+export interface ICategoriesList {
+  categoriesData: IProductsResp[];
+  openCategories: string[];
+  handleMainCategoryClick: (categoryId: string) => void
+  handleCaregory: (categoryId: string) => void;
+}
+
 export interface IColorsArray {
   term: string
   count: number

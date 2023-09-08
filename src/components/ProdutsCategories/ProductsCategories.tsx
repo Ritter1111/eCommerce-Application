@@ -3,28 +3,7 @@ import {
   IColorsArray,
   IProductCategories,
 } from '../../interfaces/productsCategory.interface';
-import {
-  Box,
-  Button,
-  Collapse,
-  Container,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  InputLabel,
-  List,
-  ListItemButton,
-  ListItemText,
-  ListSubheader,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  Slider,
-  TextField,
-  Typography,
-} from '@mui/material';
-import { ArrowUpward, ExpandLess, ExpandMore, Tune } from '@mui/icons-material';
+import { Container } from '@mui/material';
 import { useApi } from '../../hooks/useApi';
 import { AccessTokenContext } from '../../context';
 import {
@@ -38,6 +17,8 @@ import {
   currencyToCents,
   formatCentsToCurrency,
 } from '../../utils/format-to-cents';
+import ProductsFiltersMenu from '../ProductFilters/ProductsFiltersMenu';
+import CategoriesList from './CategoriesList';
 
 function ProductsCategories({
   fetchCards,
@@ -54,10 +35,9 @@ function ProductsCategories({
     undefined
   );
 
-  const categoriesTree = createCategoryTree(categoriesData);
   const categories = transformCategoriesIntoObj(categoriesData);
   const mainCategories = getAMainCategoriesArray(categoriesData);
-  const [categoryId, setCtegoryId] = useState('');
+  const [categoryId, setCategoryId] = useState('');
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const { token } = useContext(AccessTokenContext);
   const [filterColorValue, setFilterColorValue] = useState<string>('');
@@ -75,8 +55,6 @@ function ProductsCategories({
     number[]
   >([0, 1]);
 
-  const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
-
   const getQueryString = () => {
     const categoryQuery = isCategoryOpen
       ? `&filter.query=categories.id:"${categoryId}"&`
@@ -93,7 +71,6 @@ function ProductsCategories({
 
     return `${categoryQuery}${fuzzy}${textQuery}${sortQuery}${colorValue}${priceRange}`;
   };
-
 
   const [fetchCardsBySort] = useApi(async () => {
     const query = getQueryString();
@@ -165,10 +142,6 @@ function ProductsCategories({
     }
   };
 
-  useEffect(() => {
-    console.log(breadcrumb);
-  }, [breadcrumb]);
-
   const resetFilters = () => {
     setSortFilter('default');
     setTextSeachFilter('');
@@ -180,7 +153,6 @@ function ProductsCategories({
       fetchCards();
       setIsCategoryOpen(false);
       setBreadcramb((prev) => [prev[0]]);
-      // handleMainCategoryClick(categoryId);
       openCategories.length = 0;
       return;
     }
@@ -189,10 +161,9 @@ function ProductsCategories({
     fetchCards(categoryId);
     handleCategoryName(categoryId);
     updateBreadcrumbArray(categoryId);
-    setCtegoryId(categoryId);
+    setCategoryId(categoryId);
     fetchAttribites(categoryId);
     fetchMinMaxCentAmount(categoryId);
-    setIsFilterMenuOpen(false);
     resetFilters();
   };
 
@@ -233,31 +204,6 @@ function ProductsCategories({
     fetchCardsBySort();
   }, [textSeachFilter]);
 
-  const handlePriceRangeSlider = (
-    event: Event,
-    newValue: number | number[],
-    activeThumb: number
-  ) => {
-    if (!Array.isArray(newValue)) return;
-    const minDistance = 20;
-
-    if (activeThumb === 0) {
-      const min = Math.min(
-        newValue[0],
-        priceRangeSliderValues[1] - minDistance
-      );
-      const max = priceRangeSliderValues[1];
-      setPriceRangeSliderValues([min, max]);
-    } else {
-      const min = priceRangeSliderValues[0];
-      const max = Math.max(
-        newValue[1],
-        priceRangeSliderValues[0] + minDistance
-      );
-      setPriceRangeSliderValues([min, max]);
-    }
-  };
-
   const applyFilters = () => {
     if (sortFilter === 'default' && !isCategoryOpen) {
       fetchCards();
@@ -280,206 +226,30 @@ function ProductsCategories({
   };
 
   return (
-    <>
-      <Container maxWidth="lg" sx={{ mb: 3 }}>
-        <List
-          sx={{
-            width: '100%',
-            maxWidth: 360,
-            bgcolor: 'background.paper',
-            mb: 3,
-          }}
-          component="nav"
-          aria-labelledby="nested-list-subheader"
-          subheader={
-            <ListSubheader component="div" id="nested-list-subheader">
-              Categories
-            </ListSubheader>
-          }
-        >
-          {categoriesTree.map((mainCategory) => (
-            <React.Fragment key={mainCategory.id}>
-              <ListItemButton
-                onClick={() => {
-                  handleMainCategoryClick(mainCategory.id);
-                  handleCaregory(mainCategory.id);
-                }}
-              >
-                <ListItemText primary={mainCategory.name['en-US']} />
-                {openCategories.includes(mainCategory.id) ? (
-                  <ExpandLess />
-                ) : (
-                  <ExpandMore />
-                )}
-              </ListItemButton>
-              <Collapse
-                in={openCategories.includes(mainCategory.id)}
-                timeout="auto"
-                unmountOnExit
-              >
-                <List component="div" disablePadding>
-                  {mainCategory.children?.map((childCategory) => {
-                    const childCategoryId = childCategory.id;
-                    const childCategoryName = childCategory.name['en-US'];
-                    return (
-                      <ListItemButton
-                        key={childCategoryId}
-                        sx={{ pl: 4 }}
-                        onClick={() => {
-                          handleCaregory(childCategoryId);
-                        }}
-                      >
-                        <ListItemText primary={childCategoryName} />
-                      </ListItemButton>
-                    );
-                  })}
-                </List>
-              </Collapse>
-            </React.Fragment>
-          ))}
-        </List>
-        <Breadcrumb breadcrumb={breadcrumb} handleCaregory={handleCaregory} />
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            mb: 3,
-            flexWrap: 'wrap',
-            columnGap: '20px',
-            ml: 2,
-            alignItems: 'flex-end',
-          }}
-        >
-          <Box>
-            <Tune onClick={() => setIsFilterMenuOpen(!isFilterMenuOpen)} />
-            <Typography
-              display="block"
-              variant="caption"
-              color="text.secondary"
-            >
-              To filter and organize
-            </Typography>
-          </Box>
-          <TextField
-            id="standard-basic"
-            label="Search"
-            variant="standard"
-            margin="normal"
-            value={textSeachFilter}
-            onChange={(event) => setTextSeachFilter(event.target.value)}
-            sx={{ m: 0 }}
-          />
-        </Box>
-        <Box
-          sx={{
-            display: isFilterMenuOpen ? 'block' : 'none',
-            backgroundColor: '#FFFCF7',
-            p: 2,
-          }}
-        >
-          <Box
-            sx={{
-              display: 'flex',
-              columnGap: '40px',
-              rowGap: '20px',
-              alignItems: 'flex-start',
-              mb: 2,
-              flexWrap: 'wrap',
-            }}
-          >
-            <Box onClick={() => setIsFilterMenuOpen(!isFilterMenuOpen)}>
-              <ArrowUpward
-                sx={{ color: 'text.secondary', width: '20px', height: '20px' }}
-              />
-              <Typography
-                display="block"
-                variant="caption"
-                color="text.secondary"
-              >
-                Collapse
-              </Typography>
-            </Box>
-            <FormControl
-              variant="standard"
-              sx={{ m: 0, minWidth: 120, maxHeight: 40 }}
-            >
-              <InputLabel id="demo-simple-select-label">Sort by</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={sortFilter}
-                label="Sort by"
-                onChange={(event) => setSortFilter(event.target.value)}
-              >
-                <MenuItem value={'default'}>Default</MenuItem>
-                <MenuItem value={'sort=price asc'}>Price low</MenuItem>
-                <MenuItem value={'sort=price desc'}>Price high</MenuItem>
-                <MenuItem value={'sort=name.en-us asc'}>Name A-Z</MenuItem>
-                <MenuItem value={'sort=name.en-us desc'}>Name Z-A</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl>
-              {colorsAttributesArray.length > 0 && (
-                <>
-                  <FormLabel id="demo-controlled-radio-buttons-group">
-                    Color
-                  </FormLabel>
-                  <RadioGroup
-                    aria-labelledby="demo-controlled-radio-buttons-group"
-                    name="controlled-radio-buttons-group"
-                    value={filterColorValue}
-                    onChange={(event) =>
-                      setFilterColorValue(event.target.value)
-                    }
-                  >
-                    {colorsAttributesArray.map((item) => (
-                      <FormControlLabel
-                        key={item.term}
-                        value={item.term}
-                        control={<Radio />}
-                        label={item.term}
-                      />
-                    ))}
-                  </RadioGroup>
-                </>
-              )}
-            </FormControl>
-          </Box>
-          <Box>
-            {lowestPriceProduct && highestPriceProduct ? (
-              <Box sx={{ maxWidth: '300px' }}>
-                <InputLabel sx={{ mb: 4 }}>Price range: </InputLabel>
-                <Slider
-                  min={lowestPriceProduct}
-                  max={highestPriceProduct}
-                  getAriaLabel={() => 'Minimum distance'}
-                  value={priceRangeSliderValues}
-                  onChange={handlePriceRangeSlider}
-                  valueLabelDisplay="on"
-                  getAriaValueText={(value: number) => `${value}`}
-                  disableSwap
-                  sx={{ color: 'black' }}
-                />
-              </Box>
-            ) : null}
-            <Button
-              onClick={applyFilters}
-              variant="outlined"
-              sx={{ color: 'black', borderColor: 'black', mr: 3, mb: 1 }}
-            >
-              Apply filters
-            </Button>
-            <Button
-              onClick={handleresetFilters}
-              variant="outlined"
-              sx={{ color: 'black', borderColor: 'black', mb: 1 }}
-            >
-              Reset filters
-            </Button>
-          </Box>
-        </Box>
-      </Container>
-    </>
+    <Container maxWidth="lg" sx={{ mb: 3 }}>
+      <CategoriesList
+        categoriesData={categoriesData}
+        openCategories={openCategories}
+        handleMainCategoryClick={handleMainCategoryClick}
+        handleCaregory={handleCaregory}
+      />
+      <Breadcrumb breadcrumb={breadcrumb} handleCaregory={handleCaregory} />
+      <ProductsFiltersMenu
+        textSeachFilter={textSeachFilter}
+        setTextSeachFilter={setTextSeachFilter}
+        sortFilter={sortFilter}
+        setSortFilter={setSortFilter}
+        filterColorValue={filterColorValue}
+        setFilterColorValue={setFilterColorValue}
+        colorsAttributesArray={colorsAttributesArray}
+        minPriceValue={lowestPriceProduct}
+        maxPriceValue={highestPriceProduct}
+        priceRangeSliderValues={priceRangeSliderValues}
+        setPriceRangeSliderValues={setPriceRangeSliderValues}
+        applyFilters={applyFilters}
+        handleresetFilters={handleresetFilters}
+      />
+    </Container>
   );
 }
 

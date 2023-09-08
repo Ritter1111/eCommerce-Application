@@ -13,18 +13,25 @@ function Catalog() {
 
   const { token } = useContext(AccessTokenContext);
 
-  const fetchCardsCallback = useCallback(async (categoryId = '') => {
-    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${categoryId ? `filter.query=categories.id:"${categoryId}"` : ''}`;
-    const response = await fetch(apiUrl, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    const res = data.results;
-    setCards(res);
-    if (!categoryId) setProductCategoryName('All products');
-  }, [token, setCards, setProductCategoryName]);
+  const fetchCardsCallback = useCallback(
+    async (categoryId = '') => {
+      const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${
+        process.env.REACT_APP_CTP_PROJECT_KEY
+      }/product-projections/search?${
+        categoryId ? `filter.query=categories.id:"${categoryId}"` : ''
+      }`;
+      const response = await fetch(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      const res = data.results;
+      setCards(res);
+      if (!categoryId) setProductCategoryName('All products');
+    },
+    [token, setCards, setProductCategoryName]
+  );
 
   const [fetchCards, isLoading, cardsError] = useApi(fetchCardsCallback);
 
@@ -64,12 +71,14 @@ function Catalog() {
             Oops, something went wrong. Please try again later.
           </Typography>
         )}
-        {!isLoadingCategories && (<ProductsCategories
+        {!isLoadingCategories && (
+          <ProductsCategories
             fetchCards={fetchCards}
             categoriesData={categories}
             setCards={setCards}
             setProductCategoryName={setProductCategoryName}
-          />)}
+          />
+        )}
         {isLoading ? (
           <CircularProgress
             style={{ width: '70px', height: '70px' }}
@@ -78,7 +87,7 @@ function Catalog() {
           />
         ) : (
           <>
-            <ProductsList productCards={cards}/>
+            <ProductsList productCards={cards} />
           </>
         )}
       </Container>

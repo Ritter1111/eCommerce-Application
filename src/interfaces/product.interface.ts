@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react";
+import { IColorsArray } from "./productsCategory.interface";
 
 export interface IProductCardProps {
   id: string
@@ -138,4 +140,28 @@ export interface IProductPrice {
 
 export interface IProductData {
   productData: IProductsResp | null;
+}
+
+
+export interface PriceRangeSliderProps {
+  minPriceValue: number;
+  maxPriceValue: number;
+  priceRangeSliderValues: number[];
+  setPriceRangeSliderValues: React.Dispatch<React.SetStateAction<number[]>>
+}
+
+export interface ProductsFiltersMenuProps {
+  textSeachFilter: string | undefined;
+  setTextSeachFilter: (text: string) => void;
+  sortFilter: string;
+  setSortFilter: (sort: string) => void;
+  filterColorValue: string;
+  setFilterColorValue: (color: string) => void;
+  colorsAttributesArray: IColorsArray[];
+  minPriceValue: number | null;
+  maxPriceValue: number | null;
+  priceRangeSliderValues: number[];
+  setPriceRangeSliderValues: Dispatch<SetStateAction<number[]>>;
+  applyFilters: () => void;
+  handleresetFilters: () => void;
 }
