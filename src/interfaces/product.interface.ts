@@ -1,8 +1,14 @@
+import { ICategoryResp } from "./productsCategory.interface";
+
 export interface IProductCardProps {
   id: string
   data: {
     masterData: IMasterData;
   };
+}
+
+export interface IProductsList {
+  productCards: (IProductsResp[] | ICategoryResp[]);
 }
 
 export interface IProductCartItem {

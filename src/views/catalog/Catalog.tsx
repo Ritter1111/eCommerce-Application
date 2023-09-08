@@ -1,15 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AccessTokenContext } from '../../context';
-import { CircularProgress, Container, Typography, Grid } from '@mui/material';
+import { CircularProgress, Container, Typography } from '@mui/material';
 import { IProductsResp } from '../../interfaces/product.interface';
-import ProductCard from '../../components/ProductCard/ProductCard';
 import { useApi } from '../../hooks/useApi';
 import ProductsCategories from '../../components/ProdutsCategories/ProductsCategories';
 import { ICategoryResp } from '../../interfaces/productsCategory.interface';
-import {
-  convertProductCartItemAll,
-  convertProductCartItemCategory,
-} from './productDataConverter';
+import ProductsList from '../../components/ProductsList/ProductsList';
 
 function Catalog() {
   const [cards, setCards] = useState<IProductsResp[] | ICategoryResp[]>([]);
@@ -81,36 +77,7 @@ function Catalog() {
               setCards={setCards}
               setProductCategoryName={setProductCategoryName}
             />
-            {cards && cards.length > 0 ? (
-              <Grid container spacing={4} columns={{ xs: 4, sm: 8, md: 12 }}>
-                {cards.map((card) => {
-                  const isCategoriesCards = card.variants;
-                  return (
-                    <Grid
-                      item
-                      key={card.id}
-                      sx={{ maxWidth: 300, margin: '0 auto' }}
-                    >
-                      {
-                        <ProductCard
-                          item={
-                            isCategoriesCards
-                              ? convertProductCartItemCategory(
-                                  card as ICategoryResp
-                                )
-                              : convertProductCartItemAll(card as IProductsResp)
-                          }
-                        />
-                      }
-                    </Grid>
-                  );
-                })}
-              </Grid>
-            ) : (
-              <Typography variant="h5" align="center">
-                Nothing found. Sorry, but there are currently no products.
-              </Typography>
-            )}
+            <ProductsList productCards={cards}/>
           </>
         )}
       </Container>
