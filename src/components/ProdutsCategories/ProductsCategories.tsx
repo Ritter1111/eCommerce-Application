@@ -7,7 +7,6 @@ import { Container } from '@mui/material';
 import { useApi } from '../../hooks/useApi';
 import { AccessTokenContext } from '../../context';
 import {
-  createCategoryTree,
   getAMainCategoriesArray,
   transformCategoriesIntoObj,
 } from '../../utils/productCategoriesUtils';

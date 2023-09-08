@@ -37,7 +37,7 @@ export interface IAllCategoriesPlusDeskr extends IAllCategories {
 }
 
 export interface IProductCategories {
-  fetchCards: () => void;
+  fetchCards: (id?: string) => void;
   categoriesData: Array<IProductsResp>;
   setCards: Dispatch<SetStateAction<IProductsResp[]>>
   setProductCategoryName: Dispatch<SetStateAction<string>>

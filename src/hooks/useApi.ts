@@ -1,6 +1,6 @@
 import {useState} from "react";
 
-type FetchingFunction<T = string> = (args?: T) => Promise<void>;
+type FetchingFunction = (args?: string) => Promise<void>;
 
 export const useApi = (callback: FetchingFunction): [FetchingFunction, boolean, string] => {
     const [isLoading, setIsLoading] = useState(true);
