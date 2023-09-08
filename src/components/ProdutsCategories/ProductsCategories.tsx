@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {
-  ICategoryResp,
   IColorsArray,
   IProductCategories,
 } from '../../interfaces/productsCategory.interface';
@@ -41,7 +40,7 @@ import {
 } from '../../utils/format-to-cents';
 
 function ProductsCategories({
-  fetchcards,
+  fetchCards,
   categoriesData,
   setCards,
   setProductCategoryName,
@@ -103,11 +102,11 @@ function ProductsCategories({
       },
     });
     const data = await response.json();
-    const carts: ICategoryResp[] = data.results;
+    const carts = data.results;
     setCards(carts);
   });
 
-  const [fetchcardsBySort] = useApi(async () => {
+  const [fetchCardsBySort] = useApi(async () => {
     const query = getQueryString();
 
     const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${query}`;
@@ -185,7 +184,7 @@ function ProductsCategories({
 
   const handleCaregory = (categoryId: string) => {
     if (categoryId === 'All') {
-      fetchcards();
+      fetchCards();
       setIsCategoryOpen(false);
       return;
     }
@@ -236,7 +235,7 @@ function ProductsCategories({
 
   useEffect(() => {
     if (textSeachFilter === undefined) return;
-    fetchcardsBySort();
+    fetchCardsBySort();
   }, [textSeachFilter]);
 
   const handlePriceRangeSlider = (
@@ -266,9 +265,9 @@ function ProductsCategories({
 
   const applyFilters = () => {
     if (sortFilter === 'default' && !isCategoryOpen) {
-      fetchcards();
+      fetchCards();
     } else {
-      fetchcardsBySort();
+      fetchCardsBySort();
     }
   };
 
@@ -279,9 +278,9 @@ function ProductsCategories({
       setPriceRangeSliderValues([lowestPriceProduct, highestPriceProduct]);
 
     if (isCategoryOpen) {
-      fetchcardsBySort();
+      fetchCardsBySort();
     } else {
-      fetchcards();
+      fetchCards();
     }
   };
 

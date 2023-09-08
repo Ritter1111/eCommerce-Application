@@ -1,28 +1,27 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AccessTokenContext } from '../../context';
 import { CircularProgress, Container, Typography } from '@mui/material';
-import { IProductsResp } from '../../interfaces/product.interface';
 import { useApi } from '../../hooks/useApi';
 import ProductsCategories from '../../components/ProdutsCategories/ProductsCategories';
-import { ICategoryResp } from '../../interfaces/productsCategory.interface';
 import ProductsList from '../../components/ProductsList/ProductsList';
+import { IProductsResp } from '../../interfaces/product.interface';
 
 function Catalog() {
-  const [cards, setCards] = useState<IProductsResp[] | ICategoryResp[]>([]);
+  const [cards, setCards] = useState<IProductsResp[]>([]);
   const [categories, setCategories] = useState([]);
   const [productCategoryName, setProductCategoryName] = useState('');
 
   const { token } = useContext(AccessTokenContext);
 
-  const [fetchcards, isLoading, cardsError] = useApi(async () => {
-    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/products`;
+  const [fetchCards, isLoading, cardsError] = useApi(async () => {
+    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?`;
     const response = await fetch(apiUrl, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
     const data = await response.json();
-    const res: IProductsResp[] = data.results;
+    const res = data.results;
     setCards(res);
     setProductCategoryName('All products');
   });
@@ -43,7 +42,7 @@ function Catalog() {
 
   useEffect(() => {
     if (token) {
-      fetchcards();
+      fetchCards();
       fetchCategories();
     }
   }, [token]);
@@ -72,7 +71,7 @@ function Catalog() {
         ) : (
           <>
             <ProductsCategories
-              fetchcards={fetchcards}
+              fetchCards={fetchCards}
               categoriesData={categories}
               setCards={setCards}
               setProductCategoryName={setProductCategoryName}

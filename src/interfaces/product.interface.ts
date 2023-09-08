@@ -1,4 +1,3 @@
-import { ICategoryResp } from "./productsCategory.interface";
 
 export interface IProductCardProps {
   id: string
@@ -6,9 +5,29 @@ export interface IProductCardProps {
     masterData: IMasterData;
   };
 }
-
+export interface IProductsResp {
+  id: string
+  version: number
+  versionModifiedAt: string
+  lastMessageSequenceNumber: number
+  createdAt: string
+  lastModifiedAt: string
+  lastModifiedBy: IBase
+  createdBy: IBase
+  key: string
+  name: IBaseProps
+  slug: IBaseProps
+  description: IBaseProps
+  ancestors: IBase[]
+  parent: IBase
+  orderHint: string
+  metaTitle: IBaseProps
+  metaDescription: IBaseProps
+  masterVariant: IMasterVariant
+  variants: IVariant[]
+}
 export interface IProductsList {
-  productCards: (IProductsResp[] | ICategoryResp[]);
+  productCards: (IProductsResp[]);
 }
 
 export interface IProductCartItem {
@@ -21,23 +40,6 @@ export interface IProductCartItem {
   imageUrl: string
 };
 
-export interface IProductsResp {
-  id: string
-  version: number
-  versionModifiedAt: string
-  lastMessageSequenceNumber: number
-  createdAt: string
-  lastModifiedAt: string
-  lastModifiedBy: IBase
-  createdBy: IBase
-  productType: IBase
-  masterData: IMasterData
-  key: string
-  taxCategory: IBase
-  priceMode: string
-  lastVariantId: number
-  variants?: IVariant
-}
 
 export interface IBase {
   typeId: string
