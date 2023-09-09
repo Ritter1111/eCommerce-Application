@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Card,
   Typography,
@@ -6,6 +6,8 @@ import {
   CardMedia,
   CardContent,
   Box,
+  Button,
+  CardActions,
 } from '@mui/material';
 import { Currency } from '../../enums/product.enum';
 import { IProductCartItem } from '../../interfaces/product.interface';
@@ -26,6 +28,7 @@ export function truncateStringToSpace(str: string, maxLength: number) {
 
 function ProductCard({ item }: { item: IProductCartItem }) {
   const navigate = useNavigate();
+  const [isAddToCart, setIsAddToCart] = useState(false);
   const currencySymbol = item.currencyCode === Currency.USD ? '$' : '';
 
   return (
@@ -43,7 +46,7 @@ function ProductCard({ item }: { item: IProductCartItem }) {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          height: '100%',
+          height: '90%',
         }}
         onClick={() => navigate(`/catalog/${item.id}`)}
       >
@@ -90,6 +93,18 @@ function ProductCard({ item }: { item: IProductCartItem }) {
           </Box>
         </CardContent>
       </CardActionArea>
+      <CardActions>
+        <Button
+          onClick={() => setIsAddToCart(true)}
+          variant="contained"
+          style={{ backgroundColor: !isAddToCart ? 'black' : 'lightgrey'}}
+          fullWidth
+          size="small"
+          disabled={!isAddToCart ? false : true}
+        >
+          Add to cart
+        </Button>
+      </CardActions>
     </Card>
   );
 }
