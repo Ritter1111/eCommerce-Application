@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Card,
   Typography,
@@ -28,6 +28,7 @@ export function truncateStringToSpace(str: string, maxLength: number) {
 
 function ProductCard({ item }: { item: IProductCartItem }) {
   const navigate = useNavigate();
+  const [isAddToCart, setIsAddToCart] = useState(false);
   const currencySymbol = item.currencyCode === Currency.USD ? '$' : '';
 
   return (
@@ -92,12 +93,14 @@ function ProductCard({ item }: { item: IProductCartItem }) {
           </Box>
         </CardContent>
       </CardActionArea>
-      <CardActions >
+      <CardActions>
         <Button
+          onClick={() => setIsAddToCart(true)}
           variant="contained"
-          style={{ backgroundColor: 'black' }}
+          style={{ backgroundColor: !isAddToCart ? 'black' : 'lightgrey'}}
           fullWidth
           size="small"
+          disabled={!isAddToCart ? false : true}
         >
           Add to cart
         </Button>
