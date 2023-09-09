@@ -6,6 +6,8 @@ import {
   CardMedia,
   CardContent,
   Box,
+  Button,
+  CardActions,
 } from '@mui/material';
 import { Currency } from '../../enums/product.enum';
 import { IProductCartItem } from '../../interfaces/product.interface';
@@ -43,7 +45,7 @@ function ProductCard({ item }: { item: IProductCartItem }) {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          height: '100%',
+          height: '90%',
         }}
         onClick={() => navigate(`/catalog/${item.id}`)}
       >
@@ -90,6 +92,16 @@ function ProductCard({ item }: { item: IProductCartItem }) {
           </Box>
         </CardContent>
       </CardActionArea>
+      <CardActions >
+        <Button
+          variant="contained"
+          style={{ backgroundColor: 'black' }}
+          fullWidth
+          size="small"
+        >
+          Add to cart
+        </Button>
+      </CardActions>
     </Card>
   );
 }
