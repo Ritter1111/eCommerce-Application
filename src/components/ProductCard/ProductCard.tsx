@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Card,
   Typography,
@@ -14,6 +14,8 @@ import { IProductCartItem } from '../../interfaces/product.interface';
 import { useNavigate } from 'react-router-dom';
 import { formatCentsToCurrency } from '../../utils/format-to-cents';
 import ProductPrice from '../Price/Price';
+import { AuthContext } from '../../context';
+import { createNewAnonCart, getActiveCart } from '../../views/basket/Api-Cart';
 
 export function truncateStringToSpace(str: string, maxLength: number) {
   if (str.length <= maxLength) {
@@ -27,9 +29,15 @@ export function truncateStringToSpace(str: string, maxLength: number) {
 }
 
 function ProductCard({ item }: { item: IProductCartItem }) {
+  const { isAuth } = useContext(AuthContext);
   const navigate = useNavigate();
   const [isAddToCart, setIsAddToCart] = useState(false);
   const currencySymbol = item.currencyCode === Currency.USD ? '$' : '';
+
+  function handleAddToCart(prodactId: string) {
+    setIsAddToCart(true),
+      isAuth ? getActiveCart(prodactId) : createNewAnonCart();
+  }
 
   return (
     <Card
@@ -95,9 +103,9 @@ function ProductCard({ item }: { item: IProductCartItem }) {
       </CardActionArea>
       <CardActions>
         <Button
-          onClick={() => setIsAddToCart(true)}
+          onClick={() => handleAddToCart(item.id)}
           variant="contained"
-          style={{ backgroundColor: !isAddToCart ? 'black' : 'lightgrey'}}
+          style={{ backgroundColor: !isAddToCart ? 'black' : 'lightgrey' }}
           fullWidth
           size="small"
           disabled={!isAddToCart ? false : true}
