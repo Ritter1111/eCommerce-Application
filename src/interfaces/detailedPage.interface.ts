@@ -4,6 +4,8 @@ export interface ISlide {
 
 export interface ISliderProps {
   slides: ISlide[];
+  image: string;
+
 }
 
 export interface IModalProps {
