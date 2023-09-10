@@ -126,7 +126,7 @@ export default function NavBar() {
                   title={route.title}
                 >
                   {<route.icon sx={{ mr: 0.5 }} />}
-                  {route.name}
+                  {route.name !== 'Cart' && route.name}
                 </NavLink>
               ))}
               {isAuth ? (

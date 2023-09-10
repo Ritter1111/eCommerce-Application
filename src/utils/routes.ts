@@ -28,7 +28,7 @@ const routes = [
     icon: LibraryBooksOutlined
   },
   {
-    name: '',
+    name: 'Cart',
     path: CART_ROUTE,
     element: Basket,
     title: "Cart",
