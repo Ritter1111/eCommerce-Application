@@ -1,7 +1,8 @@
 import AboutUs from "../views/about-us/AboutUs";
 import Catalog from "../views/catalog/Catalog";
 import Home from "../views/home/Home";
-import { ABOUTUS_ROUTE, CATALOG_ROUTE, MAIN_ROUTE } from "./consts";
+import Basket from "../views/basket/Basket";
+import { ABOUTUS_ROUTE, CART_ROUTE, CATALOG_ROUTE, MAIN_ROUTE } from "./consts";
 
 const routes = [
   {
@@ -22,6 +23,12 @@ const routes = [
     element: Catalog,
     title: "Catalog"
   },
+  {
+    name: 'Basket',
+    path: CART_ROUTE,
+    element: Basket,
+    title: "Basket"
+  }
 ];
 
 export default routes;

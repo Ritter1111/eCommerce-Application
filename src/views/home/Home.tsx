@@ -8,6 +8,7 @@ import {
   REGISTRATION_ROUTE,
   USER_PROFILE,
 } from '../../utils/consts';
+
 const Home = () => {
   return (
     <Container maxWidth="xl">

@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { customInputTheme } from '../../../utils/custom-input-theme';
 import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { AuthContext } from '../../../context';
 import { formFieldsDefault } from '../../../utils/consts';
 import PasswordVisibility from './PasswordVisibility';
