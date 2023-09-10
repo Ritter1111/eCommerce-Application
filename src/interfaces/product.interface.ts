@@ -143,14 +143,14 @@ export interface IProductData {
 }
 
 
-export interface PriceRangeSliderProps {
+export interface IPriceRangeSliderProps {
   minPriceValue: number;
   maxPriceValue: number;
   priceRangeSliderValues: number[];
   setPriceRangeSliderValues: React.Dispatch<React.SetStateAction<number[]>>
 }
 
-export interface ProductsFiltersMenuProps {
+export interface IProductsFiltersMenuProps {
   textSeachFilter: string | undefined;
   setTextSeachFilter: (text: string) => void;
   sortFilter: string;

@@ -3,9 +3,9 @@ import { Box, Button, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import ProductsFiltering from './ProductsFiltering';
 import PriceRangeSlider from './PriceRangeSlider';
-import { ProductsFiltersMenuProps } from '../../interfaces/product.interface';
+import { IProductsFiltersMenuProps } from '../../interfaces/product.interface';
 
-function ProductsFiltersMenu(props: ProductsFiltersMenuProps) {
+function ProductsFiltersMenu(props: IProductsFiltersMenuProps) {
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
   return (
     <>

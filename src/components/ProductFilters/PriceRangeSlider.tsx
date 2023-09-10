@@ -1,13 +1,13 @@
 import { Box, InputLabel, Slider } from '@mui/material';
 import React from 'react';
-import { PriceRangeSliderProps } from '../../interfaces/product.interface';
+import { IPriceRangeSliderProps } from '../../interfaces/product.interface';
 
 function PriceRangeSlider({
   minPriceValue,
   maxPriceValue,
   priceRangeSliderValues,
   setPriceRangeSliderValues,
-}: PriceRangeSliderProps) {
+}: IPriceRangeSliderProps) {
   const handlePriceRangeSlider = (
     event: Event,
     newValue: number | number[],

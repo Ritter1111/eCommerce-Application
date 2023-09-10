@@ -9,7 +9,7 @@ import {
   Select,
 } from '@mui/material';
 import React from 'react';
-import { ProductsFiltersMenuProps } from '../../interfaces/product.interface';
+import { IProductsFiltersMenuProps } from '../../interfaces/product.interface';
 
 function ProductsFiltering({
   sortFilter,
@@ -18,7 +18,7 @@ function ProductsFiltering({
   setFilterColorValue,
   colorsAttributesArray,
 }: Pick<
-  ProductsFiltersMenuProps,
+  IProductsFiltersMenuProps,
   | 'sortFilter'
   | 'setSortFilter'
   | 'filterColorValue'
