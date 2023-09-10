@@ -42,7 +42,6 @@ export interface IProductCartItem {
   imageUrl: string
 };
 
-
 export interface IBase {
   typeId: string
   id: string
@@ -138,6 +137,7 @@ export interface IProductPrice {
   itemPriceInCents: number
 }
 
+
 export interface IProductData {
   productData: IProductsResp | null;
 }
@@ -163,5 +163,5 @@ export interface ProductsFiltersMenuProps {
   priceRangeSliderValues: number[];
   setPriceRangeSliderValues: Dispatch<SetStateAction<number[]>>;
   applyFilters: () => void;
-  handleresetFilters: () => void;
+  handleResetFilters: () => void;
 }

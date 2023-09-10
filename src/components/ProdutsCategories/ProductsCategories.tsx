@@ -25,9 +25,7 @@ function ProductsCategories({
   setCards,
   setProductCategoryName,
 }: IProductCategories) {
-  const [breadcrumb, setBreadcramb] = useState<BreadcrumbType>([
-    ['All', 'All'],
-  ]);
+  const [breadcrumb, setBreadcramb] = useState<BreadcrumbType>([['All', '']]);
   const [openCategories, setOpenCategories] = useState<string[]>([]);
   const [sortFilter, setSortFilter] = useState('');
   const [textSeachFilter, setTextSeachFilter] = useState<undefined | string>(
@@ -37,7 +35,6 @@ function ProductsCategories({
   const categories = transformCategoriesIntoObj(categoriesData);
   const mainCategories = getAMainCategoriesArray(categoriesData);
   const [categoryId, setCategoryId] = useState('');
-  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const { token } = useContext(AccessTokenContext);
   const [filterColorValue, setFilterColorValue] = useState<string>('');
   const [colorsAttributesArray, setColorsAttributesArray] = useState<
@@ -55,25 +52,26 @@ function ProductsCategories({
   >([0, 1]);
 
   const getQueryString = () => {
-    const categoryQuery = isCategoryOpen
-      ? `&filter.query=categories.id:"${categoryId}"&`
-      : '';
-    const sortQuery = sortFilter !== 'default' ? `&${sortFilter}&` : '';
-    const textQuery = textSeachFilter ? `&text.en-US=${textSeachFilter}&` : '';
-    const fuzzy = textSeachFilter ? `&fuzzy=true&` : '';
-    const colorValue = filterColorValue
-      ? `&filter.query=variants.attributes.color:"${filterColorValue}"`
-      : '';
-    const priceRange = `&filter.query=variants.price.centAmount:range(${currencyToCents(
-      priceRangeSliderValues[0]
-    )} to ${currencyToCents(priceRangeSliderValues[1])})&`;
+    const queryParts = [];
 
-    return `${categoryQuery}${fuzzy}${textQuery}${sortQuery}${colorValue}${priceRange}`;
+    categoryId && queryParts.push(`filter.query=categories.id:"${categoryId}"`);
+    sortFilter !== 'default' && queryParts.push(sortFilter);
+    textSeachFilter && queryParts.push(`text.en-US=${textSeachFilter}`);
+    textSeachFilter && queryParts.push('fuzzy=true');
+    filterColorValue &&
+      queryParts.push(
+        `filter.query=variants.attributes.color:"${filterColorValue}"`
+      );
+    const priceRangeQuery = `variants.price.centAmount:range(${currencyToCents(
+      priceRangeSliderValues[0]
+    )} to ${currencyToCents(priceRangeSliderValues[1])})`;
+    queryParts.push(`filter.query=${priceRangeQuery}`);
+
+    return queryParts.join('&');
   };
 
-  const [fetchCardsBySort] = useApi(async () => {
+  const [fetchCardsBySort, , fetchCardsBySortError] = useApi(async () => {
     const query = getQueryString();
-
     const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${query}`;
     const response = await fetch(apiUrl, {
       headers: {
@@ -85,7 +83,7 @@ function ProductsCategories({
     setCards(res);
   });
 
-  const [fetchAttribites] = useApi(async (id) => {
+  const [fetchAttribites, , attributesError] = useApi(async (id) => {
     const categoryQuery = id ? `filter.query=categories.id:"${id}"&` : '';
     const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${categoryQuery}&facet=variants.attributes.color`;
     const response = await fetch(apiUrl, {
@@ -98,39 +96,43 @@ function ProductsCategories({
     setColorsAttributesArray(res);
   });
 
-  const [fetchMinMaxCentAmount] = useApi(async (id) => {
-    const categoryQuery = id ? `filter.query=categories.id:"${id}"&` : '';
-    const limit = `&limit=1&`;
-    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${categoryQuery}`;
+  const [fetchMinMaxCentAmount, , minMaxCentAmountError] = useApi(
+    async (id) => {
+      const categoryQuery = id ? `filter.query=categories.id:"${id}"&` : '';
+      const limit = `&limit=1&`;
+      const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/product-projections/search?${categoryQuery}`;
 
-    const response = await fetch(`${apiUrl}${limit}&sort=price desc`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      const responseHigh = await fetch(`${apiUrl}${limit}&sort=price desc`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    const responseLow = await fetch(`${apiUrl}${limit}&sort=price asc`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      const responseLow = await fetch(`${apiUrl}${limit}&sort=price asc`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    const higthPriceData = await response.json();
-    const lowPriceData = await responseLow.json();
-    const highPrice = Number(
-      formatCentsToCurrency(
-        higthPriceData.results[0].masterVariant.prices[0].value.centAmount
-      )
-    );
-    const lowPrice = Number(
-      formatCentsToCurrency(
-        Number(lowPriceData.results[0].masterVariant.prices[0].value.centAmount)
-      )
-    );
-    setHighestPriceProduct(highPrice);
-    setLowestPriceProduct(lowPrice);
-    setPriceRangeSliderValues([lowPrice, highPrice]);
-  });
+      const higthPriceData = await responseHigh.json();
+      const lowPriceData = await responseLow.json();
+      const highPrice = Number(
+        formatCentsToCurrency(
+          higthPriceData.results[0].masterVariant.prices[0].value.centAmount
+        )
+      );
+      const lowPrice = Number(
+        formatCentsToCurrency(
+          Number(
+            lowPriceData.results[0].masterVariant.prices[0].value.centAmount
+          )
+        )
+      );
+      setHighestPriceProduct(highPrice);
+      setLowestPriceProduct(lowPrice);
+      setPriceRangeSliderValues([lowPrice, highPrice]);
+    }
+  );
 
   const handleMainCategoryClick = (categoryId: string) => {
     if (openCategories.includes(categoryId)) {
@@ -148,21 +150,21 @@ function ProductsCategories({
   };
 
   const handleCaregory = (categoryId: string) => {
-    if (categoryId === 'All') {
+    if (!categoryId) {
       fetchCards();
-      setIsCategoryOpen(false);
+      setCategoryId('');
+      resetFilters();
       setBreadcramb((prev) => [prev[0]]);
       openCategories.length = 0;
       return;
     }
 
-    setIsCategoryOpen(true);
     fetchCards(categoryId);
-    handleCategoryName(categoryId);
     updateBreadcrumbArray(categoryId);
     setCategoryId(categoryId);
-    fetchAttribites(categoryId);
-    fetchMinMaxCentAmount(categoryId);
+    !attributesError && fetchAttribites(categoryId);
+    !minMaxCentAmountError && fetchMinMaxCentAmount(categoryId);
+    setProductCategoryName(categories[categoryId][1]);
     resetFilters();
   };
 
@@ -188,40 +190,32 @@ function ProductsCategories({
     }
   };
 
-  const handleCategoryName = (id: string) => {
-    if (id === 'All') return;
-    setProductCategoryName(categories[id][1]);
-  };
-
   useEffect(() => {
-    fetchMinMaxCentAmount();
-    fetchAttribites();
+    !minMaxCentAmountError && fetchMinMaxCentAmount();
+    !attributesError && fetchAttribites();
   }, []);
 
   useEffect(() => {
     if (textSeachFilter === undefined) return;
-    fetchCardsBySort();
+    !fetchCardsBySortError && fetchCardsBySort();
   }, [textSeachFilter]);
 
   const applyFilters = () => {
-    if (sortFilter === 'default' && !isCategoryOpen) {
+    if (sortFilter === 'default' && !categoryId) {
       fetchCards();
     } else {
-      fetchCardsBySort();
+      !fetchCardsBySortError && fetchCardsBySort();
     }
   };
 
-  const handleresetFilters = () => {
+  const handleResetFilters = () => {
     resetFilters();
-    lowestPriceProduct &&
-      highestPriceProduct &&
-      setPriceRangeSliderValues([lowestPriceProduct, highestPriceProduct]);
 
-    if (isCategoryOpen) {
-      fetchCards(categoryId);
-    } else {
-      fetchCards();
+    if (lowestPriceProduct && highestPriceProduct) {
+      setPriceRangeSliderValues([lowestPriceProduct, highestPriceProduct]);
     }
+
+    categoryId ? fetchCards(categoryId) : fetchCards();
   };
 
   return (
@@ -246,7 +240,7 @@ function ProductsCategories({
         priceRangeSliderValues={priceRangeSliderValues}
         setPriceRangeSliderValues={setPriceRangeSliderValues}
         applyFilters={applyFilters}
-        handleresetFilters={handleresetFilters}
+        handleResetFilters={handleResetFilters}
       />
     </Container>
   );

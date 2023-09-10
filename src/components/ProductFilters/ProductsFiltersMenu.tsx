@@ -90,7 +90,7 @@ function ProductsFiltersMenu(props: ProductsFiltersMenuProps) {
             Apply filters
           </Button>
           <Button
-            onClick={props.handleresetFilters}
+            onClick={props.handleResetFilters}
             variant="outlined"
             sx={{ color: 'black', borderColor: 'black', mb: 1 }}
           >
