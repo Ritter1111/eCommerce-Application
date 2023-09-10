@@ -1,6 +1,6 @@
 import { scheduleTokenRefresh } from '../../utils/refreshToken';
 
-export async function getActiveCart(productId: string) {
+export async function checkActiveCart() {
   try {
     await scheduleTokenRefresh();
     const authToken = localStorage.getItem('authToken');
@@ -20,9 +20,9 @@ export async function getActiveCart(productId: string) {
       if (response.ok) {
         console.log(data);
         localStorage.setItem('cartData', JSON.stringify(data));
-        updateCart(productId);
+        // updateCart(productId);
       } else if (data.statusCode === 404) {
-        createNewCart(productId);
+        createNewCart();
       }
     }
   } catch (error) {
@@ -30,7 +30,7 @@ export async function getActiveCart(productId: string) {
   }
 }
 
-async function createNewCart(productId: string) {
+async function createNewCart() {
   try {
     await scheduleTokenRefresh();
     const authToken = localStorage.getItem('authToken');
@@ -54,7 +54,7 @@ async function createNewCart(productId: string) {
       if (response.ok) {
         // successNotify(`Your passwor has been successfully changed`);
         localStorage.setItem('cartData', JSON.stringify(data));
-        updateCart(productId);
+        // updateCart(productId);
       }
     }
   } catch (error) {
@@ -66,7 +66,7 @@ export function createNewAnonCart() {
   console.log('anon');
 }
 
-async function updateCart(productId: string) {
+export async function updateCart(productId: string) {
   const cartData = JSON.parse(localStorage.getItem('cartData') || '');
   try {
     await scheduleTokenRefresh();
@@ -97,6 +97,7 @@ async function updateCart(productId: string) {
 
       const data = await response.json();
       if (response.ok) {
+        console.log(data)
         // successNotify(`Your passwor has been successfully changed`);
         localStorage.setItem('cartData', JSON.stringify(data));
         localStorage.setItem('isCartCreate', JSON.stringify(true));

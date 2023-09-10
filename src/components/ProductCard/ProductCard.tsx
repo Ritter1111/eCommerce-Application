@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { formatCentsToCurrency } from '../../utils/format-to-cents';
 import ProductPrice from '../Price/Price';
 import { AuthContext } from '../../context';
-import { createNewAnonCart, getActiveCart } from '../../views/basket/Api-Cart';
+import { createNewAnonCart, updateCart } from '../../views/basket/Api-Cart';
 
 export function truncateStringToSpace(str: string, maxLength: number) {
   if (str.length <= maxLength) {
@@ -36,7 +36,7 @@ function ProductCard({ item }: { item: IProductCartItem }) {
 
   function handleAddToCart(prodactId: string) {
     setIsAddToCart(true),
-      isAuth ? getActiveCart(prodactId) : createNewAnonCart();
+      isAuth ? updateCart(prodactId) : createNewAnonCart();
   }
 
   return (

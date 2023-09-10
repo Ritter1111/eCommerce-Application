@@ -5,6 +5,7 @@ import { getCustomer, getToken } from '../views/authorization/log-in/Api-Login';
 import { errorNotify } from './ErrorPupUp';
 import { statusCodes } from '../enums/auth.enum';
 import { expiredInSeconds } from './consts';
+import { checkActiveCart } from '../views/basket/Api-Cart';
 
 
 async function saveToken(token: ITokenData) {
@@ -45,8 +46,9 @@ export async function getCustometWithToken(
 
     if (myCustomer.customer.id) {
       navigate('/');
-      saveToken(token);
+      await saveToken(token);
       setIsAuth(true);
+      checkActiveCart();
       localStorage.setItem('customer', JSON.stringify(myCustomer.customer));
     }
 
