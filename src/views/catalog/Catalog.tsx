@@ -1,35 +1,39 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { AccessTokenContext } from '../../context';
-import { CircularProgress, Container, Typography, Grid } from '@mui/material';
-import { IProductsResp } from '../../interfaces/product.interface';
-import ProductCard from '../../components/ProductCard/ProductCard';
+import { CircularProgress, Container, Typography } from '@mui/material';
 import { useApi } from '../../hooks/useApi';
 import ProductsCategories from '../../components/ProdutsCategories/ProductsCategories';
-import { ICategoryResp } from '../../interfaces/productsCategory.interface';
-import {
-  convertProductCartItemAll,
-  convertProductCartItemCategory,
-} from './productDataConverter';
+import ProductsList from '../../components/ProductsList/ProductsList';
+import { IProductsResp } from '../../interfaces/product.interface';
 
 function Catalog() {
-  const [cards, setCards] = useState<IProductsResp[] | ICategoryResp[]>([]);
+  const [cards, setCards] = useState<IProductsResp[]>([]);
   const [categories, setCategories] = useState([]);
   const [productCategoryName, setProductCategoryName] = useState('');
 
   const { token } = useContext(AccessTokenContext);
 
-  const [fetchcards, isLoading, cardsError] = useApi(async () => {
-    const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/products`;
-    const response = await fetch(apiUrl, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    const res: IProductsResp[] = data.results;
-    setCards(res);
-    setProductCategoryName('All products');
-  });
+  const fetchCardsCallback = useCallback(
+    async (categoryId = '') => {
+      const apiUrl = `${process.env.REACT_APP_CTP_API_URL}/${
+        process.env.REACT_APP_CTP_PROJECT_KEY
+      }/product-projections/search?${
+        categoryId ? `filter.query=categories.id:"${categoryId}"` : ''
+      }`;
+      const response = await fetch(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      const res = data.results;
+      setCards(res);
+      if (!categoryId) setProductCategoryName('All products');
+    },
+    [token, setCards, setProductCategoryName]
+  );
+
+  const [fetchCards, isLoading, cardsError] = useApi(fetchCardsCallback);
 
   const [fetchCategories, isLoadingCategories, categoriesError] = useApi(
     async () => {
@@ -47,7 +51,7 @@ function Catalog() {
 
   useEffect(() => {
     if (token) {
-      fetchcards();
+      fetchCards();
       fetchCategories();
     }
   }, [token]);
@@ -67,7 +71,15 @@ function Catalog() {
             Oops, something went wrong. Please try again later.
           </Typography>
         )}
-        {isLoading || isLoadingCategories ? (
+        {!isLoadingCategories && (
+          <ProductsCategories
+            fetchCards={fetchCards}
+            categoriesData={categories}
+            setCards={setCards}
+            setProductCategoryName={setProductCategoryName}
+          />
+        )}
+        {isLoading ? (
           <CircularProgress
             style={{ width: '70px', height: '70px' }}
             color="inherit"
@@ -75,42 +87,7 @@ function Catalog() {
           />
         ) : (
           <>
-            <ProductsCategories
-              fetchcards={fetchcards}
-              categoriesData={categories}
-              setCards={setCards}
-              setProductCategoryName={setProductCategoryName}
-            />
-            {cards && cards.length > 0 ? (
-              <Grid container spacing={4} columns={{ xs: 4, sm: 8, md: 12 }}>
-                {cards.map((card) => {
-                  const isCategoriesCards = card.variants;
-                  return (
-                    <Grid
-                      item
-                      key={card.id}
-                      sx={{ maxWidth: 300, margin: '0 auto' }}
-                    >
-                      {
-                        <ProductCard
-                          item={
-                            isCategoriesCards
-                              ? convertProductCartItemCategory(
-                                  card as ICategoryResp
-                                )
-                              : convertProductCartItemAll(card as IProductsResp)
-                          }
-                        />
-                      }
-                    </Grid>
-                  );
-                })}
-              </Grid>
-            ) : (
-              <Typography variant="h5" align="center">
-                Nothing found. Sorry, but there are currently no products.
-              </Typography>
-            )}
+            <ProductsList productCards={cards} />
           </>
         )}
       </Container>
