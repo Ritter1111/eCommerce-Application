@@ -1,8 +1,35 @@
+import { Dispatch, SetStateAction } from "react";
+import { IColorsArray } from "./productsCategory.interface";
+
 export interface IProductCardProps {
   id: string
   data: {
     masterData: IMasterData;
   };
+}
+export interface IProductsResp {
+  id: string
+  version: number
+  versionModifiedAt: string
+  lastMessageSequenceNumber: number
+  createdAt: string
+  lastModifiedAt: string
+  lastModifiedBy: IBase
+  createdBy: IBase
+  key: string
+  name: IBaseProps
+  slug: IBaseProps
+  description: IBaseProps
+  ancestors: IBase[]
+  parent: IBase
+  orderHint: string
+  metaTitle: IBaseProps
+  metaDescription: IBaseProps
+  masterVariant: IMasterVariant
+  variants: IVariant[]
+}
+export interface IProductsList {
+  productCards: (IProductsResp[]);
 }
 
 export interface IProductCartItem {
@@ -14,24 +41,6 @@ export interface IProductCartItem {
   itemDeskr: string
   imageUrl: string
 };
-
-export interface IProductsResp {
-  id: string
-  version: number
-  versionModifiedAt: string
-  lastMessageSequenceNumber: number
-  createdAt: string
-  lastModifiedAt: string
-  lastModifiedBy: IBase
-  createdBy: IBase
-  productType: IBase
-  masterData: IMasterData
-  key: string
-  taxCategory: IBase
-  priceMode: string
-  lastVariantId: number
-  variants?: IVariant
-}
 
 export interface IBase {
   typeId: string
@@ -128,6 +137,31 @@ export interface IProductPrice {
   itemPriceInCents: number
 }
 
+
 export interface IProductData {
   productData: IProductsResp | null;
+}
+
+
+export interface IPriceRangeSliderProps {
+  minPriceValue: number;
+  maxPriceValue: number;
+  priceRangeSliderValues: number[];
+  setPriceRangeSliderValues: React.Dispatch<React.SetStateAction<number[]>>
+}
+
+export interface IProductsFiltersMenuProps {
+  textSeachFilter: string | undefined;
+  setTextSeachFilter: (text: string) => void;
+  sortFilter: string;
+  setSortFilter: (sort: string) => void;
+  filterColorValue: string;
+  setFilterColorValue: (color: string) => void;
+  colorsAttributesArray: IColorsArray[];
+  minPriceValue: number | null;
+  maxPriceValue: number | null;
+  priceRangeSliderValues: number[];
+  setPriceRangeSliderValues: Dispatch<SetStateAction<number[]>>;
+  applyFilters: () => void;
+  handleResetFilters: () => void;
 }

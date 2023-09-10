@@ -1,9 +1,16 @@
 import { Dispatch, SetStateAction } from "react";
-import { IBase, IBaseProps, IMasterVariant, IProductsResp, IVariant } from "./product.interface"
+import {  IProductsResp } from "./product.interface"
 import { BreadcrumbType } from "../types/breadcrumb.type";
 
 export interface IBreadcrumbProps {
   breadcrumb: BreadcrumbType;
+  handleCaregory: (categoryId: string) => void;
+}
+
+export interface ICategoriesList {
+  categoriesData: IProductsResp[];
+  openCategories: string[];
+  handleMainCategoryClick: (categoryId: string) => void
   handleCaregory: (categoryId: string) => void;
 }
 
@@ -30,30 +37,9 @@ export interface IAllCategoriesPlusDeskr extends IAllCategories {
 }
 
 export interface IProductCategories {
-  fetchcards: () => void;
-  categoriesData: Array<ICategoryResp>;
-  setCards: Dispatch<SetStateAction<IProductsResp[] | ICategoryResp[]>>
+  fetchCards: (id?: string) => void;
+  categoriesData: Array<IProductsResp>;
+  setCards: Dispatch<SetStateAction<IProductsResp[]>>
   setProductCategoryName: Dispatch<SetStateAction<string>>
 }
 
-export interface ICategoryResp {
-  id: string
-  version: number
-  versionModifiedAt: string
-  lastMessageSequenceNumber: number
-  createdAt: string
-  lastModifiedAt: string
-  lastModifiedBy: IBase
-  createdBy: IBase
-  key: string
-  name: IBaseProps
-  slug: IBaseProps
-  description: IBaseProps
-  ancestors: IBase[]
-  parent: IBase
-  orderHint: string
-  metaTitle: IBaseProps
-  metaDescription: IBaseProps
-  masterVariant: IMasterVariant
-  variants: IVariant[]
-}
