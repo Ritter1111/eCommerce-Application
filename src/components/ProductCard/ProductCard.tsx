@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Card,
   Typography,
@@ -14,11 +14,23 @@ import { IProductCartItem } from '../../interfaces/product.interface';
 import { useNavigate } from 'react-router-dom';
 import { formatCentsToCurrency, truncateStringToSpace } from '../../utils/product';
 import ProductPrice from '../Price/Price';
+import { AuthContext } from '../../context';
+import { getAnonToken, updateCart } from '../../views/basket/Api-Cart';
 
 function ProductCard({ item }: { item: IProductCartItem }) {
+  const { isAuth } = useContext(AuthContext);
   const navigate = useNavigate();
   const [isAddToCart, setIsAddToCart] = useState(false);
   const currencySymbol = item.currencyCode === Currency.USD ? '$' : '';
+
+  async function handleAddToCart(prodactId: string) {
+    setIsAddToCart(true),
+      isAuth
+        ? updateCart(prodactId)
+        : localStorage.getItem('anonToken')
+        ? updateCart(prodactId)
+        : (await getAnonToken(), updateCart(prodactId));
+  }
 
   return (
     <Card
@@ -84,9 +96,9 @@ function ProductCard({ item }: { item: IProductCartItem }) {
       </CardActionArea>
       <CardActions>
         <Button
-          onClick={() => setIsAddToCart(true)}
+          onClick={() => handleAddToCart(item.id)}
           variant="contained"
-          style={{ backgroundColor: !isAddToCart ? 'black' : 'lightgrey'}}
+          style={{ backgroundColor: !isAddToCart ? 'black' : 'lightgrey' }}
           fullWidth
           size="small"
           disabled={!isAddToCart ? false : true}
