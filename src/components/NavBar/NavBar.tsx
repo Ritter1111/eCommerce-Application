@@ -16,9 +16,6 @@ import {
   Menu,
   Close,
   Logout,
-  InfoOutlined,
-  LibraryBooksOutlined,
-  HomeOutlined,
   AccountCircleOutlined,
 } from '@mui/icons-material';
 import { AuthContext } from '../../context';
@@ -128,15 +125,7 @@ export default function NavBar() {
                   className="pages__link"
                   title={route.title}
                 >
-                  {(route.name === 'Home' && (
-                    <HomeOutlined sx={{ mr: 0.5 }} />
-                  )) ||
-                    (route.name === 'About Us' && (
-                      <InfoOutlined sx={{ mr: 0.5 }} />
-                    )) ||
-                    (route.name === 'Catalog' && (
-                      <LibraryBooksOutlined sx={{ mr: 0.5 }} />
-                    ))}
+                  {<route.icon sx={{ mr: 0.5 }} />}
                   {route.name}
                 </NavLink>
               ))}

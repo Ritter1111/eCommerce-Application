@@ -15,7 +15,7 @@ import { BreadcrumbType } from '../../types/breadcrumb.type';
 import {
   currencyToCents,
   formatCentsToCurrency,
-} from '../../utils/format-to-cents';
+} from '../../utils/product';
 import ProductsFiltersMenu from '../ProductFilters/ProductsFiltersMenu';
 import CategoriesList from './CategoriesList';
 

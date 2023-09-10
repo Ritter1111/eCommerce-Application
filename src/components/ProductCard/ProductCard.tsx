@@ -12,19 +12,8 @@ import {
 import { Currency } from '../../enums/product.enum';
 import { IProductCartItem } from '../../interfaces/product.interface';
 import { useNavigate } from 'react-router-dom';
-import { formatCentsToCurrency } from '../../utils/format-to-cents';
+import { formatCentsToCurrency, truncateStringToSpace } from '../../utils/product';
 import ProductPrice from '../Price/Price';
-
-export function truncateStringToSpace(str: string, maxLength: number) {
-  if (str.length <= maxLength) {
-    return str;
-  } else {
-    const truncatedSubstring = str.substring(0, maxLength);
-    const lastSpaceIndex = truncatedSubstring.lastIndexOf(' ');
-    const truncatedString = truncatedSubstring.substring(0, lastSpaceIndex);
-    return truncatedString + ' ...';
-  }
-}
 
 function ProductCard({ item }: { item: IProductCartItem }) {
   const navigate = useNavigate();

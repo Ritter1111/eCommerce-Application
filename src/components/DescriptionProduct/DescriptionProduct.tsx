@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { formatCentsToCurrency } from '../../utils/format-to-cents';
+import { formatCentsToCurrency } from '../../utils/product';
 import ProductPrice from '../Price/Price';
 import { IProductPriceProps } from '../../interfaces/product.interface';
 import AddToCart from './AddToCart/AddToCart';
