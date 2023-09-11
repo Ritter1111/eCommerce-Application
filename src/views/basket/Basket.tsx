@@ -52,7 +52,7 @@ export default function Basket() {
             )}
           </Grid>
         </Grid>
-        {anonCartData ? (
+        {anonCartData || cartData ? (
           <Grid
           item
           xs={12}
