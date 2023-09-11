@@ -64,7 +64,7 @@ export default function DescriptionProduct({
           </Typography>
         )}
         <Size />
-        <AddToCart />
+        <AddToCart name="Add To Cart" />
         <Description productData={productData} />
       </Box>
     </>

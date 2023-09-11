@@ -26,6 +26,7 @@ export interface IProductsResp {
   metaTitle: IBaseProps
   metaDescription: IBaseProps
   masterVariant: IMasterVariant
+  masterData: IMasterData;
   variants: IVariant[]
 }
 export interface IProductsList {

@@ -33,7 +33,7 @@ const routes = [
     element: Basket,
     title: "Cart",
     icon: ShoppingCart
-  },
+  }
 ];
 
 export default routes;

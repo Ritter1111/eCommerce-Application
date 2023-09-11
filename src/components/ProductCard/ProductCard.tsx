@@ -18,7 +18,7 @@ import {
 } from '../../utils/product';
 import ProductPrice from '../Price/Price';
 import { AuthContext, СartQuantityContext } from '../../context';
-import { getAnonToken, updateCart } from '../../views/basket/Api-Cart';
+import { getAnonToken, updateCart } from '../../views/basket/Create-Cart_Api';
 
 function ProductCard({ item }: { item: IProductCartItem }) {
   const { isAuth } = useContext(AuthContext);

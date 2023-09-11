@@ -95,6 +95,7 @@ function DetailedProductPage() {
               slides={slides}
               handleClick={handleClick}
               handleClose={handleClose}
+              image={image}
             />
             {open && (
               <ModalWindow
