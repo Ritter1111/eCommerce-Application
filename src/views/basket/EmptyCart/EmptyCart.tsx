@@ -1,7 +1,7 @@
-import { Box, Typography } from "@mui/material";
-import React from "react";
-import { Link } from "react-router-dom";
-import styles from './EmptyCard.module.css'
+import { Box, Typography } from '@mui/material';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import styles from './EmptyCard.module.css';
 
 export default function EmptyCartMessage() {
   return (
@@ -13,7 +13,11 @@ export default function EmptyCartMessage() {
         alignItems: 'center',
       }}
     >
-       <Box sx={{width: '280px'}} component="img" src="https://cdn.dribbble.com/users/351694/screenshots/10760065/media/c93e509e870484db932891b96447bd85.gif"/>
+      <Box
+        sx={{ width: '280px' }}
+        component="img"
+        src="https://cdn.dribbble.com/users/351694/screenshots/10760065/media/c93e509e870484db932891b96447bd85.gif"
+      />
       <Typography align="center" variant="h6">
         Your cart is empty
       </Typography>
@@ -23,8 +27,3 @@ export default function EmptyCartMessage() {
     </Box>
   );
 }
-
-
-
-
-

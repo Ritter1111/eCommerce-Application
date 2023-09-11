@@ -1,11 +1,17 @@
-import { Box, Typography } from '@mui/material';
-import React from 'react';
-import { ICartData } from '../../interfaces/auth.interface';
+import { Box, Button, Typography } from '@mui/material';
+import React, { useContext } from 'react';
+import { ICartData, ILineItem } from '../../interfaces/auth.interface';
 import styles from './BasketItems.module.css';
 import PriceItem from './PriceItem/PriceItem';
+import { СartQuantityContext } from '../../context';
+import { removeItem } from './RemoveItem-Api';
 
 export default function BasketItems({ data }: ICartData) {
-  console.log(data.lineItems);
+  const { setCartQuantity } = useContext(СartQuantityContext);
+  
+  const returnIdProduct = async (itemProduct: ILineItem) => {
+    await removeItem(itemProduct, setCartQuantity)
+  }
 
   return (
     <Box>
@@ -33,7 +39,7 @@ export default function BasketItems({ data }: ICartData) {
                 </Typography>
                 <PriceItem item={item} />
                 <Box>Q-ty: - 1 +</Box>
-                <Box sx={{ mt: 'auto', p: '10px' }}>Remove</Box>
+                <Button sx={{ mt: 'auto', p: '10px' }} onClick={() => returnIdProduct(item)}>Remove</Button>
               </Box>
             </Box>
           </div>
@@ -42,3 +48,4 @@ export default function BasketItems({ data }: ICartData) {
     </Box>
   );
 }
+

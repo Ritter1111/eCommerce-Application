@@ -15,7 +15,6 @@ export default function Basket() {
 
   const data = cartData ? JSON.parse(cartData) : null;
   const dataAnonim = anonCartData ? JSON.parse(anonCartData) : null;
-  console.log(dataAnonim);
 
   return (
     <ThemeProvider theme={customInputTheme(outerTheme)}>
@@ -37,43 +36,40 @@ export default function Basket() {
           }}
         >
           <Grid item xs={12} sm={12} sx={{ m: '5px' }}>
-            {isAuth ? (
+            {isAuth && cartData ? (
               data.lineItems.length > 0 ? (
                 <BasketItems data={data} />
               ) : (
                 <EmptyCartMessage />
               )
+            ) : (anonCartData && dataAnonim.lineItems.length > 0) ? (
+              <BasketItems data={dataAnonim} />
             ) : (
-              anonCartData ? (
-                <BasketItems data={dataAnonim} />
-              ) : (
-                <EmptyCartMessage />
-              )
+              <EmptyCartMessage />
             )}
           </Grid>
         </Grid>
-        {anonCartData || cartData ? (
+        {(anonCartData &&  dataAnonim.lineItems.length > 0 ) || (cartData && data.lineItems.length > 0) ? (
           <Grid
-          item
-          xs={12}
-          sm={12}
-          md={4}
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'start',
-            '@media (max-width: 900px)': {
-              alignItems: 'center',
-              padding: '30px'
-            },
-          }}
-        >
-          <BasketInfo />
-        </Grid>
+            item
+            xs={12}
+            sm={12}
+            md={4}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'start',
+              '@media (max-width: 900px)': {
+                alignItems: 'center',
+                padding: '30px',
+              },
+            }}
+          >
+            <BasketInfo />
+          </Grid>
         ) : (
           <></>
         )}
-        
       </Grid>
     </ThemeProvider>
   );
