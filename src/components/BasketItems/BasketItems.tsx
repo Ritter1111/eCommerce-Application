@@ -22,7 +22,7 @@ export default function BasketItems({ data }: ICartData) {
                 sx={{
                   m: '10px',
                   ml: '30px',
-                  width: '28%',
+                  width: '190px',
                   display: 'flex',
                   flexDirection: 'column',
                   color: '#555555',
@@ -33,7 +33,7 @@ export default function BasketItems({ data }: ICartData) {
                 </Typography>
                 <PriceItem item={item} />
                 <Box>Q-ty: - 1 +</Box>
-                <Box sx={{ mt: '100%', p: '10px' }}>Remove</Box>
+                <Box sx={{ mt: 'auto', p: '10px' }}>Remove</Box>
               </Box>
             </Box>
           </div>
