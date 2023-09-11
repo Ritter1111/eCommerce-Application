@@ -1,13 +1,13 @@
 import { Box, Button, IconButton, Typography } from '@mui/material';
 import React, { useContext } from 'react';
-import { ICartData, ILineItem } from '../../interfaces/auth.interface';
 import styles from './BasketItems.module.css';
-import PriceItem from './PriceItem/PriceItem';
-import { СartQuantityContext } from '../../context';
 import { removeItem } from './RemoveItem-Api';
-import { changeQuantityItem } from '../BasketInfo/Api-Quantity';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
+import { СartQuantityContext } from '../../../context';
+import { ICartData, ILineItem } from '../../../interfaces/auth.interface';
+import { changeQuantityItem } from '../BasketInfo/Api-Quantity';
+import PriceItem from './PriceItem/PriceItem';
 
 export default function BasketItems({ data }: ICartData) {
   const { setCartQuantity } = useContext(СartQuantityContext);
@@ -22,8 +22,8 @@ export default function BasketItems({ data }: ICartData) {
     await changeQuantityItem(itemProduct, itemProduct.quantity + 1, setCartQuantity);
   };
 
-  const returnIdProduct = async (itemProduct: ILineItem) => {
-    await removeItem(itemProduct, setCartQuantity);
+  const returnIdProduct = async (itemProduct: ILineItem, quantity: number) => {
+    await removeItem(itemProduct, quantity , setCartQuantity);
   };
 
   return (
@@ -63,7 +63,7 @@ export default function BasketItems({ data }: ICartData) {
                 </Box>
                 <Button
                   sx={{ mt: 'auto', p: '10px' }}
-                  onClick={() => returnIdProduct(item)}
+                  onClick={() => returnIdProduct(item, item.quantity)}
                 >
                   Remove
                 </Button>

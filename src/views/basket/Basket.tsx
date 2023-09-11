@@ -2,10 +2,10 @@ import { ThemeProvider } from '@emotion/react';
 import { Grid, useTheme } from '@mui/material';
 import React, { useContext } from 'react';
 import { customInputTheme } from '../../utils/custom-input-theme';
-import BasketItems from '../../components/BasketItems/BasketItems';
-import BasketInfo from '../../components/BasketInfo/BasketInfo';
+import BasketInfo from '../../components/Cart/BasketInfo/BasketInfo';
 import { AuthContext } from '../../context';
 import EmptyCartMessage from './EmptyCart/EmptyCart';
+import BasketItems from '../../components/Cart/BasketItems/BasketItems';
 
 export default function Basket() {
   const outerTheme = useTheme();

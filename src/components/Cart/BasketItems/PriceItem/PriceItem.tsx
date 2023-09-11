@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import React from 'react';
-import { formatCentsToCurrency } from '../../../utils/format-to-cents';
-import { ILineItemData } from '../../../interfaces/auth.interface';
+import { ILineItemData } from '../../../../interfaces/auth.interface';
+import { formatCentsToCurrency } from '../../../../utils/format-to-cents';
 
 export default function PriceItem({ item }: ILineItemData) {
   return (

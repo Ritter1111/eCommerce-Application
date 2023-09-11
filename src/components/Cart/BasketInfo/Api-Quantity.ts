@@ -1,6 +1,6 @@
-import { ILineItem } from "../../interfaces/auth.interface";
-import { ICartQuantityContext } from "../../interfaces/context.interface";
-import { scheduleTokenRefresh } from "../../utils/refreshToken";
+import { ILineItem } from "../../../interfaces/auth.interface";
+import { ICartQuantityContext } from "../../../interfaces/context.interface";
+import { scheduleTokenRefresh } from "../../../utils/refreshToken";
 
 export async function changeQuantityItem(
   itemProduct: ILineItem,
