@@ -12,13 +12,17 @@ import {
 import { Currency } from '../../enums/product.enum';
 import { IProductCartItem } from '../../interfaces/product.interface';
 import { useNavigate } from 'react-router-dom';
-import { formatCentsToCurrency, truncateStringToSpace } from '../../utils/product';
+import {
+  formatCentsToCurrency,
+  truncateStringToSpace,
+} from '../../utils/product';
 import ProductPrice from '../Price/Price';
-import { AuthContext } from '../../context';
+import { AuthContext, СartQuantityContext } from '../../context';
 import { getAnonToken, updateCart } from '../../views/basket/Api-Cart';
 
 function ProductCard({ item }: { item: IProductCartItem }) {
   const { isAuth } = useContext(AuthContext);
+  const { setCartQuantity } = useContext(СartQuantityContext);
   const navigate = useNavigate();
   const [isAddToCart, setIsAddToCart] = useState(false);
   const currencySymbol = item.currencyCode === Currency.USD ? '$' : '';
@@ -26,10 +30,10 @@ function ProductCard({ item }: { item: IProductCartItem }) {
   async function handleAddToCart(prodactId: string) {
     setIsAddToCart(true),
       isAuth
-        ? updateCart(prodactId)
+        ? updateCart(prodactId, setCartQuantity)
         : localStorage.getItem('anonToken')
-        ? updateCart(prodactId)
-        : (await getAnonToken(), updateCart(prodactId));
+        ? updateCart(prodactId, setCartQuantity)
+        : (await getAnonToken(), updateCart(prodactId, setCartQuantity));
   }
 
   return (

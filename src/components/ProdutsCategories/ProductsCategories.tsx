@@ -12,10 +12,7 @@ import {
 } from '../../utils/productCategoriesUtils';
 import Breadcrumb from '../Breadcrumb/Breadcrumb';
 import { BreadcrumbType } from '../../types/breadcrumb.type';
-import {
-  currencyToCents,
-  formatCentsToCurrency,
-} from '../../utils/product';
+import { currencyToCents, formatCentsToCurrency } from '../../utils/product';
 import ProductsFiltersMenu from '../ProductFilters/ProductsFiltersMenu';
 import CategoriesList from './CategoriesList';
 
