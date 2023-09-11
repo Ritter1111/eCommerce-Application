@@ -18,7 +18,7 @@ export async function checkActiveCart() {
 
       const data = await response.json();
       if (response.ok) {
-        localStorage.setItem('cartData', JSON.stringify(data));
+        localStorage.setItem('cartData', JSON.stringify(data));        
       } else if (data.statusCode === 404) {
         createNewCart();
       }
@@ -100,7 +100,6 @@ export async function updateCart(productId: string) {
 
       const data = await response.json();
       if (response.ok) {
-        // successNotify(`Your passwor has been successfully changed`);
         getIsAuth
           ? localStorage.setItem('cartData', JSON.stringify(data))
           : localStorage.setItem('anonCartData', JSON.stringify(data));

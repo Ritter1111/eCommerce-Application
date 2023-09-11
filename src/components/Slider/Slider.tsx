@@ -20,7 +20,7 @@ export function Slider({
   handleClick,
   isModal,
   handleClose,
-  image
+  image,
 }: ISliderProps & {
   handleClick: (img: string) => void;
   isModal?: boolean;

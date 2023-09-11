@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { formatCentsToCurrency } from '../../utils/format-to-cents';
 import ProductPrice from '../Price/Price';
 import { AuthContext } from '../../context';
-import { getAnonToken, updateCart } from '../../views/basket/Api-Cart';
+import { updateCart, getAnonToken } from '../../views/basket/Create-Cart_Api';
 
 export function truncateStringToSpace(str: string, maxLength: number) {
   if (str.length <= maxLength) {

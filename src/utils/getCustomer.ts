@@ -5,7 +5,7 @@ import { getCustomer, getToken } from '../views/authorization/log-in/Api-Login';
 import { errorNotify } from './ErrorPupUp';
 import { statusCodes } from '../enums/auth.enum';
 import { expiredInSeconds } from './consts';
-import { checkActiveCart } from '../views/basket/Api-Cart';
+import { checkActiveCart } from '../views/basket/Create-Cart_Api';
 
 
 async function saveToken(token: ITokenData) {
