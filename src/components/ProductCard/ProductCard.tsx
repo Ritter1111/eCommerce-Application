@@ -24,16 +24,15 @@ function ProductCard({ item }: { item: IProductCartItem }) {
   const { isAuth } = useContext(AuthContext);
   const { setCartQuantity } = useContext(СartQuantityContext);
   const navigate = useNavigate();
-  const [isAddToCart, setIsAddToCart] = useState(false);
+  const [itemsCart, setItemsCart] = useState(isAuth ? JSON.parse(localStorage.getItem('cartItem') || '') : (localStorage.getItem('anonCartItem') ? JSON.parse(localStorage.getItem('anonCartItem') || '') : []));
   const currencySymbol = item.currencyCode === Currency.USD ? '$' : '';
 
   async function handleAddToCart(prodactId: string) {
-    setIsAddToCart(true),
       isAuth
-        ? updateCart(prodactId, setCartQuantity)
+        ? (await updateCart(prodactId, setCartQuantity), setItemsCart(JSON.parse(localStorage.getItem('cartItem') || '')))
         : localStorage.getItem('anonToken')
-        ? updateCart(prodactId, setCartQuantity)
-        : (await getAnonToken(), updateCart(prodactId, setCartQuantity));
+        ? (await updateCart(prodactId, setCartQuantity), setItemsCart(JSON.parse(localStorage.getItem('anonCartItem') || '')))
+        : (await getAnonToken(), await updateCart(prodactId, setCartQuantity), setItemsCart(JSON.parse(localStorage.getItem('anonCartItem') || '')));
   }
 
   return (
@@ -102,10 +101,10 @@ function ProductCard({ item }: { item: IProductCartItem }) {
         <Button
           onClick={() => handleAddToCart(item.id)}
           variant="contained"
-          style={{ backgroundColor: !isAddToCart ? 'black' : 'lightgrey' }}
+          style={{ backgroundColor: !itemsCart.includes(item.id) ? 'black' : 'lightgrey' }}
           fullWidth
           size="small"
-          disabled={!isAddToCart ? false : true}
+          disabled={!itemsCart.includes(item.id) ? false : true}
         >
           Add to cart
         </Button>
