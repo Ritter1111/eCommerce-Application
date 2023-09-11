@@ -17,7 +17,7 @@ export default function Basket() {
           container
           justifyContent="center"
           component="main"
-          sx={{ mt: '10px' }}
+          sx={{ mt: '30px' }}
         >
           <Grid
             item
@@ -42,7 +42,10 @@ export default function Basket() {
             sx={{
               display: 'flex',
               flexDirection: 'column',
-              alignItems: 'center',
+              alignItems: 'start',
+              '@media (max-width: 900px)': {
+                alignItems: 'center',
+              },
             }}
           >
             <BasketInfo />

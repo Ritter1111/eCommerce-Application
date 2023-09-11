@@ -1,8 +1,9 @@
 import React from 'react';
 import { Button } from '@mui/material';
 import styles from '../DescriptionProduct.module.css';
+import { IButton } from '../../../interfaces/detailedPage.interface';
 
-export default function AddToCart() {
+export default function AddToCart({ name }: IButton) {
   return (
     <Button
       variant="contained"
@@ -17,7 +18,7 @@ export default function AddToCart() {
       }}
       className={styles.btn}
     >
-      Add to cart
+      {name}
     </Button>
   );
 }

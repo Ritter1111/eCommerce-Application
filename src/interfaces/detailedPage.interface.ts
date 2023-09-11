@@ -19,3 +19,6 @@ export interface IBanner {
   color: string;
   label: string;
 }
+export interface IButton {
+  name: string
+}
