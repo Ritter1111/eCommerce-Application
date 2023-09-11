@@ -143,6 +143,8 @@ export interface ICart {
   refusedGifts: string[]
   origin: string
   itemShippingAddresses: string[]
+  totalLineItemQuantity: string
+
 }
 
 export interface ILineItem {

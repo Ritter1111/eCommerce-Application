@@ -42,14 +42,15 @@ export default function Basket() {
               ) : (
                 <EmptyCartMessage />
               )
-            ) : (anonCartData && dataAnonim.lineItems.length > 0) ? (
+            ) : anonCartData && dataAnonim.lineItems.length > 0 ? (
               <BasketItems data={dataAnonim} />
             ) : (
               <EmptyCartMessage />
             )}
           </Grid>
         </Grid>
-        {(anonCartData &&  dataAnonim.lineItems.length > 0 ) || (cartData && data.lineItems.length > 0) ? (
+        {(anonCartData && dataAnonim.lineItems.length > 0) ||
+        (cartData && data.lineItems.length > 0) ? (
           <Grid
             item
             xs={12}
@@ -65,7 +66,11 @@ export default function Basket() {
               },
             }}
           >
-            <BasketInfo />
+            {isAuth ? (
+              <BasketInfo data={data} />
+            ) : (
+              <BasketInfo data={dataAnonim} />
+            )}
           </Grid>
         ) : (
           <></>

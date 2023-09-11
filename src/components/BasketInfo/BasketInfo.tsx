@@ -4,8 +4,10 @@ import { Link } from 'react-router-dom';
 import AddToCart from '../DescriptionProduct/AddToCart/AddToCart';
 import styles from './BasketInfo.module.css';
 import RemoveCart from '../RemoveCart/RemoveCart';
+import { ICartData } from '../../interfaces/auth.interface';
+import { formatCentsToCurrency } from '../../utils/format-to-cents';
 
-export default function BasketInfo() {
+export default function BasketInfo({ data }: ICartData) {
   return (
     <>
       <Typography variant="h4" sx={{ mb: '20px', mt: '13vh' }}>
@@ -22,7 +24,9 @@ export default function BasketInfo() {
         <Typography variant="h5" sx={{ mb: '10px' }}>
           Quantity of goods:
         </Typography>
-        <Typography variant="h5">8</Typography>
+        <Typography variant="h5">
+          {data && data.totalLineItemQuantity}
+        </Typography>
       </Box>
       <Box
         display="flex"
@@ -35,7 +39,9 @@ export default function BasketInfo() {
         <Typography variant="h5" sx={{ mb: '10px' }}>
           Cost order:
         </Typography>
-        <Typography variant="h5">1378$</Typography>
+        <Typography variant="h5">
+          {data && formatCentsToCurrency(data.totalPrice.centAmount)} $
+        </Typography>
       </Box>
       <TextField
         type="text"
@@ -56,7 +62,9 @@ export default function BasketInfo() {
         <Typography variant="h5" sx={{ mb: '10px' }}>
           Amount to be paid:
         </Typography>
-        <Typography variant="h5">1000$</Typography>
+        <Typography variant="h5">
+          {data && formatCentsToCurrency(data.totalPrice.centAmount)} $
+        </Typography>
       </Box>
       <AddToCart name="Checkout" />
       <Box
