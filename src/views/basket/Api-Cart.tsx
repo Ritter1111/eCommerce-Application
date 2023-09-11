@@ -1,6 +1,9 @@
+import { ICartQuantityContext } from '../../interfaces/context.interface';
 import { scheduleTokenRefresh } from '../../utils/refreshToken';
 
-export async function checkActiveCart() {
+export async function checkActiveCart(
+  setCartQuantity: ICartQuantityContext['setCartQuantity']
+) {
   try {
     await scheduleTokenRefresh();
     const authToken = localStorage.getItem('authToken');
@@ -19,6 +22,7 @@ export async function checkActiveCart() {
       const data = await response.json();
       if (response.ok) {
         localStorage.setItem('cartData', JSON.stringify(data));
+        setCartQuantity(data.totalLineItemQuantity || 0);
       } else if (data.statusCode === 404) {
         createNewCart();
       }
@@ -64,7 +68,10 @@ export async function createNewCart() {
   }
 }
 
-export async function updateCart(productId: string) {
+export async function updateCart(
+  productId: string,
+  setCartQuantity: ICartQuantityContext['setCartQuantity']
+) {
   const getIsAuth = localStorage.getItem('isAuth') === 'true';
   const cartData = getIsAuth
     ? JSON.parse(localStorage.getItem('cartData') || '')
@@ -100,7 +107,7 @@ export async function updateCart(productId: string) {
 
       const data = await response.json();
       if (response.ok) {
-        // successNotify(`Your passwor has been successfully changed`);
+        setCartQuantity(data.totalLineItemQuantity);
         getIsAuth
           ? localStorage.setItem('cartData', JSON.stringify(data))
           : localStorage.setItem('anonCartData', JSON.stringify(data));

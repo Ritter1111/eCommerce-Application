@@ -6,7 +6,7 @@ import { errorNotify } from './ErrorPupUp';
 import { statusCodes } from '../enums/auth.enum';
 import { expiredInSeconds } from './consts';
 import { checkActiveCart } from '../views/basket/Api-Cart';
-
+import { ICartQuantityContext } from '../interfaces/context.interface';
 
 async function saveToken(token: ITokenData) {
   localStorage.setItem('authToken', token.access_token);
@@ -18,6 +18,7 @@ export async function getCustometWithToken(
   data: IData, 
   navigate: NavigateFunction, 
   setIsAuth: (newState: boolean) => void, 
+  setCartQuantity: ICartQuantityContext["setCartQuantity"],
   setError?: Dispatch<SetStateAction<boolean>>, 
   setErrorMessage?: Dispatch<SetStateAction<IDataForm>>) {
   try {
@@ -48,7 +49,7 @@ export async function getCustometWithToken(
       navigate('/');
       await saveToken(token);
       setIsAuth(true);
-      checkActiveCart();
+      checkActiveCart(setCartQuantity);
       localStorage.setItem('customer', JSON.stringify(myCustomer.customer));
     }
 
