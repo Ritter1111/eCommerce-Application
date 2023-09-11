@@ -16,17 +16,15 @@ import {
   Menu,
   Close,
   Logout,
-  InfoOutlined,
-  LibraryBooksOutlined,
-  HomeOutlined,
   AccountCircleOutlined,
 } from '@mui/icons-material';
-import { AuthContext } from '../../context';
+import { AuthContext, СartQuantityContext } from '../../context';
 import routes from '../../utils/routes';
 
 export default function NavBar() {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const { isAuth, setIsAuth } = useContext(AuthContext);
+  const { cartQuantity, setCartQuantity } = useContext(СartQuantityContext);
 
   document.body.style.overflowY = isMenuOpen ? 'hidden' : 'auto';
 
@@ -39,6 +37,7 @@ export default function NavBar() {
   const logout = useCallback(() => {
     setIsAuth(false);
     localStorage.clear();
+    setCartQuantity(0);
   }, [setIsAuth]);
 
   useEffect(() => {
@@ -128,16 +127,11 @@ export default function NavBar() {
                   className="pages__link"
                   title={route.title}
                 >
-                  {(route.name === 'Home' && (
-                    <HomeOutlined sx={{ mr: 0.5 }} />
-                  )) ||
-                    (route.name === 'About Us' && (
-                      <InfoOutlined sx={{ mr: 0.5 }} />
-                    )) ||
-                    (route.name === 'Catalog' && (
-                      <LibraryBooksOutlined sx={{ mr: 0.5 }} />
-                    ))}
-                  {route.name}
+                  {<route.icon sx={{ mr: 0.5 }} />}
+                  {route.name !== 'Cart' && route.name}
+                  {route.name === 'Cart' ? (
+                    <Typography>| {cartQuantity}</Typography>
+                  ) : null}
                 </NavLink>
               ))}
               {isAuth ? (

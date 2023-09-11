@@ -1,25 +1,21 @@
 import { createContext } from "react";
+import { IAccessTolenContext, IAuthContext, ICartQuantityContext } from "../interfaces/context.interface";
 
-type IAuthContext = {
-  isAuth: boolean;
-  setIsAuth: (newState: boolean) => void
-}
-
-const initialValue = {
+const authInitialValue = {
   isAuth: false,
   setIsAuth: () => {}
 }
 
-export const AuthContext = createContext<IAuthContext>(initialValue);
-
-type IAccessTolenContext = {
-  token: string;
-  setToken: (newState: string) => void
+const cartQuantityInitalValue = {
+  cartQuantity: 0,
+  setCartQuantity: () => {}
 }
 
-const IAccessTolenContext = {
+const accessTokenInitalValue = {
   token: '',
   setToken: () => {}
 }
 
-export const AccessTokenContext = createContext<IAccessTolenContext>(IAccessTolenContext);
+export const AuthContext = createContext<IAuthContext>(authInitialValue);
+export const СartQuantityContext = createContext<ICartQuantityContext>(cartQuantityInitalValue);
+export const AccessTokenContext = createContext<IAccessTolenContext>(accessTokenInitalValue);

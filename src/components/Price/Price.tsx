@@ -1,6 +1,6 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
-import { formatCentsToCurrency } from '../../utils/format-to-cents';
+import { formatCentsToCurrency } from '../../utils/product';
 import { Currency } from '../../enums/product.enum';
 import { IProductPrice } from '../../interfaces/product.interface';
 

@@ -9,6 +9,7 @@ export const CATALOG_ROUTE = '/catalog';
 export const CART_ROUTE = '/cart';
 export const PRODUCT_ID_ROUTE = 'catalog/:id';
 export const USER_PROFILE = '/user-profile';
+export const CART_ROUTE = '/cart';
 
 export const grey = blueGrey['A700'];
 export const formFieldsDefault: IDataForm = {

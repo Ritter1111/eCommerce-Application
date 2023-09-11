@@ -15,7 +15,7 @@ import {
 import { customInputTheme } from '../../../utils/custom-input-theme';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { AuthContext } from '../../../context';
+import { AuthContext, СartQuantityContext } from '../../../context';
 import { formFieldsDefault } from '../../../utils/consts';
 import PasswordVisibility from './PasswordVisibility';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
@@ -30,6 +30,7 @@ export default function LogIn() {
   const [, setError] = useState<boolean>(false);
   const [, setErrorMessage] = useState(formFieldsDefault);
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const { setCartQuantity } = useContext(СartQuantityContext);
 
   function handleClickShowPassword() {
     setShowPassword((prev) => !prev);
@@ -40,6 +41,7 @@ export default function LogIn() {
       values,
       navigate,
       setIsAuth,
+      setCartQuantity,
       setError,
       setErrorMessage
     );
