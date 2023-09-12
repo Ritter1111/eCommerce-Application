@@ -38,7 +38,7 @@ export async function removeItem(
 
       const data = await response.json();
       if (response.ok) {
-        setCartQuantity(data.totalLineItemQuantity);
+        setCartQuantity(data.totalLineItemQuantity || 0);
 
         const itemCart: string[] = [];
         for(let i = 0; i < data.lineItems.length; i+= 1) {

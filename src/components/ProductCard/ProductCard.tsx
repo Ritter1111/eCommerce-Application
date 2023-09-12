@@ -92,7 +92,9 @@ function ProductCard({ item }: { item: IProductCartItem }) {
       </CardActionArea>
       <CardActions>
         <Button
-          onClick={() => handleAddToCart(item.id, isAuth, setCartQuantity, setItemsCart)}
+          onClick={() =>
+            handleAddToCart(item.id, isAuth, setCartQuantity, setItemsCart)
+          }
           variant="contained"
           style={{
             backgroundColor: !itemsCart.includes(item.id)
