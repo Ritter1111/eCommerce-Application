@@ -2,10 +2,10 @@ import { ThemeProvider } from '@emotion/react';
 import { Grid, useTheme } from '@mui/material';
 import React, { useContext } from 'react';
 import { customInputTheme } from '../../utils/custom-input-theme';
-import BasketItems from '../../components/BasketItems/BasketItems';
-import BasketInfo from '../../components/BasketInfo/BasketInfo';
+import BasketInfo from '../../components/Cart/BasketInfo/BasketInfo';
 import { AuthContext } from '../../context';
 import EmptyCartMessage from './EmptyCart/EmptyCart';
+import BasketItems from '../../components/Cart/BasketItems/BasketItems';
 
 export default function Basket() {
   const outerTheme = useTheme();
@@ -15,7 +15,6 @@ export default function Basket() {
 
   const data = cartData ? JSON.parse(cartData) : null;
   const dataAnonim = anonCartData ? JSON.parse(anonCartData) : null;
-  console.log(dataAnonim);
 
   return (
     <ThemeProvider theme={customInputTheme(outerTheme)}>
@@ -37,43 +36,45 @@ export default function Basket() {
           }}
         >
           <Grid item xs={12} sm={12} sx={{ m: '5px' }}>
-            {isAuth ? (
+            {isAuth && cartData ? (
               data.lineItems.length > 0 ? (
                 <BasketItems data={data} />
               ) : (
                 <EmptyCartMessage />
               )
+            ) : anonCartData && dataAnonim.lineItems.length > 0 ? (
+              <BasketItems data={dataAnonim} />
             ) : (
-              anonCartData ? (
-                <BasketItems data={dataAnonim} />
-              ) : (
-                <EmptyCartMessage />
-              )
+              <EmptyCartMessage />
             )}
           </Grid>
         </Grid>
-        {anonCartData || cartData ? (
+        {(anonCartData && dataAnonim.lineItems.length > 0) ||
+        (cartData && data.lineItems.length > 0) ? (
           <Grid
-          item
-          xs={12}
-          sm={12}
-          md={4}
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'start',
-            '@media (max-width: 900px)': {
-              alignItems: 'center',
-              padding: '30px'
-            },
-          }}
-        >
-          <BasketInfo />
-        </Grid>
+            item
+            xs={12}
+            sm={12}
+            md={4}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'start',
+              '@media (max-width: 900px)': {
+                alignItems: 'center',
+                padding: '30px',
+              },
+            }}
+          >
+            {isAuth ? (
+              <BasketInfo data={data} />
+            ) : (
+              <BasketInfo data={dataAnonim} />
+            )}
+          </Grid>
         ) : (
           <></>
         )}
-        
       </Grid>
     </ThemeProvider>
   );
