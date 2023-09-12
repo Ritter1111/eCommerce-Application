@@ -1,13 +1,12 @@
 import { Box, Button, IconButton, Typography } from '@mui/material';
 import React, { useContext } from 'react';
 import styles from './BasketItems.module.css';
-import { removeItem } from './RemoveItem-Api';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import { СartQuantityContext } from '../../../context';
 import { ICartData, ILineItem } from '../../../interfaces/auth.interface';
-import { changeQuantityItem } from '../BasketInfo/Api-Quantity';
 import PriceItem from './PriceItem/PriceItem';
+import { changeQuantityItem, removeItem } from '../../../views/basket/Api-Busket';
 
 export default function BasketItems({ data }: ICartData) {
   const { setCartQuantity } = useContext(СartQuantityContext);

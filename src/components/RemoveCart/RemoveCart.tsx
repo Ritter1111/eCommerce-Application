@@ -1,96 +1,49 @@
-// import { Link } from '@mui/material';
-// import React, { useContext } from 'react';
-// import { scheduleTokenRefresh } from '../../utils/refreshToken';
-// // import { ILineItem } from '../../interfaces/auth.interface';
-// import { ICartQuantityContext } from '../../interfaces/context.interface';
-// import { СartQuantityContext } from '../../context';
-// // import { createNewCart } from '../../views/basket/Create-Cart_Api';
+import { Button} from '@mui/material';
+import React, { useContext } from 'react';
+import { СartQuantityContext } from '../../context';
+import { createNewCart } from '../../views/basket/Create-Cart_Api';
+import { removeCart } from '../../views/basket/Api-Busket';
+import { array } from '../../utils/consts';
 
-// export async function removeItem(
-//   // itemProduct: ILineItem,
-//   // quantity: number,
-//   setCartQuantity: ICartQuantityContext['setCartQuantity']
-// ) {
-//   const getIsAuth = localStorage.getItem('isAuth') === 'true';
-//   const cartData = getIsAuth
-//     ? JSON.parse(localStorage.getItem('cartData') || '')
-//     : JSON.parse(localStorage.getItem('anonCartData') || '');
-    
-//   try {
-//     await scheduleTokenRefresh();
-//     const authToken = getIsAuth
-//       ? localStorage.getItem('authToken')
-//       : localStorage.getItem('anonToken');
+export default function RemoveCart() {
+  const { setCartQuantity } = useContext(СartQuantityContext);
 
-//     if (authToken) {
-//       const response = await fetch(
-//         `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me/carts/${cartData.id}?version=${cartData.version}`,
-//         {
-//           method: 'DELETE',
-//           headers: {
-//             'Content-Type': 'application/json',
-//             Authorization: `Bearer ${authToken}`,
-//           },
-//           body: new URLSearchParams({
-//              version: `${cartData.version}`
-//           }),
-//         }
-//       );
+  const clear = async () => {
+    await removeCart(setCartQuantity);
 
-//       const data = await response.json();
-//       if (response.ok) {
-//         setCartQuantity(data.totalLineItemQuantity);
+    const cartData = localStorage.getItem('cartData');
+    const anonCartData = localStorage.getItem('anonCartData');
+    const cartItems = localStorage.getItem('cartItem');
+    const anonCartItems = localStorage.getItem('anonCartItem');
 
-//         // const itemCart: string[] = [];
-//         // for(let i = 0; i < data.lineItems.length; i+= 1) {
-//         //   itemCart.push(data.lineItems[i].productId)
-//         // }
+    if (cartData !== null) {
+      localStorage.removeItem('cartData');
+    }
+    if (anonCartData !== null) {
+      localStorage.removeItem('anonCartData');
+    }
 
-//         // getIsAuth
-//         // ? (localStorage.setItem('cartData', JSON.stringify(data)), localStorage.setItem('cartItem', JSON.stringify(itemCart)))
-//         // : (localStorage.setItem('anonCartData', JSON.stringify(data)), localStorage.setItem('anonCartItem', JSON.stringify(itemCart)));
-//       }
-//     }
-//   } catch (error) {
-//     console.error(error);
-//   }
-// }
+    if (cartItems !== null) {
+      localStorage.setItem('cartItem', JSON.stringify(array));
+    }
 
-// // const array: string[] = [];
+    if (anonCartItems !== null) {
+      localStorage.setItem('anonCartItem', JSON.stringify(array));
+    }
 
-// export default function RemoveCart() {
-//   const { setCartQuantity } = useContext(СartQuantityContext);
+    await createNewCart();
+    setCartQuantity(0);
+  };
 
-//   const clear = async () => {
-
-//     await removeItem(setCartQuantity)
-
-//     // const cartData = localStorage.getItem('cartData');
-//     // const anonCartData = localStorage.getItem('anonCartData');
-
-//     // if (cartData !== null) {
-//     //   localStorage.removeItem('cartData');
-//     // }
-//     // if (anonCartData !== null) {
-//     //   localStorage.removeItem('anonCartData');
-//     // }
-
-//     // const cartItems = localStorage.getItem('cartItem');
-//     // const anonCartItems = localStorage.getItem('anonCartItem');
-
-//     // if (cartItems !== null) {
-//     //   localStorage.setItem('cartItem', JSON.stringify(array));
-//     // }
-//     // if (anonCartItems !== null) {
-//     //   localStorage.setItem('anonCartItem', JSON.stringify(array));
-//     // }
-
-//     // await createNewCart()
-//   }
-  
-//   return (
-//     <Link component="button" sx={{ color: 'black', textDecoration: 'none' }} onClick={clear}>
-//       Delete all items
-//     </Link>
-//   );
-// }
+  return (
+    <div>
+    <Button
+      component="button"
+      sx={{ color: 'black', textDecoration: 'none' }}
+      onClick={() => clear()}
+    >
+      Delete all items
+    </Button>
+    </div>
+  );
+}
