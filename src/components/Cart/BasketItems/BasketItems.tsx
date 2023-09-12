@@ -6,7 +6,10 @@ import AddIcon from '@mui/icons-material/Add';
 import { СartQuantityContext } from '../../../context';
 import { ICartData, ILineItem } from '../../../interfaces/auth.interface';
 import PriceItem from './PriceItem/PriceItem';
-import { changeQuantityItem, removeItem } from '../../../views/basket/Api-Busket';
+import {
+  changeQuantityItem,
+  removeItem,
+} from '../../../views/basket/Api-Busket';
 
 export default function BasketItems({ data }: ICartData) {
   const { setCartQuantity } = useContext(СartQuantityContext);

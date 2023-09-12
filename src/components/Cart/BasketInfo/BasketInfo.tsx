@@ -3,9 +3,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import AddToCart from '../../DescriptionProduct/AddToCart/AddToCart';
 import styles from './BasketInfo.module.css';
-import RemoveCart from '../../RemoveCart/RemoveCart';
 import { ICartData } from '../../../interfaces/auth.interface';
 import { formatCentsToCurrency } from '../../../utils/format-to-cents';
+import RemoveCart from '../RemoveCart/RemoveCart';
+// import AlertDialog from '../ConfirmationDialog/ConfirmationDialog';
 
 export default function BasketInfo({ data }: ICartData) {
   return (
