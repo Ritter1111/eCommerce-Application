@@ -22,9 +22,10 @@ export default function BasketItems({ data }: ICartData) {
     await changeQuantityItem(itemProduct, itemProduct.quantity + 1, setCartQuantity);
   };
 
-  const returnIdProduct = async (itemProduct: ILineItem, quantity: number) => {
-    await removeItem(itemProduct, quantity , setCartQuantity);
+  const returnIdProduct = async (itemProduct: ILineItem) => {
+    await removeItem(itemProduct.id, setCartQuantity);
   };
+
 
   return (
     <Box>
@@ -63,7 +64,7 @@ export default function BasketItems({ data }: ICartData) {
                 </Box>
                 <Button
                   sx={{ mt: 'auto', p: '10px' }}
-                  onClick={() => returnIdProduct(item, item.quantity)}
+                  onClick={() => returnIdProduct(item)}
                 >
                   Remove
                 </Button>

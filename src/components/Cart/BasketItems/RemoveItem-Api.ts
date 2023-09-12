@@ -1,17 +1,14 @@
-import { ILineItem } from "../../../interfaces/auth.interface";
 import { ICartQuantityContext } from "../../../interfaces/context.interface";
 import { scheduleTokenRefresh } from "../../../utils/refreshToken";
 
 export async function removeItem(
-  itemProduct: ILineItem,
-  quantity: number,
+  productId: string,
   setCartQuantity: ICartQuantityContext['setCartQuantity']
 ) {
   const getIsAuth = localStorage.getItem('isAuth') === 'true';
   const cartData = getIsAuth
     ? JSON.parse(localStorage.getItem('cartData') || '')
     : JSON.parse(localStorage.getItem('anonCartData') || '');
-    
   try {
     await scheduleTokenRefresh();
     const authToken = getIsAuth
@@ -32,8 +29,7 @@ export async function removeItem(
             actions: [
               {
                 action: 'removeLineItem',
-                lineItemId: itemProduct.id,
-                quantity: quantity,
+                lineItemId: productId,
               },
             ],
           }),
