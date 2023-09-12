@@ -14,16 +14,24 @@ export default function BasketItems({ data }: ICartData) {
 
   const handleDecrease = async (itemProduct: ILineItem) => {
     if (itemProduct.quantity > 1) {
-      await changeQuantityItem(itemProduct, itemProduct.quantity - 1, setCartQuantity);
+      await changeQuantityItem(
+        itemProduct,
+        itemProduct.quantity - 1,
+        setCartQuantity
+      );
     }
   };
 
   const handleIncrease = async (itemProduct: ILineItem) => {
-    await changeQuantityItem(itemProduct, itemProduct.quantity + 1, setCartQuantity);
+    await changeQuantityItem(
+      itemProduct,
+      itemProduct.quantity + 1,
+      setCartQuantity
+    );
   };
 
   const returnIdProduct = async (itemProduct: ILineItem, quantity: number) => {
-    await removeItem(itemProduct, quantity , setCartQuantity);
+    await removeItem(itemProduct, quantity, setCartQuantity);
   };
 
   return (
