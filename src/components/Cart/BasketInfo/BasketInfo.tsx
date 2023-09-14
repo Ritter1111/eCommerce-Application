@@ -81,14 +81,12 @@ export default function BasketInfo({
               </Typography>
               <Typography variant="h5">
               {formatCentsToCurrency(totalPrice)}
-
               </Typography>
             </Box>
           </>
         ) : (
           <Typography variant="h5">
           {formatCentsToCurrency(totalPrice)}
-
           </Typography>
         )}
       </Box>
