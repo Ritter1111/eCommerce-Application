@@ -1,15 +1,15 @@
 import { ThemeProvider } from '@emotion/react';
 import { Grid, useTheme } from '@mui/material';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { customInputTheme } from '../../utils/custom-input-theme';
 import BasketInfo from '../../components/Cart/BasketInfo/BasketInfo';
-import { AuthContext } from '../../context';
 import EmptyCartMessage from './EmptyCart/EmptyCart';
 import BasketItems from '../../components/Cart/BasketItems/BasketItems';
 
 export default function Basket() {
   const outerTheme = useTheme();
-  const { isAuth } = useContext(AuthContext);
+  const isAuth = localStorage.getItem('isAuth') === 'true';
+
   const cartData = localStorage.getItem('cartData');
   const anonCartData = localStorage.getItem('anonCartData');
 
@@ -17,6 +17,7 @@ export default function Basket() {
   const dataAnonim = anonCartData ? JSON.parse(anonCartData) : null;
 
   const userData = isAuth ? data : dataAnonim;
+
   const [totalPrice, setTotalPrice] = useState(
     userData ? userData.totalPrice.centAmount : 0
   );

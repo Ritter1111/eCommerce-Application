@@ -3,13 +3,17 @@ import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AddToCart from '../../DescriptionProduct/AddToCart/AddToCart';
 import styles from './BasketInfo.module.css';
-import { ICartData } from '../../../interfaces/auth.interface';
+import { ICartData, ILineItem } from '../../../interfaces/auth.interface';
 import { formatCentsToCurrency } from '../../../utils/format-to-cents';
 import RemoveCart from '../RemoveCart/RemoveCart';
 import { СartQuantityContext } from '../../../context';
 import { PromoCode } from '../../../views/basket/Api-Busket';
 
-export default function BasketInfo({ data, setTotalPrice, totalPrice }: ICartData) {
+export default function BasketInfo({
+  data,
+  setTotalPrice,
+  totalPrice,
+}: ICartData) {
   const { setCartQuantity } = useContext(СartQuantityContext);
   const [promoCode, setPromoCode] = useState('');
 
@@ -21,6 +25,15 @@ export default function BasketInfo({ data, setTotalPrice, totalPrice }: ICartDat
     setPromoCode('');
     await PromoCode(promoCode, setCartQuantity, setTotalPrice);
   };
+
+  const totalAmount = data.lineItems.reduce((acc: number, item: ILineItem) => {
+    const itemTotalPrice =
+      item.quantity *
+      (item.price?.discounted?.value.centAmount ||
+        item.price?.value.centAmount ||
+        0);
+    return acc + itemTotalPrice;
+  }, 0);
 
   return (
     <>
@@ -53,9 +66,31 @@ export default function BasketInfo({ data, setTotalPrice, totalPrice }: ICartDat
         <Typography variant="h5" sx={{ mb: '10px' }}>
           Cost order:
         </Typography>
-        <Typography variant="h5">
-          {formatCentsToCurrency(totalPrice)} $
-        </Typography>
+        {data.lineItems[0].discountedPrice ? (
+          <>
+            <Box>
+              <Typography
+                variant="h6"
+                sx={{
+                  textDecoration: 'line-through',
+                  color: 'red',
+                  mb: '3px',
+                }}
+              >
+                {totalAmount ? formatCentsToCurrency(totalAmount) : ''}
+              </Typography>
+              <Typography variant="h5">
+              {formatCentsToCurrency(totalPrice)}
+
+              </Typography>
+            </Box>
+          </>
+        ) : (
+          <Typography variant="h5">
+          {formatCentsToCurrency(totalPrice)}
+
+          </Typography>
+        )}
       </Box>
       <TextField
         type="text"

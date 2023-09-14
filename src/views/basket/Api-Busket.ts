@@ -1,7 +1,37 @@
 import { ILineItem } from "../../interfaces/auth.interface";
 import { ICartQuantityContext } from "../../interfaces/context.interface";
-import { errorNotify } from "../../utils/ErrorPupUp";
 import { scheduleTokenRefresh } from "../../utils/refreshToken";
+
+// export async function getCart() {
+//   try {
+//     await scheduleTokenRefresh();
+//     const getIsAuth = localStorage.getItem('isAuth') === 'true';
+//     const authToken = getIsAuth
+//       ? localStorage.getItem('authToken')
+//       : localStorage.getItem('anonToken');
+
+//       const cartData = getIsAuth
+//       ? JSON.parse(localStorage.getItem('cartData') || '')
+//       : JSON.parse(localStorage.getItem('anonCartData') || '');
+
+//     if (authToken) {
+//       const response = await fetch(
+//         `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me/carts/${cartData.id}`,
+//         {
+//           method: 'GET',
+//           headers: {
+//             'Content-Type': 'application/json',
+//             Authorization: `Bearer ${authToken}`,
+//           },
+//         }
+//       );
+
+//       const data = await response.json();
+//     }
+//   } catch (error) {
+//     console.error(error);
+//   }
+// }
 
 export async function PromoCode(
   discountCode: string,
@@ -56,12 +86,6 @@ export async function PromoCode(
 
         const newTotalPrice = data.totalPrice.centAmount;
         totalPriceCallback(newTotalPrice); 
-        
-      }else{
-        if (data.statusCode === 400) {
-        errorNotify(`Invalid promocode, please try another one`)
-        }
-
       }
     }
   } catch (error) {
