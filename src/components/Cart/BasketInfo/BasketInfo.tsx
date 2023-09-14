@@ -1,14 +1,27 @@
 import { Box, Button, TextField, Typography } from '@mui/material';
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AddToCart from '../../DescriptionProduct/AddToCart/AddToCart';
 import styles from './BasketInfo.module.css';
 import { ICartData } from '../../../interfaces/auth.interface';
 import { formatCentsToCurrency } from '../../../utils/format-to-cents';
 import RemoveCart from '../RemoveCart/RemoveCart';
-// import AlertDialog from '../ConfirmationDialog/ConfirmationDialog';
+import { СartQuantityContext } from '../../../context';
+import { PromoCode } from '../../../views/basket/Api-Busket';
 
-export default function BasketInfo({ data }: ICartData) {
+export default function BasketInfo({ data, setTotalPrice, totalPrice }: ICartData) {
+  const { setCartQuantity } = useContext(СartQuantityContext);
+  const [promoCode, setPromoCode] = useState('');
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPromoCode(event.target.value);
+  };
+
+  const ApplyPromoCode = async () => {
+    setPromoCode('');
+    await PromoCode(promoCode, setCartQuantity, setTotalPrice);
+  };
+
   return (
     <>
       <Typography variant="h4" sx={{ mb: '20px', mt: '13vh' }}>
@@ -41,7 +54,7 @@ export default function BasketInfo({ data }: ICartData) {
           Cost order:
         </Typography>
         <Typography variant="h5">
-          {data && formatCentsToCurrency(data.totalPrice.centAmount)} $
+          {formatCentsToCurrency(totalPrice)} $
         </Typography>
       </Box>
       <TextField
@@ -51,6 +64,8 @@ export default function BasketInfo({ data }: ICartData) {
         fullWidth
         margin="normal"
         sx={{ mb: '20px' }}
+        onChange={handleChange}
+        value={promoCode}
         InputProps={{
           endAdornment: (
             <Button
@@ -61,7 +76,7 @@ export default function BasketInfo({ data }: ICartData) {
                 marginBottom: '5px',
                 fontSize: '0.8rem',
               }}
-              // onClick={ApplyPromoCode}
+              onClick={ApplyPromoCode}
             >
               Apply
             </Button>
@@ -80,7 +95,7 @@ export default function BasketInfo({ data }: ICartData) {
           Amount to be paid:
         </Typography>
         <Typography variant="h5">
-          {data && formatCentsToCurrency(data.totalPrice.centAmount)} $
+          {formatCentsToCurrency(totalPrice)} $
         </Typography>
       </Box>
       <AddToCart name="Checkout" />

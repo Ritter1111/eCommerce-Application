@@ -9,6 +9,8 @@ export async function scheduleTokenRefresh() {
     const currTime = Date.now();
     const timeUntilExpiration = timeNumeric - currTime;
     const refreshTenMinutes = 600;
+    console.log('dfd');
+    
 
     if (timeUntilExpiration <= refreshTenMinutes) {
       const getIsAuth = localStorage.getItem('isAuth') === 'true';

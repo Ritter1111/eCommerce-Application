@@ -11,7 +11,7 @@ import {
   removeItem,
 } from '../../../views/basket/Api-Busket';
 
-export default function BasketItems({ data }: ICartData) {
+export default function BasketItems({ data, setTotalPrice }: ICartData) {
   const { setCartQuantity } = useContext(СartQuantityContext);
 
   const handleDecrease = async (itemProduct: ILineItem) => {
@@ -19,7 +19,8 @@ export default function BasketItems({ data }: ICartData) {
       await changeQuantityItem(
         itemProduct,
         itemProduct.quantity - 1,
-        setCartQuantity
+        setCartQuantity,
+        setTotalPrice
       );
     }
   };
@@ -28,12 +29,13 @@ export default function BasketItems({ data }: ICartData) {
     await changeQuantityItem(
       itemProduct,
       itemProduct.quantity + 1,
-      setCartQuantity
+      setCartQuantity,
+      setTotalPrice
     );
   };
 
   const returnIdProduct = async (itemProduct: ILineItem, quantity: number) => {
-    await removeItem(itemProduct, quantity, setCartQuantity);
+    await removeItem(itemProduct, quantity, setCartQuantity, setTotalPrice);
   };
 
   return (

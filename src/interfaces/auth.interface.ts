@@ -109,7 +109,9 @@ export interface IAddress {
 }
 
 export interface ICartData {
-  data: ICart
+  data: ICart,
+  totalPrice: number
+  setTotalPrice: (newTotalPrice: number) => void
 }
 
 export interface ILineItemData {

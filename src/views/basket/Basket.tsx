@@ -1,6 +1,6 @@
 import { ThemeProvider } from '@emotion/react';
 import { Grid, useTheme } from '@mui/material';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { customInputTheme } from '../../utils/custom-input-theme';
 import BasketInfo from '../../components/Cart/BasketInfo/BasketInfo';
 import { AuthContext } from '../../context';
@@ -15,6 +15,15 @@ export default function Basket() {
 
   const data = cartData ? JSON.parse(cartData) : null;
   const dataAnonim = anonCartData ? JSON.parse(anonCartData) : null;
+
+  const userData = isAuth ? data : dataAnonim;
+  const [totalPrice, setTotalPrice] = useState(
+    userData ? userData.totalPrice.centAmount : 0
+  );
+
+  const handleTotalPriceChange = (newTotalPrice: number) => {
+    setTotalPrice(newTotalPrice);
+  };
 
   return (
     <ThemeProvider theme={customInputTheme(outerTheme)}>
@@ -38,12 +47,20 @@ export default function Basket() {
           <Grid item xs={12} sm={12} sx={{ m: '5px' }}>
             {isAuth && cartData ? (
               data.lineItems.length > 0 ? (
-                <BasketItems data={data} />
+                <BasketItems
+                  data={data}
+                  setTotalPrice={handleTotalPriceChange}
+                  totalPrice={totalPrice}
+                />
               ) : (
                 <EmptyCartMessage />
               )
             ) : anonCartData && dataAnonim.lineItems.length > 0 ? (
-              <BasketItems data={dataAnonim} />
+              <BasketItems
+                data={dataAnonim}
+                setTotalPrice={handleTotalPriceChange}
+                totalPrice={totalPrice}
+              />
             ) : (
               <EmptyCartMessage />
             )}
@@ -67,9 +84,17 @@ export default function Basket() {
             }}
           >
             {isAuth ? (
-              <BasketInfo data={data} />
+              <BasketInfo
+                data={data}
+                totalPrice={totalPrice}
+                setTotalPrice={handleTotalPriceChange}
+              />
             ) : (
-              <BasketInfo data={dataAnonim} />
+              <BasketInfo
+                data={dataAnonim}
+                totalPrice={totalPrice}
+                setTotalPrice={handleTotalPriceChange}
+              />
             )}
           </Grid>
         ) : (

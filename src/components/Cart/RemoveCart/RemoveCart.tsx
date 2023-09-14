@@ -4,7 +4,6 @@ import { СartQuantityContext } from '../../../context';
 import { removeCart } from '../../../views/basket/Api-Busket';
 import { createNewCart } from '../../../views/basket/Create-Cart_Api';
 import { array } from '../../../utils/consts';
-// import AlertDialog from '../ConfirmationDialog/ConfirmationDialog';
 
 export default function RemoveCart() {
   const { setCartQuantity } = useContext(СartQuantityContext);
@@ -51,7 +50,6 @@ export default function RemoveCart() {
       >
         Delete all items
       </Button>
-      {/* <AlertDialog /> */}
     </div>
   );
 }
