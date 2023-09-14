@@ -340,7 +340,7 @@ export async function handleSubmit(
   setErrors: Dispatch<SetStateAction<Partial<ISignUpData>>>,
   navigate: NavigateFunction,
   setIsAuth: (newState: boolean) => void,
-  setCartQuantity: ICartQuantityContext["setCartQuantity"]
+  setCartQuantity: ICartQuantityContext['setCartQuantity']
 ): Promise<number | void> {
   event.preventDefault();
   if (validateForm(setErrors, signUpState)) {

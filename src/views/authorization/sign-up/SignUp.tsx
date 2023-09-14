@@ -144,7 +144,14 @@ export default function SignUp() {
           <Typography variant="h5">Sign Up</Typography>
           <form
             onSubmit={(event) =>
-              handleSubmit(event, signUpState, setErrors, navigate, setIsAuth, setCartQuantity)
+              handleSubmit(
+                event,
+                signUpState,
+                setErrors,
+                navigate,
+                setIsAuth,
+                setCartQuantity
+              )
             }
           >
             <ThemeProvider theme={customInputTheme(outerTheme)}>
