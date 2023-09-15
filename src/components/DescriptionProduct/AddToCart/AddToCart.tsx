@@ -4,12 +4,12 @@ import styles from '../DescriptionProduct.module.css';
 import { IButton } from '../../../interfaces/detailedPage.interface';
 import { useParams } from 'react-router-dom';
 import { СartQuantityContext } from '../../../context';
-import { removeItem } from '../../Cart/BasketItems/RemoveItem-Api';
 import {
   getLineItemId,
   handleAddToCart,
   initializeItemsCart,
 } from '../../../utils/basket';
+import { removeItem } from '../../Cart/BasketItems/RemoveItem-Api';
 
 export default function AddToCart({ name }: IButton) {
   const params = useParams();
