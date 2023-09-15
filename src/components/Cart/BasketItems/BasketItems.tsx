@@ -87,4 +87,3 @@ export default function BasketItems({ data, setTotalPrice }: ICartData) {
     </Box>
   );
 }
-

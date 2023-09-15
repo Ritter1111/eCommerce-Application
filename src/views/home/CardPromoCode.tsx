@@ -3,13 +3,13 @@ import { Box, CardContent, CardHeader, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
 
 export interface IPromoCodeData {
-  title: string,
-  promocode: string
+  title: string;
+  promocode: string;
 }
 
-export default function CardPromoCode({title, promocode}: IPromoCodeData) {
+export default function CardPromoCode({ title, promocode }: IPromoCodeData) {
   return (
-    <Card sx={{height: '210px'}}>
+    <Card sx={{ height: '210px' }}>
       <CardHeader
         title={title}
         titleTypographyProps={{ align: 'center' }}
@@ -31,9 +31,9 @@ export default function CardPromoCode({title, promocode}: IPromoCodeData) {
             mb: 2,
           }}
         >
-           Promocode:
+          Promocode:
           <Typography component="h6" variant="h6" color="text.primary">
-          {promocode}
+            {promocode}
           </Typography>
         </Box>
       </CardContent>

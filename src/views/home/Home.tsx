@@ -53,13 +53,22 @@ const Home = () => {
       <Container maxWidth="md" sx={{ pt: '50px' }}>
         <Grid container spacing={3}>
           <Grid item xs={6}>
-            <CardPromoCode title='30% off all womens jewelry on orders over $200' promocode='Barbie10'/>
+            <CardPromoCode
+              title="30% off all womens jewelry on orders over $200"
+              promocode="Barbie10"
+            />
           </Grid>
           <Grid item xs={6}>
-            <CardPromoCode title='discount for orders over 300$' promocode='FormulaOne'/>
+            <CardPromoCode
+              title="discount for orders over 300$"
+              promocode="FormulaOne"
+            />
           </Grid>
           <Grid item xs={6}>
-            <CardPromoCode title='20% off everything all womens  on orders over $500' promocode='Ken20'/>
+            <CardPromoCode
+              title="20% off everything all womens  on orders over $500"
+              promocode="Ken20"
+            />
           </Grid>
         </Grid>
       </Container>

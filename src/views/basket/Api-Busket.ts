@@ -65,7 +65,6 @@ export async function PromoCode(
 
 export async function removeItem(
   itemProduct: ILineItem,
-  quantity: number,
   setCartQuantity: ICartQuantityContext['setCartQuantity'],
   totalPriceCallback: (newTotalPrice: number) => void
 ) {
@@ -95,7 +94,6 @@ export async function removeItem(
               {
                 action: 'removeLineItem',
                 lineItemId: itemProduct.id,
-                quantity: quantity,
               },
             ],
           }),
