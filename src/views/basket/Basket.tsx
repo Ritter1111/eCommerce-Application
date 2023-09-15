@@ -22,7 +22,7 @@ export default function Basket() {
         container
         justifyContent="center"
         component="main"
-        sx={{ mt: '30px' }}
+        sx={{ mt: '30px', mb: 10 }}
       >
         <Grid
           item

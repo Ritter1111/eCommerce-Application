@@ -9,6 +9,7 @@ import { errorNotify } from '../../../utils/ErrorPupUp';
 import { successNotify } from '../../../utils/SuccessPopUp';
 import { getCustometWithToken } from '../../../utils/getCustomer';
 import { validateForm } from './Validate-Signup';
+import { ICartQuantityContext } from '../../../interfaces/context.interface';
 
 async function getCustomerToken(email: string, password: string) {
   const credentials = `${process.env.REACT_APP_CTP_CLIENT_ID}:${process.env.REACT_APP_CTP_CLIENT_SECRET}`;
@@ -338,7 +339,8 @@ export async function handleSubmit(
   signUpState: ISignUpState,
   setErrors: Dispatch<SetStateAction<Partial<ISignUpData>>>,
   navigate: NavigateFunction,
-  setIsAuth: (newState: boolean) => void
+  setIsAuth: (newState: boolean) => void,
+  setCartQuantity: ICartQuantityContext['setCartQuantity']
 ): Promise<number | void> {
   event.preventDefault();
   if (validateForm(setErrors, signUpState)) {
@@ -370,6 +372,7 @@ export async function handleSubmit(
 
       const data = await response.json();
       if (response.ok) {
+        setCartQuantity(0);
         addAddresses(
           signUpState.customerBillingAddress,
           data.customer.version,
@@ -385,7 +388,8 @@ export async function handleSubmit(
               password: signUpState.signUpData.password,
             },
             navigate,
-            setIsAuth
+            setIsAuth,
+            setCartQuantity
           );
         }, 3000);
         console.log('Customer created successfully');
