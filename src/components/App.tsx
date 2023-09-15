@@ -9,6 +9,7 @@ import {
 } from '../context';
 import { HttpMethod } from '../enums/auth.enum';
 import { getInitialCartItemsQuantity } from '../utils/basket';
+import Footer from './Footer/Footer';
 
 const fetchAccessToken = async (callback?: (accessToken: string) => void) => {
   const authUrl = `${process.env.REACT_APP_CTP_AUTH_URL}/oauth/token`;
@@ -57,6 +58,7 @@ export default function App() {
           <BrowserRouter>
             <NavBar />
             <AppRouter />
+            <Footer />
           </BrowserRouter>
         </СartQuantityContext.Provider>
       </AccessTokenContext.Provider>

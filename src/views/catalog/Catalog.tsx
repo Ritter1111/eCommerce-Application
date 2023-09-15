@@ -57,41 +57,39 @@ function Catalog() {
   }, [token]);
 
   return (
-    <>
-      <Container maxWidth="lg">
-        <Typography
-          variant="h2"
-          align="center"
-          sx={{ fontSize: '48px', mt: 4, mb: 4 }}
-        >
-          {productCategoryName}
+    <Container maxWidth="lg" sx={{ mb: 10 }}>
+      <Typography
+        variant="h2"
+        align="center"
+        sx={{ fontSize: '48px', mt: 4, mb: 4 }}
+      >
+        {productCategoryName}
+      </Typography>
+      {(cardsError || categoriesError) && (
+        <Typography align="center" variant="h4">
+          Oops, something went wrong. Please try again later.
         </Typography>
-        {(cardsError || categoriesError) && (
-          <Typography align="center" variant="h4">
-            Oops, something went wrong. Please try again later.
-          </Typography>
-        )}
-        {!isLoadingCategories && (
-          <ProductsCategories
-            fetchCards={fetchCards}
-            categoriesData={categories}
-            setCards={setCards}
-            setProductCategoryName={setProductCategoryName}
-          />
-        )}
-        {isLoading ? (
-          <CircularProgress
-            style={{ width: '70px', height: '70px' }}
-            color="inherit"
-            sx={{ margin: '0 auto', display: 'block' }}
-          />
-        ) : (
-          <>
-            <ProductsList productCards={cards} />
-          </>
-        )}
-      </Container>
-    </>
+      )}
+      {!isLoadingCategories && (
+        <ProductsCategories
+          fetchCards={fetchCards}
+          categoriesData={categories}
+          setCards={setCards}
+          setProductCategoryName={setProductCategoryName}
+        />
+      )}
+      {isLoading ? (
+        <CircularProgress
+          style={{ width: '70px', height: '70px' }}
+          color="inherit"
+          sx={{ margin: '0 auto', display: 'block' }}
+        />
+      ) : (
+        <>
+          <ProductsList productCards={cards} />
+        </>
+      )}
+    </Container>
   );
 }
 
