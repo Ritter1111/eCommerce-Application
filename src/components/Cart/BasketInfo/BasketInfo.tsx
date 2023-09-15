@@ -67,7 +67,6 @@ export default function BasketInfo({
           Cost order:
         </Typography>
         {data.lineItems[0].discountedPrice ? (
-          <>
             <Box>
               <Typography
                 variant="h6"
@@ -83,7 +82,6 @@ export default function BasketInfo({
                 {formatCentsToCurrency(totalPrice)}
               </Typography>
             </Box>
-          </>
         ) : (
           <Typography variant="h5">
             {formatCentsToCurrency(totalPrice)}
