@@ -42,7 +42,7 @@ export default function BasketItems({ data, setTotalPrice }: ICartData) {
 
   return (
     <Box>
-     <ToastContainer />
+      <ToastContainer />
       {data.lineItems.map((item, index) => {
         return (
           <div key={index}>

@@ -21,7 +21,7 @@ function ProductsCategories({
   categoriesData,
   setCards,
   setProductCategoryName,
-  setId
+  setId,
 }: IProductCategories) {
   const [breadcrumb, setBreadcramb] = useState<BreadcrumbType>([['All', '']]);
   const [openCategories, setOpenCategories] = useState<string[]>([]);
@@ -135,11 +135,11 @@ function ProductsCategories({
   const handleMainCategoryClick = (categoryId: string) => {
     if (openCategories.includes(categoryId)) {
       setOpenCategories((prev) => prev.filter((item) => item !== categoryId));
-      setCards([])
-      setId(categoryId)
+      setCards([]);
+      setId(categoryId);
     } else {
-      setCards([])
-      setId('')
+      setCards([]);
+      setId('');
       openCategories.length = 0;
       setOpenCategories((prev) => [...prev, categoryId]);
     }
@@ -162,16 +162,16 @@ function ProductsCategories({
       setBreadcramb((prev) => [prev[0]]);
       openCategories.length = 0;
       setCategoryId('');
-      setCards([])
-      setId('')
+      setCards([]);
+      setId('');
       fetchCards();
       resetFilters();
       return;
     }
 
     setCategoryId(categoryId);
-    setId(categoryId)
-    setCards([])
+    setId(categoryId);
+    setCards([]);
     fetchCards(categoryId);
     updateBreadcrumbArray(categoryId);
     setProductCategoryName(categories[categoryId][1]);
