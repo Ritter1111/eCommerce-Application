@@ -66,8 +66,8 @@ const Home = () => {
           </Grid>
           <Grid item xs={6}>
             <CardPromoCode
-              title="20% off everything all womens  on orders over $500"
-              promocode="Ken20"
+              title="10% for all mens shirts for orders over 400$"
+              promocode="Fire"
             />
           </Grid>
         </Grid>

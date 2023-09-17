@@ -23,7 +23,7 @@ export default function BasketInfo({
 
   const ApplyPromoCode = async () => {
     setPromoCode('');
-    await PromoCode(promoCode, setCartQuantity, setTotalPrice);
+   await PromoCode(promoCode, setCartQuantity, setTotalPrice);
   };
 
   const totalAmount = data.lineItems.reduce((acc: number, item: ILineItem) => {
@@ -66,7 +66,7 @@ export default function BasketInfo({
         <Typography variant="h5" sx={{ mb: '10px' }}>
           Cost order:
         </Typography>
-        {data.lineItems[0].discountedPrice ? (
+        {data.lineItems.some(item => item.discountedPrice) ? (
             <Box>
               <Typography
                 variant="h6"

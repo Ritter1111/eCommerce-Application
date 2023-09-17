@@ -10,6 +10,8 @@ import {
   changeQuantityItem,
   removeItem,
 } from '../../../views/basket/Api-Busket';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function BasketItems({ data, setTotalPrice }: ICartData) {
   const { setCartQuantity } = useContext(СartQuantityContext);
@@ -40,6 +42,7 @@ export default function BasketItems({ data, setTotalPrice }: ICartData) {
 
   return (
     <Box>
+     <ToastContainer />
       {data.lineItems.map((item, index) => {
         return (
           <div key={index}>

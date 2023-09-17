@@ -1,5 +1,7 @@
 import { ILineItem } from "../../interfaces/auth.interface";
 import { ICartQuantityContext } from "../../interfaces/context.interface";
+import { errorNotify } from "../../utils/ErrorPupUp";
+import { successNotify } from "../../utils/SuccessPopUp";
 import { scheduleTokenRefresh } from "../../utils/refreshToken";
 
 export async function PromoCode(
@@ -42,7 +44,7 @@ export async function PromoCode(
       const data = await response.json();
       if (response.ok) {
         setCartQuantity(data.totalLineItemQuantity);
-
+        successNotify('Promocode has been succesfully applied')
 
         const itemCart: string[] = [];
         for(let i = 0; i < data.lineItems.length; i+= 1) {
@@ -55,6 +57,10 @@ export async function PromoCode(
 
         const newTotalPrice = data.totalPrice.centAmount;
         totalPriceCallback(newTotalPrice); 
+        return data
+      }
+      else {
+        errorNotify(`${data.message}`)
       }
     }
   } catch (error) {
