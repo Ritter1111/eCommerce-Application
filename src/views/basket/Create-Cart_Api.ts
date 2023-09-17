@@ -64,9 +64,14 @@ export async function createNewCart() {
 
       const data = await response.json();
       if (response.ok) {
+        const itemCart: string[] = [];
+        for(let i = 0; i < data.lineItems.length; i+= 1) {
+          itemCart.push(data.lineItems[i].productId)
+        }
+
         getIsAuth
-          ? localStorage.setItem('cartData', JSON.stringify(data))
-          : localStorage.setItem('anonCartData', JSON.stringify(data));
+        ? (localStorage.setItem('cartData', JSON.stringify(data)), localStorage.setItem('cartItem', JSON.stringify(itemCart)))
+        : (localStorage.setItem('anonCartData', JSON.stringify(data)), localStorage.setItem('anonCartItem', JSON.stringify(itemCart)));
       }
     }
   } catch (error) {

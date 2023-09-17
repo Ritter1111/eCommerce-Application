@@ -24,15 +24,25 @@ function ProductCard({ item }: { item: IProductCartItem }) {
   const { isAuth } = useContext(AuthContext);
   const { setCartQuantity } = useContext(СartQuantityContext);
   const navigate = useNavigate();
-  const [itemsCart, setItemsCart] = useState(isAuth ? JSON.parse(localStorage.getItem('cartItem') || '') : (localStorage.getItem('anonCartItem') ? JSON.parse(localStorage.getItem('anonCartItem') || '') : []));
+  const [itemsCart, setItemsCart] = useState(
+    isAuth
+      ? JSON.parse(localStorage.getItem('cartItem') || '')
+      : localStorage.getItem('anonCartItem')
+      ? JSON.parse(localStorage.getItem('anonCartItem') || '')
+      : []
+  );
   const currencySymbol = item.currencyCode === Currency.USD ? '$' : '';
 
   async function handleAddToCart(prodactId: string) {
-      isAuth
-        ? (await updateCart(prodactId, setCartQuantity), setItemsCart(JSON.parse(localStorage.getItem('cartItem') || '')))
-        : localStorage.getItem('anonToken')
-        ? (await updateCart(prodactId, setCartQuantity), setItemsCart(JSON.parse(localStorage.getItem('anonCartItem') || '')))
-        : (await getAnonToken(), await updateCart(prodactId, setCartQuantity), setItemsCart(JSON.parse(localStorage.getItem('anonCartItem') || '')));
+    isAuth
+      ? (await updateCart(prodactId, setCartQuantity),
+        setItemsCart(JSON.parse(localStorage.getItem('cartItem') || '')))
+      : localStorage.getItem('anonToken')
+      ? (await updateCart(prodactId, setCartQuantity),
+        setItemsCart(JSON.parse(localStorage.getItem('anonCartItem') || '')))
+      : (await getAnonToken(),
+        await updateCart(prodactId, setCartQuantity),
+        setItemsCart(JSON.parse(localStorage.getItem('anonCartItem') || '')));
   }
 
   return (
@@ -101,7 +111,11 @@ function ProductCard({ item }: { item: IProductCartItem }) {
         <Button
           onClick={() => handleAddToCart(item.id)}
           variant="contained"
-          style={{ backgroundColor: !itemsCart.includes(item.id) ? 'black' : 'lightgrey' }}
+          style={{
+            backgroundColor: !itemsCart.includes(item.id)
+              ? 'black'
+              : 'lightgrey',
+          }}
           fullWidth
           size="small"
           disabled={!itemsCart.includes(item.id) ? false : true}

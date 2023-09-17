@@ -10,21 +10,31 @@ export default function BasketInfo() {
       <Typography variant="h4" sx={{ mb: '20px', mt: '13vh' }}>
         Your Order:
       </Typography>
-      <Box display="flex" sx={{ color: '#555555', width: '100%', justifyContent:'space-between' }}>
-        <Typography variant="h5" sx={{ mb: '10px'}}>
-          Quantity of goods: 
+      <Box
+        display="flex"
+        sx={{
+          color: '#555555',
+          width: '100%',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Typography variant="h5" sx={{ mb: '10px' }}>
+          Quantity of goods:
         </Typography>
-        <Typography variant="h5" >
-          8
-        </Typography>
+        <Typography variant="h5">8</Typography>
       </Box>
-      <Box display="flex" sx={{ color: '#555555', width: '100%', justifyContent:'space-between' }}>
-        <Typography variant="h5" sx={{ mb: '10px'}}>
-        Cost order:
+      <Box
+        display="flex"
+        sx={{
+          color: '#555555',
+          width: '100%',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Typography variant="h5" sx={{ mb: '10px' }}>
+          Cost order:
         </Typography>
-        <Typography variant="h5" >
-        1378$
-        </Typography>
+        <Typography variant="h5">1378$</Typography>
       </Box>
       <TextField
         type="text"
@@ -34,13 +44,18 @@ export default function BasketInfo() {
         margin="normal"
         sx={{ mb: '20px' }}
       />
-      <Box display="flex" sx={{ color: '#555555', width: '100%', justifyContent:'space-between' }}>
-        <Typography variant="h5" sx={{ mb: '10px'}}>
-        Amount to be paid:
+      <Box
+        display="flex"
+        sx={{
+          color: '#555555',
+          width: '100%',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Typography variant="h5" sx={{ mb: '10px' }}>
+          Amount to be paid:
         </Typography>
-        <Typography variant="h5" >
-        1000$
-        </Typography>
+        <Typography variant="h5">1000$</Typography>
       </Box>
       <AddToCart name="Checkout" />
       <Link to="/catalog" className={styles.link}>
