@@ -106,19 +106,18 @@ function Catalog() {
   }, [isLoading])
 
   return (
-    <>
-      <Container maxWidth="lg">
-        <Typography
-          variant="h2"
-          align="center"
-          sx={{ fontSize: '48px', mt: 4, mb: 4 }}
-        >
-          {productCategoryName}
+    <Container maxWidth="lg" sx={{ mb: 10 }}>
+      <Typography
+        variant="h2"
+        align="center"
+        sx={{ fontSize: '48px', mt: 4, mb: 4 }}
+      >
+        {productCategoryName}
+      </Typography>
+      {(cardsError || categoriesError) && (
+        <Typography align="center" variant="h4">
+          Oops, something went wrong. Please try again later.
         </Typography>
-        {(cardsError || categoriesError) && (
-          <Typography align="center" variant="h4">
-            Oops, something went wrong. Please try again later.
-          </Typography>
         )}
         {!isLoadingCategories && (
           <ProductsCategories
@@ -142,7 +141,6 @@ function Catalog() {
           </>
         )}
       </Container>
-    </>
   );
 }
 

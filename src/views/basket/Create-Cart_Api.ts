@@ -1,4 +1,5 @@
 import { ICartQuantityContext } from '../../interfaces/context.interface';
+import { expiredInSeconds } from '../../utils/consts';
 import { scheduleTokenRefresh } from '../../utils/refreshToken';
 
 export async function checkActiveCart(
@@ -158,6 +159,8 @@ export async function getAnonToken() {
     if (response.ok) {
       localStorage.setItem('anonToken', data.access_token);
       localStorage.setItem('refreshAnonToken', data.refresh_token);
+      localStorage.setItem('expiredIn', `${Date.now() + expiredInSeconds}`);
+
       await createNewCart();
     }
   } catch (error) {

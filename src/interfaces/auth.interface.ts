@@ -109,11 +109,17 @@ export interface IAddress {
 }
 
 export interface ICartData {
-  data: ICart
+  data: ICart,
+  totalPrice: number,
+  setTotalPrice: (newTotalPrice: number) => void
 }
 
 export interface ILineItemData {
-  item: ILineItem
+  item: ILineItem,
+}
+
+export interface IDiscountCodes {
+  value: ITotalPrice
 }
 
 export interface ICart {
@@ -133,7 +139,6 @@ export interface ICart {
   shippingMode: string
   shipping: string[]
   customLineItems: string[]
-  discountCodes: number[]
   directDiscounts: string[]
   inventoryMode: string
   taxMode: string
@@ -143,6 +148,8 @@ export interface ICart {
   refusedGifts: string[]
   origin: string
   itemShippingAddresses: string[]
+  totalLineItemQuantity: string
+
 }
 
 export interface ILineItem {
@@ -154,6 +161,7 @@ export interface ILineItem {
   productSlug: string
   variant: IVariant
   price: IPrice
+  discountedPrice: IDiscountCodes
   quantity: number
   discountedPricePerQuantity: string
   supplyChannel?: string

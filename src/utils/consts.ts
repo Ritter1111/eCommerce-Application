@@ -30,3 +30,5 @@ export const styleModalWindow = {
     height: 'auto'
   },
 };
+
+export const array: string[] = [];

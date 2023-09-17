@@ -19,7 +19,7 @@ import { customInputTheme } from '../../../utils/custom-input-theme';
 import styles from './SignUp.module.css';
 import { handleSubmit } from './Api-Signup';
 import { ToastContainer } from 'react-toastify';
-import { AuthContext } from '../../../context';
+import { AuthContext, СartQuantityContext } from '../../../context';
 import { Person } from '@mui/icons-material';
 import PasswordVisibility from '../log-in/PasswordVisibility';
 
@@ -75,6 +75,7 @@ export default function SignUp() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const { setIsAuth } = useContext(AuthContext);
   const navigate = useNavigate();
+  const { setCartQuantity } = useContext(СartQuantityContext);
 
   const outerTheme = useTheme();
 
@@ -143,7 +144,14 @@ export default function SignUp() {
           <Typography variant="h5">Sign Up</Typography>
           <form
             onSubmit={(event) =>
-              handleSubmit(event, signUpState, setErrors, navigate, setIsAuth)
+              handleSubmit(
+                event,
+                signUpState,
+                setErrors,
+                navigate,
+                setIsAuth,
+                setCartQuantity
+              )
             }
           >
             <ThemeProvider theme={customInputTheme(outerTheme)}>

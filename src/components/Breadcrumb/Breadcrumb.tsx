@@ -2,7 +2,7 @@ import { Breadcrumbs, Link } from '@mui/material';
 import React from 'react';
 import { IBreadcrumbProps } from '../../interfaces/productsCategory.interface';
 
-function Breadcrumb({ breadcrumb, handleCaregory }: IBreadcrumbProps) {
+function Breadcrumb({ breadcrumb, handleCategory }: IBreadcrumbProps) {
   return (
     <Breadcrumbs sx={{ mb: 3, ml: 2 }} aria-label="breadcrumb" separator="›">
       {breadcrumb.map((bread, index) => {
@@ -14,7 +14,7 @@ function Breadcrumb({ breadcrumb, handleCaregory }: IBreadcrumbProps) {
             underline="hover"
             key={index}
             color={index === lastBreadIndex ? 'text.primary' : 'text.secondary'}
-            onClick={() => handleCaregory(categoryId)}
+            onClick={() => handleCategory(categoryId)}
           >
             {categoryName}
           </Link>

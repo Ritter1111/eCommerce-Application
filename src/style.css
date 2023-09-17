@@ -15,3 +15,16 @@ a {
 .MuiCard-root:hover {
   box-shadow: 2px 6px 19px 4px rgb(189 189 189 / 30%)
 }
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+footer {
+  margin-top: auto;
+  background-color: white;
+  color: '#fff';
+  box-shadow: 0 -4px 6px -6px #222;
+}

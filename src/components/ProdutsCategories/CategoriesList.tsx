@@ -14,7 +14,7 @@ function CategoriesList({
   categoriesData,
   openCategories,
   handleMainCategoryClick,
-  handleCaregory,
+  handleCategory,
 }: ICategoriesList) {
   const categoriesTree = createCategoryTree(categoriesData);
   return (
@@ -38,7 +38,7 @@ function CategoriesList({
           <ListItemButton
             onClick={() => {
               handleMainCategoryClick(mainCategory.id);
-              handleCaregory(mainCategory.id);
+              handleCategory(mainCategory.id);
             }}
           >
             <ListItemText primary={mainCategory.name['en-US']} />
@@ -62,7 +62,7 @@ function CategoriesList({
                     key={childCategoryId}
                     sx={{ pl: 4 }}
                     onClick={() => {
-                      handleCaregory(childCategoryId);
+                      handleCategory(childCategoryId);
                     }}
                   >
                     <ListItemText primary={childCategoryName} />

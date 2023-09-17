@@ -4,14 +4,14 @@ import { BreadcrumbType } from "../types/breadcrumb.type";
 
 export interface IBreadcrumbProps {
   breadcrumb: BreadcrumbType;
-  handleCaregory: (categoryId: string) => void;
+  handleCategory: (categoryId: string) => void;
 }
 
 export interface ICategoriesList {
   categoriesData: IProductsResp[];
   openCategories: string[];
   handleMainCategoryClick: (categoryId: string) => void
-  handleCaregory: (categoryId: string) => void;
+  handleCategory: (categoryId: string) => void;
 }
 
 export interface IColorsArray {

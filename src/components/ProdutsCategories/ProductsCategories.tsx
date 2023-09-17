@@ -145,21 +145,27 @@ function ProductsCategories({
     }
   };
 
-  const resetFilters = () => {
+  const resetFilters = (id = '') => {
     setSortFilter('default');
     setTextSeachFilter('');
     setFilterColorValue('');
+    if (lowestPriceProduct && highestPriceProduct) {
+      setPriceRangeSliderValues([lowestPriceProduct, highestPriceProduct]);
+    }
+
+    !attributesError && fetchAttribites(id);
+    !minMaxCentAmountError && fetchMinMaxCentAmount(id);
   };
 
-  const handleCaregory = (categoryId: string) => {
+  const handleCategory = (categoryId: string) => {
     if (!categoryId) {
+      setBreadcramb((prev) => [prev[0]]);
+      openCategories.length = 0;
       setCategoryId('');
       setCards([])
       setId('')
       fetchCards();
       resetFilters();
-      setBreadcramb((prev) => [prev[0]]);
-      openCategories.length = 0;
       return;
     }
 
@@ -168,10 +174,7 @@ function ProductsCategories({
     setCards([])
     fetchCards(categoryId);
     updateBreadcrumbArray(categoryId);
-    !attributesError && fetchAttribites(categoryId);
-    !minMaxCentAmountError && fetchMinMaxCentAmount(categoryId);
     setProductCategoryName(categories[categoryId][1]);
-    resetFilters();
   };
 
   const updateBreadcrumbArray = (id: string) => {
@@ -207,21 +210,17 @@ function ProductsCategories({
   }, [textSeachFilter]);
 
   const applyFilters = () => {
-    if (sortFilter === 'default' && !categoryId) {
-      fetchCards();
-    } else {
-      !fetchCardsBySortError && fetchCardsBySort();
-    }
+    !fetchCardsBySortError && fetchCardsBySort();
   };
 
   const handleResetFilters = () => {
-    resetFilters();
-
-    if (lowestPriceProduct && highestPriceProduct) {
-      setPriceRangeSliderValues([lowestPriceProduct, highestPriceProduct]);
+    if (categoryId) {
+      fetchCards(categoryId);
+      resetFilters(categoryId);
+    } else {
+      resetFilters();
+      fetchCards();
     }
-
-    categoryId ? fetchCards(categoryId) : fetchCards();
   };
 
   return (
@@ -230,9 +229,9 @@ function ProductsCategories({
         categoriesData={categoriesData}
         openCategories={openCategories}
         handleMainCategoryClick={handleMainCategoryClick}
-        handleCaregory={handleCaregory}
+        handleCategory={handleCategory}
       />
-      <Breadcrumb breadcrumb={breadcrumb} handleCaregory={handleCaregory} />
+      <Breadcrumb breadcrumb={breadcrumb} handleCategory={handleCategory} />
       <ProductsFiltersMenu
         textSeachFilter={textSeachFilter}
         setTextSeachFilter={setTextSeachFilter}

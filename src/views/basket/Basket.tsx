@@ -1,39 +1,74 @@
 import { ThemeProvider } from '@emotion/react';
-import { Grid, useTheme, Typography, Box } from '@mui/material';
-import React from 'react';
+import { Grid, useTheme } from '@mui/material';
+import React, { useState } from 'react';
 import { customInputTheme } from '../../utils/custom-input-theme';
-import BasketItems from '../../components/BasketItems/BasketItems';
-import BasketInfo from '../../components/BasketInfo/BasketInfo';
-import { ShoppingBag } from '@mui/icons-material';
+import BasketInfo from '../../components/Cart/BasketInfo/BasketInfo';
+import EmptyCartMessage from './EmptyCart/EmptyCart';
+import BasketItems from '../../components/Cart/BasketItems/BasketItems';
 
 export default function Basket() {
   const outerTheme = useTheme();
-  const data = JSON.parse(localStorage.getItem('cartData') || '');
+  const isAuth = localStorage.getItem('isAuth') === 'true';
+
+  const cartData = localStorage.getItem('cartData');
+  const anonCartData = localStorage.getItem('anonCartData');
+
+  const data = cartData ? JSON.parse(cartData) : null;
+  const dataAnonim = anonCartData ? JSON.parse(anonCartData) : null;
+
+  const userData = isAuth ? data : dataAnonim;
+
+  const [totalPrice, setTotalPrice] = useState(
+    userData ? userData.totalPrice.centAmount : 0
+  );
+
+  const handleTotalPriceChange = (newTotalPrice: number) => {
+    setTotalPrice(newTotalPrice);
+  };
 
   return (
     <ThemeProvider theme={customInputTheme(outerTheme)}>
-      {data.lineItems.length > 0 ? (
+      <Grid
+        container
+        justifyContent="center"
+        component="main"
+        sx={{ mt: '30px', mb: 10 }}
+      >
         <Grid
-          container
-          justifyContent="center"
-          component="main"
-          sx={{ mt: '30px' }}
+          item
+          xs={12}
+          sm={12}
+          md={7}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
         >
-          <Grid
-            item
-            xs={12}
-            sm={12}
-            md={7}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'start',
-            }}
-          >
-            <Grid item xs={12} sm={12} sx={{ m: '5px' }}>
-              <BasketItems data={data} />
-            </Grid>
+          <Grid item xs={12} sm={12} sx={{ m: '5px' }}>
+            {isAuth && cartData ? (
+              data.lineItems.length > 0 ? (
+                <BasketItems
+                  data={data}
+                  setTotalPrice={handleTotalPriceChange}
+                  totalPrice={totalPrice}
+                />
+              ) : (
+                <EmptyCartMessage />
+              )
+            ) : anonCartData && dataAnonim.lineItems.length > 0 ? (
+              <BasketItems
+                data={dataAnonim}
+                setTotalPrice={handleTotalPriceChange}
+                totalPrice={totalPrice}
+              />
+            ) : (
+              <EmptyCartMessage />
+            )}
           </Grid>
+        </Grid>
+        {(anonCartData && dataAnonim.lineItems.length > 0) ||
+        (cartData && data.lineItems.length > 0) ? (
           <Grid
             item
             xs={12}
@@ -45,29 +80,28 @@ export default function Basket() {
               alignItems: 'start',
               '@media (max-width: 900px)': {
                 alignItems: 'center',
+                padding: '30px',
               },
             }}
           >
-            <BasketInfo />
+            {isAuth ? (
+              <BasketInfo
+                data={data}
+                totalPrice={totalPrice}
+                setTotalPrice={handleTotalPriceChange}
+              />
+            ) : (
+              <BasketInfo
+                data={dataAnonim}
+                totalPrice={totalPrice}
+                setTotalPrice={handleTotalPriceChange}
+              />
+            )}
           </Grid>
-        </Grid>
-      ) : (
-        <>
-          <Box
-            sx={{
-              mt: '40vh',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            <ShoppingBag fontSize="large" sx={{ color: '#212121' }} />
-            <Typography align="center" variant="h6">
-              Your cart is empty
-            </Typography>
-          </Box>
-        </>
-      )}
+        ) : (
+          <></>
+        )}
+      </Grid>
     </ThemeProvider>
   );
 }

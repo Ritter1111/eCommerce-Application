@@ -18,32 +18,14 @@ import {
 } from '../../utils/product';
 import ProductPrice from '../Price/Price';
 import { AuthContext, СartQuantityContext } from '../../context';
-import { getAnonToken, updateCart } from '../../views/basket/Create-Cart_Api';
+import { handleAddToCart, initializeItemsCart } from '../../utils/basket';
 
 function ProductCard({ item }: { item: IProductCartItem }) {
   const { isAuth } = useContext(AuthContext);
   const { setCartQuantity } = useContext(СartQuantityContext);
   const navigate = useNavigate();
-  const [itemsCart, setItemsCart] = useState(
-    isAuth
-      ? JSON.parse(localStorage.getItem('cartItem') || '')
-      : localStorage.getItem('anonCartItem')
-      ? JSON.parse(localStorage.getItem('anonCartItem') || '')
-      : []
-  );
+  const [itemsCart, setItemsCart] = useState(() => initializeItemsCart(isAuth));
   const currencySymbol = item.currencyCode === Currency.USD ? '$' : '';
-
-  async function handleAddToCart(prodactId: string) {
-    isAuth
-      ? (await updateCart(prodactId, setCartQuantity),
-        setItemsCart(JSON.parse(localStorage.getItem('cartItem') || '')))
-      : localStorage.getItem('anonToken')
-      ? (await updateCart(prodactId, setCartQuantity),
-        setItemsCart(JSON.parse(localStorage.getItem('anonCartItem') || '')))
-      : (await getAnonToken(),
-        await updateCart(prodactId, setCartQuantity),
-        setItemsCart(JSON.parse(localStorage.getItem('anonCartItem') || '')));
-  }
 
   return (
     <Card
@@ -109,7 +91,9 @@ function ProductCard({ item }: { item: IProductCartItem }) {
       </CardActionArea>
       <CardActions>
         <Button
-          onClick={() => handleAddToCart(item.id)}
+          onClick={() =>
+            handleAddToCart(item.id, isAuth, setCartQuantity, setItemsCart)
+          }
           variant="contained"
           style={{
             backgroundColor: !itemsCart.includes(item.id)
