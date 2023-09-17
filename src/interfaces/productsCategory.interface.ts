@@ -41,5 +41,6 @@ export interface IProductCategories {
   categoriesData: Array<IProductsResp>;
   setCards: Dispatch<SetStateAction<IProductsResp[]>>
   setProductCategoryName: Dispatch<SetStateAction<string>>
+  setId: Dispatch<SetStateAction<string>>
 }
 

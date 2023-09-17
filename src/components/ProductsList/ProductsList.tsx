@@ -8,7 +8,7 @@ function ProductsList({ productCards }: IProductsList) {
   return (
     <>
       {productCards && productCards.length > 0 ? (
-        <Grid container spacing={4} columns={{ xs: 4, sm: 8, md: 12 }}>
+        <Grid container spacing={4} columns={{ xs: 4, sm: 8, md: 12 }} mb={5}>
           {productCards.map((card) => {
             return (
               <Grid item key={card.id} sx={{ maxWidth: 300, margin: '0 auto' }}>

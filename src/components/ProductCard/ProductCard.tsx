@@ -25,7 +25,6 @@ function ProductCard({ item }: { item: IProductCartItem }) {
   const { setCartQuantity } = useContext(СartQuantityContext);
   const navigate = useNavigate();
   const [itemsCart, setItemsCart] = useState(() => initializeItemsCart(isAuth));
-
   const currencySymbol = item.currencyCode === Currency.USD ? '$' : '';
 
   return (

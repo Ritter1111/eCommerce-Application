@@ -23,7 +23,7 @@ export default function BasketInfo({
 
   const ApplyPromoCode = async () => {
     setPromoCode('');
-   await PromoCode(promoCode, setCartQuantity, setTotalPrice);
+    await PromoCode(promoCode, setCartQuantity, setTotalPrice);
   };
 
   const totalAmount = data.lineItems.reduce((acc: number, item: ILineItem) => {
@@ -66,22 +66,22 @@ export default function BasketInfo({
         <Typography variant="h5" sx={{ mb: '10px' }}>
           Cost order:
         </Typography>
-        {data.lineItems.some(item => item.discountedPrice) ? (
-            <Box>
-              <Typography
-                variant="h6"
-                sx={{
-                  textDecoration: 'line-through',
-                  color: 'red',
-                  mb: '3px',
-                }}
-              >
-                {totalAmount ? formatCentsToCurrency(totalAmount) : ''}
-              </Typography>
-              <Typography variant="h5">
-                {formatCentsToCurrency(totalPrice)}
-              </Typography>
-            </Box>
+        {data.lineItems.some((item) => item.discountedPrice) ? (
+          <Box>
+            <Typography
+              variant="h6"
+              sx={{
+                textDecoration: 'line-through',
+                color: 'red',
+                mb: '3px',
+              }}
+            >
+              {totalAmount ? formatCentsToCurrency(totalAmount) : ''}
+            </Typography>
+            <Typography variant="h5">
+              {formatCentsToCurrency(totalPrice)}
+            </Typography>
+          </Box>
         ) : (
           <Typography variant="h5">
             {formatCentsToCurrency(totalPrice)}
