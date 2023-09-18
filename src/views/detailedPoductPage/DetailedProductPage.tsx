@@ -10,6 +10,7 @@ import { Slider } from '../../components/Slider/Slider';
 import ModalWindow from '../../components/Modal/Modal';
 import DescriptionProduct from '../../components/DescriptionProduct/DescriptionProduct';
 import { statusCodes } from '../../enums/auth.enum';
+import { ToastContainer } from 'react-toastify';
 
 function DetailedProductPage() {
   const outerTheme = useTheme();
@@ -78,6 +79,7 @@ function DetailedProductPage() {
         component="main"
         sx={{ mt: '10px' }}
       >
+        <ToastContainer/>
         <CssBaseline />
         <Grid
           item

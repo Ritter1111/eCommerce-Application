@@ -1,4 +1,6 @@
 import { ICartQuantityContext } from "../../../interfaces/context.interface";
+import { errorNotify } from "../../../utils/ErrorPupUp";
+import { successNotify } from "../../../utils/SuccessPopUp";
 import { scheduleTokenRefresh } from "../../../utils/refreshToken";
 
 export async function removeItem(
@@ -38,8 +40,9 @@ export async function removeItem(
 
       const data = await response.json();
       if (response.ok) {
+        successNotify('Item was deleted');
         setCartQuantity(data.totalLineItemQuantity || 0);
-
+        console.log('delete');
         const itemCart: string[] = [];
         for(let i = 0; i < data.lineItems.length; i+= 1) {
           itemCart.push(data.lineItems[i].productId)
@@ -48,6 +51,8 @@ export async function removeItem(
         getIsAuth
         ? (localStorage.setItem('cartData', JSON.stringify(data)), localStorage.setItem('cartItem', JSON.stringify(itemCart)))
         : (localStorage.setItem('anonCartData', JSON.stringify(data)), localStorage.setItem('anonCartItem', JSON.stringify(itemCart)));
+      } else {
+        errorNotify(`${data.message}`)
       }
     }
   } catch (error) {

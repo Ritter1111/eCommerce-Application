@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Button } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import styles from '../DescriptionProduct.module.css';
 import { IButton } from '../../../interfaces/detailedPage.interface';
 import { useParams } from 'react-router-dom';
@@ -38,6 +38,7 @@ export default function AddToCart({ name }: IButton) {
   return (
     <>
       {isAddedToCard && productId ? (
+        <>
         <Button
           variant="contained"
           fullWidth
@@ -54,6 +55,8 @@ export default function AddToCart({ name }: IButton) {
         >
           Remove from card
         </Button>
+        <Typography color="text.secondary"  sx={{fontStyle: 'italic'}}>The product is already in the cart</Typography>
+        </>
       ) : (
         <Button
           variant="contained"
