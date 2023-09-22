@@ -39,6 +39,8 @@ Run the app
 ```
 $ npm start
 ```
+Deploy: https://ethno-wear.netlify.app/
+
 ## Available Scripts
 In the project directory, you can run the following scripts using npm:
 - `npm start` will start the development server using Webpack. It will serve your application in development mode and open it in your default web browser.
