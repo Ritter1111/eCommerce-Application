@@ -4,6 +4,8 @@ export interface ISlide {
 
 export interface ISliderProps {
   slides: ISlide[];
+  image: string;
+
 }
 
 export interface IModalProps {
@@ -16,4 +18,7 @@ export interface IModalProps {
 export interface IBanner {
   color: string;
   label: string;
+}
+export interface IButton {
+  name: string
 }

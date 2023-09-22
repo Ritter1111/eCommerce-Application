@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Card,
   Typography,
@@ -6,26 +6,25 @@ import {
   CardMedia,
   CardContent,
   Box,
+  Button,
+  CardActions,
 } from '@mui/material';
 import { Currency } from '../../enums/product.enum';
 import { IProductCartItem } from '../../interfaces/product.interface';
 import { useNavigate } from 'react-router-dom';
-import { formatCentsToCurrency } from '../../utils/format-to-cents';
+import {
+  formatCentsToCurrency,
+  truncateStringToSpace,
+} from '../../utils/product';
 import ProductPrice from '../Price/Price';
-
-export function truncateStringToSpace(str: string, maxLength: number) {
-  if (str.length <= maxLength) {
-    return str;
-  } else {
-    const truncatedSubstring = str.substring(0, maxLength);
-    const lastSpaceIndex = truncatedSubstring.lastIndexOf(' ');
-    const truncatedString = truncatedSubstring.substring(0, lastSpaceIndex);
-    return truncatedString + ' ...';
-  }
-}
+import { AuthContext, СartQuantityContext } from '../../context';
+import { handleAddToCart, initializeItemsCart } from '../../utils/basket';
 
 function ProductCard({ item }: { item: IProductCartItem }) {
+  const { isAuth } = useContext(AuthContext);
+  const { setCartQuantity } = useContext(СartQuantityContext);
   const navigate = useNavigate();
+  const [itemsCart, setItemsCart] = useState(() => initializeItemsCart(isAuth));
   const currencySymbol = item.currencyCode === Currency.USD ? '$' : '';
 
   return (
@@ -43,7 +42,7 @@ function ProductCard({ item }: { item: IProductCartItem }) {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          height: '100%',
+          height: '90%',
         }}
         onClick={() => navigate(`/catalog/${item.id}`)}
       >
@@ -90,6 +89,24 @@ function ProductCard({ item }: { item: IProductCartItem }) {
           </Box>
         </CardContent>
       </CardActionArea>
+      <CardActions>
+        <Button
+          onClick={() =>
+            handleAddToCart(item.id, isAuth, setCartQuantity, setItemsCart)
+          }
+          variant="contained"
+          style={{
+            backgroundColor: !itemsCart.includes(item.id)
+              ? 'black'
+              : 'lightgrey',
+          }}
+          fullWidth
+          size="small"
+          disabled={!itemsCart.includes(item.id) ? false : true}
+        >
+          Add to cart
+        </Button>
+      </CardActions>
     </Card>
   );
 }

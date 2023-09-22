@@ -8,12 +8,15 @@ export const ABOUTUS_ROUTE = '/about-us';
 export const CATALOG_ROUTE = '/catalog';
 export const PRODUCT_ID_ROUTE = 'catalog/:id';
 export const USER_PROFILE = '/user-profile';
+export const CART_ROUTE = '/cart';
 
 export const grey = blueGrey['A700'];
 export const formFieldsDefault: IDataForm = {
   email: '',
   password: '',
 };
+
+export const expiredInSeconds = 172800;
 
 export const styleModalWindow = {
   bgcolor: 'background.paper',
@@ -27,3 +30,5 @@ export const styleModalWindow = {
     height: 'auto'
   },
 };
+
+export const array: string[] = [];

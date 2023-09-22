@@ -1,4 +1,5 @@
 import { refreshToken } from "../views/authorization/log-in/Api-Login";
+import { expiredInSeconds } from "./consts";
 
 export async function scheduleTokenRefresh() {
   const time = localStorage.getItem('expiredIn');
@@ -10,12 +11,14 @@ export async function scheduleTokenRefresh() {
     const refreshTenMinutes = 600;
 
     if (timeUntilExpiration <= refreshTenMinutes) {
-      const refreshTokenSaved = localStorage.getItem('refreshToken');
+      const getIsAuth = localStorage.getItem('isAuth') === 'true';
+      const refreshTokenSaved = getIsAuth ? localStorage.getItem('refreshToken') : localStorage.getItem('refreshAnonToken');
       if (refreshTokenSaved !== null) {
         const refToken = await refreshToken({
           refreshToken: refreshTokenSaved,
         });
-        localStorage.setItem('authToken', refToken.access_token);
+        getIsAuth ? localStorage.setItem('authToken', refToken.access_token) : localStorage.setItem('anonToken', refToken.access_token);
+        localStorage.setItem('expiredIn', `${Date.now() + expiredInSeconds}`)
         return refToken;
       } else {
         console.log('No refreshToken saved');

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { AppBar, Container, Typography, Box } from '@mui/material';
 import { Link, NavLink } from 'react-router-dom';
 import classes from './NavBar.module.css';
@@ -16,32 +16,29 @@ import {
   Menu,
   Close,
   Logout,
-  InfoOutlined,
-  LibraryBooksOutlined,
-  HomeOutlined,
   AccountCircleOutlined,
 } from '@mui/icons-material';
-import { AuthContext } from '../../context';
+import { AuthContext, СartQuantityContext } from '../../context';
 import routes from '../../utils/routes';
 
 export default function NavBar() {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const { isAuth, setIsAuth } = useContext(AuthContext);
+  const { cartQuantity, setCartQuantity } = useContext(СartQuantityContext);
 
   document.body.style.overflowY = isMenuOpen ? 'hidden' : 'auto';
 
-  const closeMenu = () => {
+  const closeMenu = useCallback(() => {
     setMenuOpen(false);
-  };
+  }, []);
 
-  const toggleMenu = () => {
-    setMenuOpen(!isMenuOpen);
-  };
+  const toggleMenu = () => setMenuOpen((prev) => !prev);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setIsAuth(false);
     localStorage.clear();
-  };
+    setCartQuantity(0);
+  }, [setIsAuth]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -108,7 +105,7 @@ export default function NavBar() {
           </Link>
           <Box
             data-testid="menu-btn"
-            onClick={() => toggleMenu()}
+            onClick={toggleMenu}
             sx={{ color: '#212121', display: { xs: 'block', md: 'none' } }}
           >
             {isMenuOpen ? <Close /> : <Menu />}
@@ -125,27 +122,22 @@ export default function NavBar() {
               {routes.map((route, index) => (
                 <NavLink
                   key={index}
-                  onClick={() => closeMenu()}
+                  onClick={closeMenu}
                   to={route.path}
                   className="pages__link"
                   title={route.title}
                 >
-                  {(route.name === 'Home' && (
-                    <HomeOutlined sx={{ mr: 0.5 }} />
-                  )) ||
-                    (route.name === 'About Us' && (
-                      <InfoOutlined sx={{ mr: 0.5 }} />
-                    )) ||
-                    (route.name === 'Catalog' && (
-                      <LibraryBooksOutlined sx={{ mr: 0.5 }} />
-                    ))}
-                  {route.name}
+                  {<route.icon sx={{ mr: 0.5 }} />}
+                  {route.name !== 'Cart' && route.name}
+                  {route.name === 'Cart' ? (
+                    <Typography>| {cartQuantity}</Typography>
+                  ) : null}
                 </NavLink>
               ))}
               {isAuth ? (
                 <>
                   <NavLink
-                    onClick={() => closeMenu()}
+                    onClick={closeMenu}
                     to={USER_PROFILE}
                     className="pages__link"
                     title="User Profile"
@@ -169,7 +161,7 @@ export default function NavBar() {
               ) : (
                 <>
                   <NavLink
-                    onClick={() => closeMenu()}
+                    onClick={closeMenu}
                     to={LOGIN_ROUTE}
                     className={classes.btn}
                     title="Log In"
@@ -178,7 +170,7 @@ export default function NavBar() {
                     Log In
                   </NavLink>
                   <NavLink
-                    onClick={() => closeMenu()}
+                    onClick={closeMenu}
                     to={REGISTRATION_ROUTE}
                     className={classes.btn}
                     title="Sign Up"

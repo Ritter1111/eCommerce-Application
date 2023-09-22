@@ -24,6 +24,7 @@ export default function ModalWindow({
           slides={slides}
           handleClick={handleClick}
           isModal={true}
+          image={image}
         />
       </Box>
     </Modal>

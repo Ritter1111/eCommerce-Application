@@ -2,8 +2,14 @@ import React, { useEffect, useState } from 'react';
 import AppRouter from './AppRouter';
 import { BrowserRouter } from 'react-router-dom';
 import NavBar from './NavBar/NavBar';
-import { AccessTokenContext, AuthContext } from '../context';
+import {
+  AccessTokenContext,
+  AuthContext,
+  СartQuantityContext,
+} from '../context';
 import { HttpMethod } from '../enums/auth.enum';
+import { getInitialCartItemsQuantity } from '../utils/basket';
+import Footer from './Footer/Footer';
 
 const fetchAccessToken = async (callback?: (accessToken: string) => void) => {
   const authUrl = `${process.env.REACT_APP_CTP_AUTH_URL}/oauth/token`;
@@ -34,6 +40,9 @@ const fetchAccessToken = async (callback?: (accessToken: string) => void) => {
 export default function App() {
   const [isAuth, setIsAuth] = useState(false);
   const [accessToken, setAccessToken] = useState('');
+  const [cartQuantity, setCartQuantity] = useState(
+    getInitialCartItemsQuantity()
+  );
 
   useEffect(() => {
     if (localStorage.getItem('authToken')) setIsAuth(true);
@@ -45,10 +54,13 @@ export default function App() {
       <AccessTokenContext.Provider
         value={{ token: accessToken, setToken: setAccessToken }}
       >
-        <BrowserRouter>
-          <NavBar />
-          <AppRouter />
-        </BrowserRouter>
+        <СartQuantityContext.Provider value={{ cartQuantity, setCartQuantity }}>
+          <BrowserRouter>
+            <NavBar />
+            <AppRouter />
+            <Footer />
+          </BrowserRouter>
+        </СartQuantityContext.Provider>
       </AccessTokenContext.Provider>
     </AuthContext.Provider>
   );

@@ -20,6 +20,7 @@ export function Slider({
   handleClick,
   isModal,
   handleClose,
+  image,
 }: ISliderProps & {
   handleClick: (img: string) => void;
   isModal?: boolean;
@@ -48,7 +49,7 @@ export function Slider({
         >
           {isModal ? (
             <>
-              <Zoom img={slide.image} zoomScale={2} width={620} height={700} />
+              <Zoom img={image} zoomScale={2} width={620} height={700} />
               <Close onClick={handleClose} className={styles.close} />
             </>
           ) : (

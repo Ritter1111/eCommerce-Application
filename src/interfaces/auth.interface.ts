@@ -1,3 +1,5 @@
+import { IBaseProps, IPrice, IVariant } from "./product.interface";
+
 export interface IDataCustomer {
   accessToken: string,
   refreshToken: string,
@@ -106,6 +108,20 @@ export interface IAddress {
   apartment: string
 }
 
+export interface ICartData {
+  data: ICart,
+  totalPrice: number,
+  setTotalPrice: (newTotalPrice: number) => void
+}
+
+export interface ILineItemData {
+  item: ILineItem,
+}
+
+export interface IDiscountCodes {
+  value: ITotalPrice
+}
+
 export interface ICart {
   type: string
   id: string
@@ -117,13 +133,12 @@ export interface ICart {
   lastModifiedBy: ILastModifiedBy2
   createdBy: ILastModifiedBy2
   customerId: string
-  lineItems: string[]
+  lineItems: ILineItem[]
   cartState: string
   totalPrice: ITotalPrice
   shippingMode: string
   shipping: string[]
   customLineItems: string[]
-  discountCodes: number[]
   directDiscounts: string[]
   inventoryMode: string
   taxMode: string
@@ -133,6 +148,33 @@ export interface ICart {
   refusedGifts: string[]
   origin: string
   itemShippingAddresses: string[]
+  totalLineItemQuantity: string
+
+}
+
+export interface ILineItem {
+  id: string
+  productId: string
+  productKey: string
+  name: IBaseProps
+  productType: string
+  productSlug: string
+  variant: IVariant
+  price: IPrice
+  discountedPrice: IDiscountCodes
+  quantity: number
+  discountedPricePerQuantity: string
+  supplyChannel?: string
+  distributionChannel?: string
+  perMethodTaxRate: string
+  addedAt: string
+  lastModifiedAt: string
+  state: string
+  priceMode: string
+  lineItemMode: string
+  totalPrice: ITotalPrice
+  taxedPricePortions: string
+  shippingDetails?: string
 }
 
 export interface ILastModifiedBy2 {

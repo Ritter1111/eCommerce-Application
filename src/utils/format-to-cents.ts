@@ -5,6 +5,6 @@ export function formatCentsToCurrency(cents: number) {
   return `${dollars}.${formattedCents}`;
 }
 
-export function currencyToCents(dollars: number) {
+export function currencyToCents(dollars: number ) {
   return Math.round(dollars * 100);
 }
