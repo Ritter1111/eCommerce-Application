@@ -79,7 +79,7 @@ function DetailedProductPage() {
         component="main"
         sx={{ mt: '10px' }}
       >
-        <ToastContainer/>
+        <ToastContainer />
         <CssBaseline />
         <Grid
           item

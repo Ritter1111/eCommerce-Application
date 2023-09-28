@@ -39,23 +39,25 @@ export default function AddToCart({ name }: IButton) {
     <>
       {isAddedToCard && productId ? (
         <>
-        <Button
-          variant="contained"
-          fullWidth
-          sx={{ mt: 3 }}
-          size="small"
-          style={{
-            backgroundColor: 'black',
-            color: 'white',
-            marginBottom: '25px',
-            fontSize: '0.8rem',
-          }}
-          className={styles.btn}
-          onClick={() => productId && removeCartItem(productId)}
-        >
-          Remove from card
-        </Button>
-        <Typography color="text.secondary"  sx={{fontStyle: 'italic'}}>The product is already in the cart</Typography>
+          <Button
+            variant="contained"
+            fullWidth
+            sx={{ mt: 3 }}
+            size="small"
+            style={{
+              backgroundColor: 'black',
+              color: 'white',
+              marginBottom: '25px',
+              fontSize: '0.8rem',
+            }}
+            className={styles.btn}
+            onClick={() => productId && removeCartItem(productId)}
+          >
+            Remove from card
+          </Button>
+          <Typography color="text.secondary" sx={{ fontStyle: 'italic' }}>
+            The product is already in the cart
+          </Typography>
         </>
       ) : (
         <Button

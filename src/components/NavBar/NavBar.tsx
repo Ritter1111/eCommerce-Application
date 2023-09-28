@@ -119,9 +119,9 @@ export default function NavBar() {
               onClick={(e) => e.stopPropagation()}
               className={`${isMenuOpen ? classes.active : ''} ${classes.menu}`}
             >
-              {routes.map((route, index) => (
+              {routes.map((route) => (
                 <NavLink
-                  key={index}
+                  key={route.name}
                   onClick={closeMenu}
                   to={route.path}
                   className="pages__link"
