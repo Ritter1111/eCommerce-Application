@@ -1,8 +1,6 @@
 import React from 'react';
-import { Box, Container, Divider, Link, Typography } from '@mui/material';
-import TeamMemebrCard from '../../components/TeamMemebrCard/TeamMemebrCard';
+import { Box, Container, Divider, Typography } from '@mui/material';
 
-import rsLogo from '../../assets/rs_school_js.svg';
 
 const AboutUs = () => {
   return (
@@ -17,20 +15,12 @@ const AboutUs = () => {
             mt: 5,
           }}
         >
-          chatGPT team
+          Ethno-Wear
         </Divider>
         <Typography paragraph textAlign="left">
           Hello! We are a team of Ukrainian developers and this site is our team
-          training project eCommerce Application in
-          <Link
-            href="https://rs.school/js/"
-            underline="none"
-            target="_blank"
-            sx={{ ml: 1 }}
-          >
-            {' '}
-            <img width={70} src={rsLogo}></img>
-          </Link>
+           project eCommerce Application
+        
         </Typography>
         <Typography paragraph textAlign="left">
           Users can browse through a vast range of products 📚👗👟, view
@@ -46,9 +36,8 @@ const AboutUs = () => {
           position="relative"
         >
           <b>Stack of technologies used:</b> React, Typescript, JavaScript,
-          HTML, CSS, Node.js, Commercetools was used as a database
+          HTML, CSS, Node.js, Commercetools was used as a database, Material-ui
         </Typography>
-        <TeamMemebrCard />
       </Box>
     </Container>
   );
