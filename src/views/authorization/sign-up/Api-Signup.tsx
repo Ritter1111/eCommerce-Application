@@ -80,7 +80,7 @@ async function setDefaultShippingAddress(
   );
 
   try {
-    const response = await fetch(
+    await fetch(
       `${process.env.REACT_APP_CTP_API_URL}/${process.env.REACT_APP_CTP_PROJECT_KEY}/me`,
       {
         method: 'POST',
@@ -99,12 +99,6 @@ async function setDefaultShippingAddress(
         }),
       }
     );
-
-    if (response.ok) {
-      console.log(`Shipping default address seted successfully`);
-    } else {
-      console.error(`Failed to set shipping default address`);
-    }
   } catch (error) {
     console.error(`Error setting shipping default address:`, error);
   }
@@ -157,9 +151,6 @@ async function setDefaultBillingAddress(
           signUpState
         );
       }
-      console.log(`Billing default address seted successfully`);
-    } else {
-      console.error(`Failed to set billing default address`);
     }
   } catch (error) {
     console.error(`Error setting billing default address:`, error);
@@ -202,9 +193,6 @@ async function setShippingAddress(
       if (signUpState.defaultShippingAddress) {
         setDefaultShippingAddress(addressId, data.version, signUpState);
       }
-      console.log(`${type} seted successfully`);
-    } else {
-      console.error(`Failed to set ${type}`);
     }
   } catch (error) {
     console.error(`Error setting ${type}:`, error);
@@ -262,9 +250,6 @@ async function setBillingAddress(
           );
         }
       }
-      console.log(`${type} seted successfully`);
-    } else {
-      console.error(`Failed to set ${type}`);
     }
   } catch (error) {
     console.error(`Error setting ${type}:`, error);
@@ -309,7 +294,6 @@ async function addAddresses(
 
     if (response.ok) {
       const data = await response.json();
-      console.log('Addresses added successfully');
       if (type === 'Billing') {
         setBillingAddress(
           data.addresses[0].id,
@@ -392,7 +376,6 @@ export async function handleSubmit(
             setCartQuantity
           );
         }, 3000);
-        console.log('Customer created successfully');
       } else {
         if (data.statusCode === 400) {
           errorNotify(

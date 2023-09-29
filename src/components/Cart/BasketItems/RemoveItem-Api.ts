@@ -42,7 +42,6 @@ export async function removeItem(
       if (response.ok) {
         successNotify('Item was deleted');
         setCartQuantity(data.totalLineItemQuantity || 0);
-        console.log('delete');
         const itemCart: string[] = [];
         for(let i = 0; i < data.lineItems.length; i+= 1) {
           itemCart.push(data.lineItems[i].productId)

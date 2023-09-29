@@ -23,8 +23,6 @@ export async function scheduleTokenRefresh() {
       } else {
         console.log('No refreshToken saved');
       }
-    } else {
-      console.log('No expired in');
     }
   }
 }
