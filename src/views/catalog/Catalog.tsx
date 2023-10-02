@@ -41,7 +41,7 @@ function Catalog() {
         const res = data.results;
 
         page === 1 ? setCards([...res]) : setCards([...cards, ...res]);
-        if (!id) setProductCategoryName('All products');
+        if (!id) setProductCategoryName('');
         if (res.length < itemsPerPage) {
           setHasMore(false);
         }

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Box, Container, Divider, Typography } from '@mui/material';
 
-
 const AboutUs = () => {
   return (
     <Container maxWidth="xl">
@@ -19,8 +18,7 @@ const AboutUs = () => {
         </Divider>
         <Typography paragraph textAlign="left">
           Hello! We are a team of Ukrainian developers and this site is our team
-           project eCommerce Application
-        
+          project eCommerce Application
         </Typography>
         <Typography paragraph textAlign="left">
           Users can browse through a vast range of products 📚👗👟, view
