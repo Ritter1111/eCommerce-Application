@@ -5,3 +5,8 @@
 .link:hover {
   text-decoration: underline;
 }
+
+.image {
+  width: 100%;
+}
+
