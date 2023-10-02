@@ -1,0 +1,18 @@
+.slideshow {
+  margin: 0 auto;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.slideshowSlider {
+  transition: ease 1000ms;
+}
+
+.slide {
+  display: block;
+  height: 80vh;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  filter: grayscale(100%);
+}
