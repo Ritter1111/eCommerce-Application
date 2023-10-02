@@ -8,7 +8,7 @@ const images = [
   'https://imagedelivery.net/4_JwVYxosZqzJ7gIDJgTLA/61f9074b2fb49-moda-11.jpeg/16x9',
   'https://cdn.nwmgroups.hu/s/img/i/2109/20210903budapest-central-european-fashion-week.jpg',
   'https://theglossarymagazine.com/wp-content/uploads/Ukranian-Fashion-Designers.webp',
-  'https://static01.nyt.com/images/2023/03/02/multimedia/24UKRAINE-DESIGNERS-vtcq/24UKRAINE-DESIGNERS-vtcq-videoSixteenByNine3000.jpg'
+  'https://static01.nyt.com/images/2023/03/02/multimedia/24UKRAINE-DESIGNERS-vtcq/24UKRAINE-DESIGNERS-vtcq-videoSixteenByNine3000.jpg',
 ];
 
 const delay = 2000;
